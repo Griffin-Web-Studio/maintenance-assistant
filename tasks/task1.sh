@@ -7,6 +7,7 @@ run_task_1() {
     local answer_5
     local answer_6
     local answer_7
+    local task_name="Details Collection"
 
     clear
 
@@ -32,11 +33,6 @@ run_task_1() {
 
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
-
-    # function to log user answers
-    log_answer() {
-        echo "$(date): Task: Details Collection, Step $1, Answer: $2" >>$logFile
-    }
 
     # function to ask user if they created a VPS snapshot
     ask_vps_snapshot() {
@@ -139,13 +135,15 @@ run_task_1() {
         print_message_array "${description_text_array[@]}"
 
         log_answer "shown message to the user" "automated banner message"
+                
+        wait_for_input "Press any key when you ready to print the MOTD..."
 
-        read -n 1 -r -s -p "Press any key when you ready to print the MOTD..." key
+        clear
+
         log_answer "user clicked the key to get the banner" "aknowledged prompt"
-        printf "\n"
-        clear_lines 1
 
         printf "======================= copy the banner below this line ========================\n\n"
+
         run-parts /etc/update-motd.d/ 2>&1 | tee output.txt
         local line_count=$(wc -l <output.txt)
         rm output.txt
@@ -191,11 +189,12 @@ run_task_1() {
         print_message_array "${description_text_array[@]}"
 
         log_answer "shown message to the user" "automated banner message"
+                
+        wait_for_input "Press any key when you ready to print the Info..."
 
-        read -n 1 -r -s -p "Press any key when you ready to print the Info..." key
+        clear
+
         log_answer "user clicked the key to get the server info" "aknowledged prompt"
-        printf "\n"
-        clear_lines 1
 
         printf "===================== copy the server info below this line =====================\n\n"
 
@@ -248,10 +247,8 @@ run_task_1() {
         printf "Server Timezone: %s\n" $(timedatectl | grep "Time zone" | cut -d':' -f2 | tr -d ' ')
         printf "\n"
 
-        # cat output.txt
         log_answer "compleated printing the server info" "automated banner message"
 
-        #         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         printf "\n===================== copy the server info above this line =====================\n\n"
 
         printf "Did you copy the info above?\n"
@@ -370,7 +367,7 @@ run_task_1() {
             echo "$(date): Task: Details Collection. Task 1 Completed" >>$logFile
             echo "$(date): Task: Details Collection. User chose to go straight to Task 2" >>$logFile
             echo "$(date): Finished Task 1" >>$logFile
-            run_rask_2
+            run_task_2
             ;;
         2)
             answer_7=true

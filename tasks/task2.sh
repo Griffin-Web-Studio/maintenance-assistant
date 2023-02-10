@@ -7,34 +7,34 @@ run_task_2() {
     local answer_5
     local answer_6
     local answer_7
+    local task_name="Maintenance Updates & Upgrades"
 
     clear
 
     local task_description_text_array=(
         #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        "======================== Maintenance Updates & Upgrades ========================\n\n"
+        "======================= Maintenance: Updates & Upgrades ========================\n\n"
         "During this Task you will:\n\n"
-        "1) Log the time of maintenance Start\n"
+        "1) Log the time of Maintenance Start\n"
         "2) Updates\n"
         "   2.1) Update to ALL Server packages (optional after reboot),\n"
         "   2.2) Upgrade to ALL server packages (optional after reboot).\n"
-        "        2.2.1) REBOOT\n"
-        "   2.3 opt) Dist-upgrade\n"
-        "        2.3.1) REBOOT\n\n"
+        "   2.3) Remove old and unused packages\n"
+        "        2.3.1) REBOOT\n"
+        "   2.4 opt) Dist-upgrade\n"
+        "        2.4.1) REBOOT\n\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
 
-    # function to log user answers
-    log_answer() {
-        echo "$(date): Task: Details Collection, Step $1, Answer: $2" >>$logFile
-    }
+    echo "$(date): Task: Maintenance Updates & Upgrades (Task 2), Started" >>$logFile
+
+
 
     # function to ask user if they created a VPS snapshot
     ask_to_log_time() {
         clear
-        echo "$(date): Started Task 2" >>$logFile
         description_text_array=(
             #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "====================== Log the time of maintenance Start =======================\n\n"
@@ -46,6 +46,7 @@ run_task_2() {
         )
 
         print_message_array "${main_banner_text_array[@]}"
+        log_answer "Log the time of maintenance Start" "current Date and Time is: $(date +\%H:\%M)"
         print_message_array "${task_description_text_array[@]}"
         print_message_array "${description_text_array[@]}"
 
@@ -72,10 +73,12 @@ run_task_2() {
         esac
     }
 
+
+
     # function to ask user if they created a VPS snapshot
     run_update_step() {
         clear
-        echo "$(date): Started Task 1" >>$logFile
+
         description_text_array=(
             #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "=================================== Updates ====================================\n\n"
@@ -92,19 +95,23 @@ run_task_2() {
         print_message_array "${description_text_array[@]}"
 
         read -p "Possible answers (1/2/3): " run_update_step_check
+        printf "\n"
+        clear_lines 1
 
         shopt -u nocasematch
         case $run_update_step_check in
         1)
+            clear
             printf "=========================== apt update output below ============================\n\n"
             log_answer "running apt update" "yes"
             sudo /bin/bash <<EOF
             apt update -y
 EOF
-            printf "=========================== apt update output above ============================\n\n"
+            printf "\n=========================== apt update output above ============================\n\n"
             log_answer "compleated running apt update" "automated"
 
-            read -n 1 -r -s -p "Press any key when you ready to go to the next step..." key
+            wait_for_input "Press any key when you ready to go to the next step..."
+
             log_answer "user clicked the key to get to next step" "aknowledged prompt"
 
             answer_2=true
@@ -123,10 +130,12 @@ EOF
         esac
     }
 
+
+
     # function to ask user if they created a VPS snapshot
     run_upgrade_step() {
         clear
-        echo "$(date): Started Task 1" >>$logFile
+
         description_text_array=(
             #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "=================================== Upgrades ===================================\n\n"
@@ -147,15 +156,17 @@ EOF
         shopt -u nocasematch
         case $run_upgrade_step_check in
         1)
+            clear
             printf "=========================== apt upgrade output below ===========================\n\n"
             log_answer "running apt upgrade" "yes"
             sudo /bin/bash <<EOF
-            apt update -y
+            apt upgrade -y
 EOF
-            printf "=========================== apt upgrade output above ===========================\n\n"
+            printf "\n=========================== apt upgrade output above ===========================\n\n"
             log_answer "upgrade completed" "automated"
 
-            read -n 1 -r -s -p "Press any key when you ready to go to the next step..." key
+            wait_for_input "Press any key when you ready to go to the next step..."
+
             log_answer "user clicked the key to get to next step" "aknowledged prompt"
 
             log_answer "compleated running apt upgrade" "yes"
@@ -175,13 +186,72 @@ EOF
         esac
     }
 
+
+
     # function to ask user if they created a VPS snapshot
-    run_dit_upgrade_step() {
+    run_autoremove_step() {
+        clear
+
+        description_text_array=(
+            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            "================================== Autoremove ==================================\n\n"
+            "We will now run autoremove for old packages that os knows wont be needed command.\n"
+            "We will now run 'apt autoremove -y'.\n"
+            "To run this command we will tempereraly elivate the privilages to sudo\n\n"
+            "Are you Ready to run 'apt autoremove -y'?\n\n"
+            "1) yes\n"
+            "2) no\n"
+            "3) no (after reboot)\n\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+
+        read -p "Possible answers (1/2/3): " run_autoremove_step_check
+
+        shopt -u nocasematch
+        case $run_autoremove_step_check in
+        1)
+            clear
+            printf "========================= apt autoremove output below ==========================\n\n"
+            log_answer "running apt autoremove" "yes"
+            sudo /bin/bash <<EOF
+            apt autoremove -y
+EOF
+            printf "\n========================= apt autoremove output above ==========================\n\n"
+            log_answer "autoremove completed" "automated"
+
+            wait_for_input "Press any key when you ready to go to the next step..."
+            
+            log_answer "user clicked the key to get to next step" "aknowledged prompt"
+
+            log_answer "compleated running apt upgrade" "yes"
+            answer_4=true
+            ;;
+        2)
+            clear_lines 1
+            answer_4=false
+            log_answer "running apt autoremove" "no"
+            ;;
+        3)
+            clear_lines 1
+            answer_4=true
+            log_answer "running apt autoremove" "no after reboot"
+            ;;
+        *) echo "Invalid answer, please enter (1/2/3)" ;;
+        esac
+    }
+
+
+
+    # function to ask user if they created a VPS snapshot
+    run_dist_upgrade_step() {
         clear
         echo "$(date): Started Task 1" >>$logFile
         description_text_array=(
             #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "=================================== Dist Upgrade ===================================\n\n"
+            "================================= Dist Upgrade =================================\n\n"
             "WARNING! RUNNING THIS COMMAND IS OPTIONAL AND CAN POTENTIALLY BREAK THE SYSTEM OR\n"
             "ITS DEPENDANCIES AND/OR PACKAGES!\n"
             "Please ensure that all packages are compatible with the new version of the distro!\n\n"
@@ -202,12 +272,13 @@ EOF
         shopt -u nocasematch
         case $run_dist_upgrade_step_check in
         1)
+            clear
             printf "======================== apt dist-upgrade output below =========================\n\n"
             log_answer "running apt dist-upgrade" "yes"
             sudo /bin/bash <<EOF
             apt-get dist-upgrade
 EOF
-            printf "======================== apt dist-upgrade output above =========================\n\n"
+            printf "\n======================== apt dist-upgrade output above =========================\n\n"
 
             printf "All Went Well? Do you wish to reboot?\n"
             printf "1) yes\n"
@@ -219,36 +290,79 @@ EOF
             1)
                 clear_lines 20 $((line_count + 1))
                 log_answer "completed dist-upgrade successfuly" "yes"
-                answer_3=true
+                answer_5=true
                 reboot
                 ;;
             2)
-                printf "If there was a proble, DONT PANIC, you did afterall created a VPS snapsho\n"
-                printf "and the backup. so restore the snapshot and skip this step\n\n"
-                read -n 1 -r -s -p "Press any key when you ready to go to the next step..." key
-                answer_3=false
+                printf "If there was a problem, DONT PANIC, you did afterall create a VPS snapshot and\n"
+                printf "the backup. so restore the snapshot and skip this step unless this is fixable.\n\n"
+
+                wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to snapshot!..."
+                
+                answer_5=false
                 log_answer "completed dist-upgrade successfuly" "no"
+                exit 0
                 ;;
             *) echo "Invalid answer, please enter (1/2)" ;;
             esac
             ;;
         2)
             clear_lines 1
-            answer_3=true
+            answer_5=true
             log_answer "running apt dist-upgrade" "no"
             ;;
         3)
             clear_lines 1
-            answer_3=true
+            answer_5=true
             log_answer "running apt dist-upgrade" "no after reboot"
             ;;
         *) echo "Invalid answer, please enter (1/2/3)" ;;
         esac
     }
 
-    #       ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    # loop until user answers "yes" to both questions
+
+    # function to ask user if they completed the backup process
+    complete_step() {
+        clear
+
+        local description_text_array=(
+            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            "============================= Task 2 Completed ✅ =============================\n\n"
+            "Nice Work! The task 2 is now complete!\n\n"
+            "You now have a choice of either going straight to the next task or back to the\n"
+            "main menu.\n\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+
+        printf "Do you want to go straight to next task?\n"
+        printf "1) yes\n"
+        printf "2) no\n\n"
+        read -p "Possible answers (1/2): " backup_process
+
+        case $backup_process in
+        1)
+            answer_7=true
+            echo "$(date): Task: Maintenance Updates & Upgrades. Task 2 Completed" >>$logFile
+            echo "$(date): Task: Maintenance Updates & Upgrades. User chose to go straight to Task 3" >>$logFile
+            echo "$(date): Finished Task 2" >>$logFile
+            run_task_3
+            ;;
+        2)
+            answer_7=true
+            echo "$(date): Task: Maintenance Updates & Upgrades. Task 2 Completed" >>$logFile
+            echo "$(date): Task: Maintenance Updates & Upgrades. User chose to go back to main menu" >>$logFile
+            echo "$(date): Finished Task 2" >>$logFile
+            ;;
+        *) echo "Invalid answer, please enter (1/2)" ;;
+        esac
+    }
+
+
+
     while [ "$answer_1" != "true" ]; do
         ask_to_log_time
     done
@@ -262,6 +376,14 @@ EOF
     done
 
     while [ "$answer_4" != "true" ]; do
-        run_dit_upgrade_step
+        run_autoremove_step
+    done
+
+    while [ "$answer_5" != "true" ]; do
+        run_dist_upgrade_step
+    done
+
+    while [ "$answer_7" != "true" ]; do
+        complete_step
     done
 }

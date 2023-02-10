@@ -6,18 +6,18 @@ THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
 # The directory where current script resides
 DIR=$(dirname "${THIS}")
 
+maintenance_start_time=$(date +\%Y\%m\%d_\%H\%M)
+
+logFile="$DIR/logs/maintenance-$maintenance_start_time.log"
+
 # 'Dot' means 'source', i.e. 'include':
 . "$DIR/helpers/helpers.sh"
-. "$DIR/tasks/task1.sh"
 . "$DIR/tasks/task2.sh"
-
-maintenanceStartTime=$(date +\%Y\%m\%d_\%H\%M)
-
-logFile="$DIR/logs/maintenance-$maintenanceStartTime.log"
+. "$DIR/tasks/task1.sh"
 
 # array of banner text
 main_banner_text_array=(
-    ""
+    "\n"
     "               >>01000111010101110101001100100000010011010010000000110\n"
     "              >1   _______       ________                          00\n"
     "             00   / ____/ |     / / ____/    MaiNt  aNCe          00\n"
@@ -32,6 +32,8 @@ main_banner_text_array=(
 display_menu() {
     clear
 
+    echo "$(date): Started Maintenance script" >>$logFile
+
     local description_text_array=(
         "======================== Welcome to GWS Maintenance V1! ========================\n"
         "This script will assist you with the maintenance of the GWS servers. Ensure to\n"
@@ -43,11 +45,11 @@ display_menu() {
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${description_text_array[@]}"
 
-    printf "Server Maintenance Menu:\n"
-    printf "==========================\n"
-    printf "1. Maintenance Preperation\n"
-    printf "2. Maintenance Updates & Upgrades\n"
-    printf "==========================\n"
+    printf "Server Maintenance Menu:\n\n"
+    printf "==================================\n"
+    printf "1. Maintenance: Preperation\n"
+    printf "2. Maintenance: Updates & Upgrades\n"
+    printf "==================================\n"
     printf "4. Exit\n\n"
     read -p "Enter your choice [1-4]: " choice
 }
