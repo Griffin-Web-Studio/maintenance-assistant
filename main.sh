@@ -12,6 +12,7 @@ logFile="$DIR/logs/maintenance-$maintenance_start_time.log"
 
 # 'Dot' means 'source', i.e. 'include':
 . "$DIR/helpers/helpers.sh"
+. "$DIR/tasks/task3.sh"
 . "$DIR/tasks/task2.sh"
 . "$DIR/tasks/task1.sh"
 
@@ -28,11 +29,13 @@ main_banner_text_array=(
     "        01100000001001011001000000100110010101110101011100010<<\n\n" #slant
 )
 
+log_task "Started Maintenance script"
+
 # function to display menu and ask user for input
 display_menu() {
     clear
 
-    echo "$(date): Started Maintenance script" >>$logFile
+    log_task "display main menu"
 
     local description_text_array=(
         "======================== Welcome to GWS Maintenance V1! ========================\n"
@@ -46,10 +49,11 @@ display_menu() {
     print_message_array "${description_text_array[@]}"
 
     printf "Server Maintenance Menu:\n\n"
-    printf "==================================\n"
-    printf "1. Maintenance: Preperation\n"
-    printf "2. Maintenance: Updates & Upgrades\n"
-    printf "==================================\n"
+    printf "==========================\n"
+    printf "1. Preperation\n"
+    printf "2. Updates & Upgrades\n"
+    printf "3. Server Load Monitoring\n"
+    printf "==========================\n"
     printf "4. Exit\n\n"
     read -p "Enter your choice [1-4]: " choice
 }
@@ -61,7 +65,7 @@ run_task() {
     2) run_task_2 ;;
     3) run_task_3 ;;
     4)
-        echo "$(date): Exited program" >>$logFile
+        echo "[$(date)]: Exited program" >>$logFile
         exit 0
         ;;
     *) echo "Invalid option, try again" ;;

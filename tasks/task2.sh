@@ -22,13 +22,14 @@ run_task_2() {
         "   2.3) Remove old and unused packages\n"
         "        2.3.1) REBOOT\n"
         "   2.4 opt) Dist-upgrade\n"
-        "        2.4.1) REBOOT\n\n"
+        "        2.4.1) REBOOT\n"
+        "   2.5) Plesk Updates\n\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
 
-    echo "$(date): Task: Maintenance Updates & Upgrades (Task 2), Started" >>$logFile
+    log_task "Started Task: $task_name (Task 2)"
 
 
 
@@ -226,7 +227,7 @@ EOF
             
             log_answer "user clicked the key to get to next step" "aknowledged prompt"
 
-            log_answer "compleated running apt upgrade" "yes"
+            log_answer "compleated running apt autoremove" "yes"
             answer_4=true
             ;;
         2)
@@ -248,7 +249,7 @@ EOF
     # function to ask user if they created a VPS snapshot
     run_dist_upgrade_step() {
         clear
-        echo "$(date): Started Task 1" >>$logFile
+        
         description_text_array=(
             #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "================================= Dist Upgrade =================================\n\n"
@@ -279,6 +280,7 @@ EOF
             apt-get dist-upgrade
 EOF
             printf "\n======================== apt dist-upgrade output above =========================\n\n"
+            log_answer "dist-upgrade completed" "automated"
 
             printf "All Went Well? Do you wish to reboot?\n"
             printf "1) yes\n"
@@ -322,6 +324,64 @@ EOF
 
 
 
+    # function to ask user if they created a VPS snapshot
+    run_plesk_update_step() {
+        clear
+
+        description_text_array=(
+            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            "================================== Plesk Updates ===================================\n\n"
+            "We will now run Plesk updates command 'plesk installer install-all-updates', to run\n"
+            "this command we will tempereraly elivate the privilages to sudo\n\n"
+            "Are you Ready to run 'plesk installer install-all-updates'?\n\n"
+            "1) yes\n"
+            "2) no\n"
+            "3) no (skip step)\n\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+
+        read -p "Possible answers (1/2/3): " run_update_step_check
+        printf "\n"
+        clear_lines 1
+
+        shopt -u nocasematch
+        case $run_update_step_check in
+        1)
+            clear
+            #       ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            printf "========================== Plesk Updates output below ==========================\n\n"
+            log_answer "running Plesk Updates" "yes"
+            sudo /bin/bash <<EOF
+            plesk installer install-all-updates
+EOF
+            printf "\n========================== Plesk Updates output above ==========================\n\n"
+            log_answer "compleated running Plesk Updates" "automated"
+
+            wait_for_input "Press any key when you ready to go to the next step..."
+
+            log_answer "user clicked the key to get to next step" "aknowledged prompt"
+
+            answer_6=true
+            ;;
+        2)
+            clear_lines 1
+            answer_6=false
+            log_answer "running Plesk Updates" "no"
+            ;;
+        3)
+            clear_lines 1
+            answer_6=true
+            log_answer "running Plesk Updates" "no askip step"
+            ;;
+        *) echo "Invalid answer, please enter (1/2/3)" ;;
+        esac
+    }
+
+
+
     # function to ask user if they completed the backup process
     complete_step() {
         clear
@@ -346,16 +406,17 @@ EOF
         case $backup_process in
         1)
             answer_7=true
-            echo "$(date): Task: Maintenance Updates & Upgrades. Task 2 Completed" >>$logFile
-            echo "$(date): Task: Maintenance Updates & Upgrades. User chose to go straight to Task 3" >>$logFile
-            echo "$(date): Finished Task 2" >>$logFile
+
+            log_task "Task $task_name: completed"
+            log_task "User chose to go straight to Next Task: yes"
+
             run_task_3
             ;;
         2)
             answer_7=true
-            echo "$(date): Task: Maintenance Updates & Upgrades. Task 2 Completed" >>$logFile
-            echo "$(date): Task: Maintenance Updates & Upgrades. User chose to go back to main menu" >>$logFile
-            echo "$(date): Finished Task 2" >>$logFile
+
+            log_task "Task $task_name: completed"
+            log_task "User chose to go back to Main Menu"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
@@ -381,6 +442,10 @@ EOF
 
     while [ "$answer_5" != "true" ]; do
         run_dist_upgrade_step
+    done
+
+    while [ "$answer_6" != "true" ]; do
+        run_plesk_update_step
     done
 
     while [ "$answer_7" != "true" ]; do

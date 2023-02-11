@@ -146,6 +146,14 @@ function trimString()
 
 # Print Message
 log_answer() {
-    printf "$(date): \n\tTask: $task_name\n\t\tStep:\t\t$1\n\t\tAnswer:\t\t$2\n\n" >>$logFile
+    printf "[$(date)] \n\tTask: $task_name\n\t\tStep:\t\t$1\n\t\tAnswer:\t\t$2\n\n" >>$logFile
     # printTable "," "Time, Task, Step, Answare\n $(date), $task_name, $1, $2" >>$logFile
+}
+
+
+
+
+# Print Message
+log_task() {
+    printf "[$(date)] $1\n\n" >>$logFile
 }

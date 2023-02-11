@@ -34,10 +34,12 @@ run_task_1() {
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
 
+    log_task "Started Task: $task_name (Task 1)"
+
     # function to ask user if they created a VPS snapshot
     ask_vps_snapshot() {
         clear
-        echo "$(date): Started Task 1" >>$logFile
+        
         description_text_array=(
             "================================= VPS Snapshot =================================\n\n"
             "Did you create a VPS snapshot?\n"
@@ -79,7 +81,7 @@ run_task_1() {
     ask_backup_process() {
         clear
         description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "================================ Server Backup =================================\n\n"
             "Did you initiate the backup process?\n"
             "1) yes\n"
@@ -259,12 +261,10 @@ run_task_1() {
         shopt -u nocasematch
         case $copied_motd_banner in
         1)
-            clear_lines 20 $((line_count + 1))
             answer_4=true
             log_answer "Copied the banner for MOTD" "yes"
             ;;
         2)
-            clear_lines 1
             answer_4=false
             log_answer "Initiated the backup process" "no"
             ;;
@@ -280,15 +280,15 @@ run_task_1() {
             #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "===================== Last Checks: VPS Snapshot rediness =======================\n\n"
             "Last Checks before begining server maintenance.\n\n"
+            "Is the VPS snapshot ready?\n"
+            "1) yes\n"
+            "2) no\n\n"
         )
 
         print_message_array "${main_banner_text_array[@]}"
         print_message_array "${task_description_text_array[@]}"
         print_message_array "${description_text_array[@]}"
 
-        printf "Is the VPS snapshot ready?\n"
-        printf "1) yes\n"
-        printf "2) no\n\n"
         read -p "Possible answers (1/2): " vps_snapshot
 
         shopt -u nocasematch
@@ -314,15 +314,15 @@ run_task_1() {
             #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "===================== Last Checks: Server Backup rediness ======================\n\n"
             "Last Checks before begining server maintenance.\n\n"
+            "Is the Server backup complete?\n"
+            "1) yes\n"
+            "2) no\n\n"
         )
 
         print_message_array "${main_banner_text_array[@]}"
         print_message_array "${task_description_text_array[@]}"
         print_message_array "${description_text_array[@]}"
 
-        printf "Is the Server backup complete?\n"
-        printf "1) yes\n"
-        printf "2) no\n\n"
         read -p "Possible answers (1/2): " backup_process
 
         case $backup_process in
@@ -345,35 +345,36 @@ run_task_1() {
         clear
 
         local description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "============================= Task 1 Completed ✅ =============================\n\n"
+            #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            "============================== Task 1 Completed ✅ ==============================\n\n"
             "Nice Work! The task 1 is now complete!\n\n"
             "You now have a choice of either going straight to the next task or back to the\n"
             "main menu.\n\n"
+            "Do you want to go straight to next task?\n"
+            "1) yes\n"
+            "2) no\n\n"
         )
 
         print_message_array "${main_banner_text_array[@]}"
         print_message_array "${task_description_text_array[@]}"
         print_message_array "${description_text_array[@]}"
 
-        printf "Do you want to go straight to next task?\n"
-        printf "1) yes\n"
-        printf "2) no\n\n"
         read -p "Possible answers (1/2): " backup_process
 
         case $backup_process in
         1)
             answer_7=true
-            echo "$(date): Task: Details Collection. Task 1 Completed" >>$logFile
-            echo "$(date): Task: Details Collection. User chose to go straight to Task 2" >>$logFile
-            echo "$(date): Finished Task 1" >>$logFile
+
+            log_task "Task $task_name: completed"
+            log_task "User chose to go straight to Next Task: yes"
+
             run_task_2
             ;;
         2)
             answer_7=true
-            echo "$(date): Task: Details Collection. Task 1 Completed" >>$logFile
-            echo "$(date): Task: Details Collection. User chose to go back to main menu" >>$logFile
-            echo "$(date): Finished Task 1" >>$logFile
+
+            log_task "Task $task_name: completed"
+            log_task "User chose to go back to Main Menu"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
