@@ -12,15 +12,14 @@ run_task_1() {
     clear
 
     local task_description_text_array=(
-        "=========================== Maintenance Preperation ============================\n\n"
+        "$(center_heading_text "Maintenance Preperation")\n\n"
         "During this Task you will be required to collect the information about the\n"
         "server you are maintaining and ensure all data is backed up before real work\n"
         "begins.\n\n"
     )
 
     local backup_description_text_array=(
-        #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        "============================== Initiating Backup ===============================\n\n"
+        "$(center_heading_text "Initiating Backup")\n\n"
         "To begin with lets create two backups, first the VPS snapshot, then the server\n"
         "backup. Please follow these steps:\n\n"
         "1) You must log in to the IONOS ISP, and select Control Panel for this Server.\n"
@@ -41,7 +40,7 @@ run_task_1() {
         clear
         
         description_text_array=(
-            "================================= VPS Snapshot =================================\n\n"
+            "$(center_heading_text "VPS Snapshot")\n\n"
             "Did you create a VPS snapshot?\n"
             "1) yes\n"
             "2) no\n"
@@ -81,8 +80,7 @@ run_task_1() {
     ask_backup_process() {
         clear
         description_text_array=(
-            #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "================================ Server Backup =================================\n\n"
+            "$(center_heading_text "Server Backup")\n\n"
             "Did you initiate the backup process?\n"
             "1) yes\n"
             "2) no\n"
@@ -122,8 +120,7 @@ run_task_1() {
         clear
 
         local description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "============================= Collect Server Info ==============================\n\n"
+            "$(center_heading_text "Collect Server Info")\n\n"
             "Now you need to copy the MOTD (Message Of The Day) banner displayed on your\n"
             "terminal (which you see each time you connect via ssh), and paste it into the\n"
             "checklist section of our wiki website. This script will now re-print the MOTD.\n\n"
@@ -144,14 +141,14 @@ run_task_1() {
 
         log_answer "user clicked the key to get the banner" "aknowledged prompt"
 
-        printf "======================= copy the banner below this line ========================\n\n"
+        printf "$(center_heading_text "copy the banner below this line")\n\n"
 
         run-parts /etc/update-motd.d/ 2>&1 | tee output.txt
         local line_count=$(wc -l <output.txt)
         rm output.txt
         log_answer "compleated printing the banner" "automated banner message"
 
-        printf "\n======================= copy the banner above this line ========================\n\n"
+        printf "\n$(center_heading_text "copy the banner above this line")\n\n"
 
         printf "Did you copy the banner above?\n"
         printf "1) yes\n"
@@ -179,8 +176,7 @@ run_task_1() {
         clear
 
         local description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "=========================== Collect Core Server Info ===========================\n\n"
+            "$(center_heading_text "Collect Core Server Info")\n\n"
             "Now Let's copy the Server Info.\n\n"
             "Note: If the info is lengthy, you may need to scroll up to view the entire\n"
             "      print.\n\n"
@@ -198,7 +194,7 @@ run_task_1() {
 
         log_answer "user clicked the key to get the server info" "aknowledged prompt"
 
-        printf "===================== copy the server info below this line =====================\n\n"
+        printf "$(center_heading_text "copy the server info below this line")\n\n"
 
         printf "==> Basic server info:\n"
         printf "Server Name/Identifier: %s\n" $(hostname)
@@ -251,7 +247,7 @@ run_task_1() {
 
         log_answer "compleated printing the server info" "automated banner message"
 
-        printf "\n===================== copy the server info above this line =====================\n\n"
+        printf "\n$(center_heading_text "copy the server info above this line")\n\n"
 
         printf "Did you copy the info above?\n"
         printf "1) yes\n"
@@ -277,8 +273,7 @@ run_task_1() {
         clear
 
         local description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "===================== Last Checks: VPS Snapshot rediness =======================\n\n"
+            "$(center_heading_text "Last Checks: VPS Snapshot rediness")\n\n"
             "Last Checks before begining server maintenance.\n\n"
             "Is the VPS snapshot ready?\n"
             "1) yes\n"
@@ -311,8 +306,7 @@ run_task_1() {
         clear
 
         local description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "===================== Last Checks: Server Backup rediness ======================\n\n"
+            "$(center_heading_text "Last Checks: Server Backup rediness")\n\n"
             "Last Checks before begining server maintenance.\n\n"
             "Is the Server backup complete?\n"
             "1) yes\n"
@@ -345,8 +339,7 @@ run_task_1() {
         clear
 
         local description_text_array=(
-            #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "============================== Task 1 Completed ✅ ==============================\n\n"
+            "$(center_heading_text "Task 1 Completed ✅")\n\n"
             "Nice Work! The task 1 is now complete!\n\n"
             "You now have a choice of either going straight to the next task or back to the\n"
             "main menu.\n\n"
@@ -379,8 +372,6 @@ run_task_1() {
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
     }
-
-    #       ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     # loop until user answers "yes" to both questions
     while [ "$answer_1" != "true" ]; do

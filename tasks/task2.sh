@@ -12,8 +12,7 @@ run_task_2() {
     clear
 
     local task_description_text_array=(
-        #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        "======================= Maintenance: Updates & Upgrades ========================\n\n"
+        "$(center_heading_text "Maintenance: Updates & Upgrades")\n\n"
         "During this Task you will:\n\n"
         "1) Log the time of Maintenance Start\n"
         "2) Updates\n"
@@ -37,8 +36,7 @@ run_task_2() {
     ask_to_log_time() {
         clear
         description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "====================== Log the time of maintenance Start =======================\n\n"
+            "$(center_heading_text "Log the time of maintenance Start")\n\n"
             "current Date and Time is: $(date +\%H:\%M)\n\n"
             "Did you log the time?\n\n"
             "1) yes\n"
@@ -81,8 +79,7 @@ run_task_2() {
         clear
 
         description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "=================================== Updates ====================================\n\n"
+            "$(center_heading_text "Updates")\n\n"
             "We will now run updates command 'apt update -y', to run this command we will\n"
             "tempereraly elivate the privilages to sudo\n\n"
             "Are you Ready to run 'apt update -y'?\n\n"
@@ -103,12 +100,12 @@ run_task_2() {
         case $run_update_step_check in
         1)
             clear
-            printf "=========================== apt update output below ============================\n\n"
+            printf "$(center_heading_text "apt update output below")\n\n"
             log_answer "running apt update" "yes"
             sudo /bin/bash <<EOF
             apt update -y
 EOF
-            printf "\n=========================== apt update output above ============================\n\n"
+            printf "\n$(center_heading_text "apt update output above")\n\n"
             log_answer "compleated running apt update" "automated"
 
             wait_for_input "Press any key when you ready to go to the next step..."
@@ -138,8 +135,7 @@ EOF
         clear
 
         description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "=================================== Upgrades ===================================\n\n"
+            "$(center_heading_text "Upgrades")\n\n"
             "We will now run upgrades command 'apt upgrade -y', to run this command we will\n"
             "tempereraly elivate the privilages to sudo\n\n"
             "Are you Ready to run 'apt upgrade -y'?\n\n"
@@ -158,12 +154,12 @@ EOF
         case $run_upgrade_step_check in
         1)
             clear
-            printf "=========================== apt upgrade output below ===========================\n\n"
+            printf "$(center_heading_text "apt upgrade output below")\n\n"
             log_answer "running apt upgrade" "yes"
             sudo /bin/bash <<EOF
             apt upgrade -y
 EOF
-            printf "\n=========================== apt upgrade output above ===========================\n\n"
+            printf "\n$(center_heading_text "apt upgrade output above")\n\n"
             log_answer "upgrade completed" "automated"
 
             wait_for_input "Press any key when you ready to go to the next step..."
@@ -194,8 +190,7 @@ EOF
         clear
 
         description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "================================== Autoremove ==================================\n\n"
+            "$(center_heading_text "Autoremove")\n\n"
             "We will now run autoremove for old packages that os knows wont be needed command.\n"
             "We will now run 'apt autoremove -y'.\n"
             "To run this command we will tempereraly elivate the privilages to sudo\n\n"
@@ -215,12 +210,12 @@ EOF
         case $run_autoremove_step_check in
         1)
             clear
-            printf "========================= apt autoremove output below ==========================\n\n"
+            printf "$(center_heading_text "apt autoremove output below")\n\n"
             log_answer "running apt autoremove" "yes"
             sudo /bin/bash <<EOF
             apt autoremove -y
 EOF
-            printf "\n========================= apt autoremove output above ==========================\n\n"
+            printf "\n$(center_heading_text "apt autoremove output above")\n\n"
             log_answer "autoremove completed" "automated"
 
             wait_for_input "Press any key when you ready to go to the next step..."
@@ -251,8 +246,7 @@ EOF
         clear
         
         description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "================================= Dist Upgrade =================================\n\n"
+            "$(center_heading_text "Dist Upgrade")\n\n"
             "WARNING! RUNNING THIS COMMAND IS OPTIONAL AND CAN POTENTIALLY BREAK THE SYSTEM OR\n"
             "ITS DEPENDANCIES AND/OR PACKAGES!\n"
             "Please ensure that all packages are compatible with the new version of the distro!\n\n"
@@ -274,12 +268,12 @@ EOF
         case $run_dist_upgrade_step_check in
         1)
             clear
-            printf "======================== apt dist-upgrade output below =========================\n\n"
+            printf "$(center_heading_text "apt dist-upgrade output below")\n\n"
             log_answer "running apt dist-upgrade" "yes"
             sudo /bin/bash <<EOF
             apt-get dist-upgrade
 EOF
-            printf "\n======================== apt dist-upgrade output above =========================\n\n"
+            printf "\n$(center_heading_text "apt dist-upgrade output above")\n\n"
             log_answer "dist-upgrade completed" "automated"
 
             printf "All Went Well? Do you wish to reboot?\n"
@@ -329,8 +323,7 @@ EOF
         clear
 
         description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "================================== Plesk Updates ===================================\n\n"
+            "$(center_heading_text "Plesk Updates")\n\n"
             "We will now run Plesk updates command 'plesk installer install-all-updates', to run\n"
             "this command we will tempereraly elivate the privilages to sudo\n\n"
             "Are you Ready to run 'plesk installer install-all-updates'?\n\n"
@@ -351,13 +344,12 @@ EOF
         case $run_update_step_check in
         1)
             clear
-            #       ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            printf "========================== Plesk Updates output below ==========================\n\n"
+            printf "$(center_heading_text "Plesk Updates output below")\n\n"
             log_answer "running Plesk Updates" "yes"
             sudo /bin/bash <<EOF
             plesk installer install-all-updates
 EOF
-            printf "\n========================== Plesk Updates output above ==========================\n\n"
+            printf "\n$(center_heading_text "Plesk Updates output above")\n\n"
             log_answer "compleated running Plesk Updates" "automated"
 
             wait_for_input "Press any key when you ready to go to the next step..."
@@ -387,8 +379,7 @@ EOF
         clear
 
         local description_text_array=(
-            #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            "============================= Task 2 Completed ✅ =============================\n\n"
+            "$(center_heading_text "Task 2 Completed ✅")\n\n"
             "Nice Work! The task 2 is now complete!\n\n"
             "You now have a choice of either going straight to the next task or back to the\n"
             "main menu.\n\n"

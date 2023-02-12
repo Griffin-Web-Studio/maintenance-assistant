@@ -5,6 +5,7 @@ THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
 
 # The directory where current script resides
 DIR=$(dirname "${THIS}")
+up_to_date
 
 maintenance_start_time=$(date +\%Y\%m\%d_\%H\%M)
 
@@ -12,6 +13,7 @@ logFile="$DIR/logs/maintenance-$maintenance_start_time.log"
 
 # 'Dot' means 'source', i.e. 'include':
 . "$DIR/helpers/helpers.sh"
+. "$DIR/tasks/task4.sh"
 . "$DIR/tasks/task3.sh"
 . "$DIR/tasks/task2.sh"
 . "$DIR/tasks/task1.sh"
@@ -31,6 +33,35 @@ main_banner_text_array=(
 
 log_task "Started Maintenance script"
 
+# check if there is an updates in the remote repo, pull new changes from git and restart script
+check_for_updates() {
+    clear
+
+    log_task "check for updates"
+
+    printf "$(center_heading_text "Fetching Maintenance Script Updates")\n\n"
+    # check if there is an updates in the remote repo
+
+    git fetch
+    if [ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]; then
+
+        printf "$(center_heading_text "Pulling New Updates")\n\n"
+        # pull new changes from git
+        git pull
+
+        wait_for_input "Press any key to restart script..."
+
+        up_to_date=true
+
+        # restart script
+        exec "$0" "$@"
+    fi
+
+    printf "$(center_heading_text "Already Up-to-date")\n\n"
+    wait_for_input "Press any key to start script..."
+    up_to_date=true
+}
+
 # function to display menu and ask user for input
 display_menu() {
     clear
@@ -38,7 +69,7 @@ display_menu() {
     log_task "display main menu"
 
     local description_text_array=(
-        "======================== Welcome to GWS Maintenance V1! ========================\n"
+        "$(center_heading_text "Welcome to GWS Maintenance V1" )\n\n"
         "This script will assist you with the maintenance of the GWS servers. Ensure to\n"
         "follow all applicable steps. Although running this script is optional, it's\n"
         "recommended for proper logging and to help diagnose any issues. It also allows\n"
@@ -75,6 +106,10 @@ run_task() {
 #       ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # loop to display menu and run tasks
+while [ "$up_to_date" != "true" ]; do
+    check_for_updates
+done
+
 while true; do
     display_menu
     run_task

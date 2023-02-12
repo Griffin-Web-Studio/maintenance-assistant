@@ -1,5 +1,5 @@
 #!/bin/bash
-run_task_3() {
+run_task_4() {
     local answer_1
     local answer_2
     local answer_3
@@ -7,12 +7,12 @@ run_task_3() {
     local answer_5
     local answer_6
     local answer_7
-    local task_name="Maintenance: Server Load & Stress Monitoring"
+    local task_name="Maintenance: Server Security"
 
     clear
 
     local task_description_text_array=(
-        "$(center_heading_text "Server Load & Stress Monitoring")\n\n"
+        "$(center_heading_text "some text here")\n\n"
         "PLACEHOLDER\n\n"
     )
 
@@ -68,7 +68,6 @@ EOF
     run_disk_check() {
         clear
         description_text_array=(
-        #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "$(center_heading_text "Start SMART Disk check")\n\n"
             "We will initiate a SMART Disk software, please monitor it for about 5 min\n"
             "and report any findings on the wiki website.\n\n"
@@ -117,7 +116,7 @@ EOF
             log_answer "compleated Short SMART Tests" "yes"
 
             log_answer "Started Long SMART Tests" "yes"
-            printf "$(center_heading_text "Long SMART Tests output below")\n\n"
+            printf "$(center_heading_text ""Long SMART Tests output below)\n\n"
             sudo /bin/bash <<EOF
             smartctl -t long /dev/sda
 EOF
