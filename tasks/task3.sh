@@ -47,9 +47,9 @@ run_task_3() {
         1)
             clear_lines 1
             log_answer "Started Load Monitorig soft" "yes"
-            sudo /bin/bash <<EOF
+
             gotop-cjbassi
-EOF
+
             log_answer "compleated Load Monitorig soft" "yes"
             answer_1=true
             ;;
@@ -95,38 +95,32 @@ EOF
             log_answer "Started SMART Information collection" "yes"
 
             printf "$(center_heading_text "SMART Information collection output below")\n\n"
-            sudo /bin/bash <<EOF
-            smartctl -a /dev/sda
-EOF
+
+            sudo smartctl -a /dev/sda
+
             printf "\n$(center_heading_text "SMART Information collection output above")\n\n"
             log_answer "compleated SMART Information collection" "yes"
 
             log_answer "Started Short SMART Tests" "yes"
             printf "$(center_heading_text "Short SMART Tests output below")\n\n"
-            sudo /bin/bash <<EOF
-            smartctl -t short /dev/sda
-EOF
+
+            sudo smartctl -t short /dev/sda
 
             wait_for_input "Press any key to check status..."
 
-            sudo /bin/bash <<EOF
-            smartctl -a /dev/sda
-EOF
+            sudo smartctl -a /dev/sda
 
             printf "\n$(center_heading_text "Short SMART Tests output above")\n\n"
             log_answer "compleated Short SMART Tests" "yes"
 
             log_answer "Started Long SMART Tests" "yes"
             printf "$(center_heading_text "Long SMART Tests output below")\n\n"
-            sudo /bin/bash <<EOF
-            smartctl -t long /dev/sda
-EOF
+
+            sudo smartctl -t long /dev/sda
 
             wait_for_input "Press any key to check status..."
 
-            sudo /bin/bash <<EOF
-            smartctl -a /dev/sda
-EOF
+            sudo smartctl -a /dev/sda
 
             printf "\n$(center_heading_text "Long SMART Tests output above")\n\n"
             log_answer "compleated Long SMART Tests" "yes"

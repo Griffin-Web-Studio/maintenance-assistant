@@ -102,9 +102,9 @@ run_task_2() {
             clear
             printf "$(center_heading_text "apt update output below")\n\n"
             log_answer "running apt update" "yes"
-            sudo /bin/bash <<EOF
-            apt update -y
-EOF
+
+            sudo apt update
+
             printf "\n$(center_heading_text "apt update output above")\n\n"
             log_answer "compleated running apt update" "automated"
 
@@ -156,9 +156,9 @@ EOF
             clear
             printf "$(center_heading_text "apt upgrade output below")\n\n"
             log_answer "running apt upgrade" "yes"
-            sudo /bin/bash <<EOF
-            apt upgrade -y
-EOF
+
+            sudo apt upgrade
+
             printf "\n$(center_heading_text "apt upgrade output above")\n\n"
             log_answer "upgrade completed" "automated"
 
@@ -212,9 +212,9 @@ EOF
             clear
             printf "$(center_heading_text "apt autoremove output below")\n\n"
             log_answer "running apt autoremove" "yes"
-            sudo /bin/bash <<EOF
-            apt autoremove -y
-EOF
+
+            sudo apt autoremove
+
             printf "\n$(center_heading_text "apt autoremove output above")\n\n"
             log_answer "autoremove completed" "automated"
 
@@ -270,9 +270,9 @@ EOF
             clear
             printf "$(center_heading_text "apt dist-upgrade output below")\n\n"
             log_answer "running apt dist-upgrade" "yes"
-            sudo /bin/bash <<EOF
-            apt-get dist-upgrade
-EOF
+
+            sudo apt dist-upgrade
+
             printf "\n$(center_heading_text "apt dist-upgrade output above")\n\n"
             log_answer "dist-upgrade completed" "automated"
 
@@ -346,9 +346,9 @@ EOF
             clear
             printf "$(center_heading_text "Plesk Updates output below")\n\n"
             log_answer "running Plesk Updates" "yes"
-            sudo /bin/bash <<EOF
-            plesk installer install-all-updates
-EOF
+            
+            sudo plesk installer install-all-updates
+
             printf "\n$(center_heading_text "Plesk Updates output above")\n\n"
             log_answer "compleated running Plesk Updates" "automated"
 
