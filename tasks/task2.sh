@@ -167,7 +167,31 @@ run_task_2() {
             log_answer "user clicked the key to get to next step" "aknowledged prompt"
 
             log_answer "compleated running apt upgrade" "yes"
-            answer_3=true
+
+            printf "All Went Well? Do you wish to reboot?\n"
+            printf "1) yes\n"
+            printf "2) no\n\n"
+            read -p "Possible answers (1/2): " problems_during_package_upgrade
+
+            shopt -u nocasematch # disable case-insensitive matching
+            case $problems_during_package_upgrade in
+            1)
+                log_answer "completed package upgrade successfuly" "yes"
+                answer_3=true
+                reboot
+                ;;
+            2)
+                printf "If there was a problem, DONT PANIC, you did afterall create a VPS snapshot and\n"
+                printf "the backup. so restore the snapshot and skip this step unless this is fixable.\n\n"
+
+                wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to snapshot!..."
+                
+                answer_3=false
+                log_answer "completed package upgrade successfuly" "no"
+                exit 0
+                ;;
+            *) echo "Invalid answer, please enter (1/2)" ;;
+            esac
             ;;
         2)
             clear_lines 1
