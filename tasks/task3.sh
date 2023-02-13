@@ -12,7 +12,7 @@ run_task_3() {
     clear
 
     local task_description_text_array=(
-        "$(center_heading_text "Server Load & Stress Monitoring")\n\n"
+        "$(center_heading_text "$task_name")\n\n"
         "PLACEHOLDER\n\n"
     )
 
@@ -27,7 +27,7 @@ run_task_3() {
     initiate_monitoring_soft() {
         clear
         description_text_array=(
-            "$(center_heading_text "Start load Monitoring")\n\n"
+            "$(center_heading_text "Load Monitoring")\n\n"
             "We will initiate a Load Monitoring software, please monitor it for about 5 min\n"
             "and report any findings on the wiki website.\n\n"
             "Are you Ready to start Load Monitorig soft?\n\n"
@@ -47,11 +47,11 @@ run_task_3() {
         1)
             clear_lines 1
             log_answer "Started Load Monitorig soft" "yes"
+            answer_1=true
 
             gotop-cjbassi
 
             log_answer "compleated Load Monitorig soft" "yes"
-            answer_1=true
             ;;
         2)
             clear_lines 1
@@ -96,7 +96,7 @@ run_task_3() {
 
             printf "$(center_heading_text "SMART Information collection output below")\n\n"
 
-            sudo smartctl -a /dev/sda
+            sudo smartctl -a /dev/sda | tee -a "$logDir/SMART/info/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "SMART Information collection output above")\n\n"
             log_answer "compleated SMART Information collection" "yes"
@@ -104,11 +104,11 @@ run_task_3() {
             log_answer "Started Short SMART Tests" "yes"
             printf "$(center_heading_text "Short SMART Tests output below")\n\n"
 
-            sudo smartctl -t short /dev/sda
+            sudo smartctl -t short /dev/sda | tee -a "$logDir/SMART/short/log-$maintenance_start_time.log"
 
             wait_for_input "Press any key to check status..."
 
-            sudo smartctl -a /dev/sda
+            sudo smartctl -a /dev/sda | tee -a "$logDir/SMART/short/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "Short SMART Tests output above")\n\n"
             log_answer "compleated Short SMART Tests" "yes"
@@ -116,11 +116,11 @@ run_task_3() {
             log_answer "Started Long SMART Tests" "yes"
             printf "$(center_heading_text "Long SMART Tests output below")\n\n"
 
-            sudo smartctl -t long /dev/sda
+            sudo smartctl -t long /dev/sda | tee -a "$logDir/SMART/long/log-$maintenance_start_time.log"
 
             wait_for_input "Press any key to check status..."
 
-            sudo smartctl -a /dev/sda
+            sudo smartctl -a /dev/sda | tee -a "$logDir/SMART/long/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "Long SMART Tests output above")\n\n"
             log_answer "compleated Long SMART Tests" "yes"

@@ -9,10 +9,13 @@ up_to_date
 
 maintenance_start_time=$(date +\%Y\%m\%d_\%H\%M)
 
-logFile="$DIR/logs/maintenance-$maintenance_start_time.log"
+logDir="$DIR/logs"
+
+logFile="$logDir/maintenance-$maintenance_start_time.log"
 
 # 'Dot' means 'source', i.e. 'include':
 . "$DIR/helpers/helpers.sh"
+. "$DIR/tasks/task5.sh"
 . "$DIR/tasks/task4.sh"
 . "$DIR/tasks/task3.sh"
 . "$DIR/tasks/task2.sh"
@@ -37,28 +40,30 @@ log_task "Started Maintenance script"
 check_for_updates() {
     clear
 
-    log_task "check for updates"
+    log_task "check for updates ⌛"
 
-    printf "$(center_heading_text "Fetching Maintenance Script Updates")\n\n"
+    printf "$(center_heading_text "Fetching Maintenance Script Updates 🔍")\n\n"
     # check if there is an updates in the remote repo
 
     git fetch
     if [ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]; then
 
-        printf "$(center_heading_text "Pulling New Updates")\n\n"
+        printf "$(center_heading_text "Pulling New Updates 📥")\n\n"
         # pull new changes from git
         git pull
 
-        wait_for_input "Press any key to restart script..."
+        wait_for_input "Press any key to restart script... 🔄️"
 
         up_to_date=true
 
+        printf "$(center_heading_text "Updated Successfuly ✅")\n\n"
+
         # restart script
-        exec "$0" "$@"
+        exec "bash main.sh"
     fi
 
-    printf "$(center_heading_text "Already Up-to-date")\n\n"
-    wait_for_input "Press any key to start script..."
+    printf "$(center_heading_text "Already Up-to-date ✅")\n\n"
+    wait_for_input "Press any key to start script... 💨"
     up_to_date=true
 }
 
@@ -84,9 +89,10 @@ display_menu() {
     printf "1. Preperation\n"
     printf "2. Updates & Upgrades\n"
     printf "3. Server Load Monitoring\n"
+    printf "4. Server Security\n"
     printf "==========================\n"
-    printf "4. Exit\n\n"
-    read -p "Enter your choice [1-4]: " choice
+    printf "5. Exit\n\n"
+    read -p "Enter your choice [1-5]: " choice
 }
 
 # function to run selected task or exit
@@ -95,7 +101,8 @@ run_task() {
     1) run_task_1 ;;
     2) run_task_2 ;;
     3) run_task_3 ;;
-    4)
+    4) run_task_4 ;;
+    5)
         echo "[$(date)]: Exited program" >>$logFile
         exit 0
         ;;

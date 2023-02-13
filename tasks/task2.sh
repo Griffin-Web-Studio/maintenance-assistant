@@ -12,7 +12,7 @@ run_task_2() {
     clear
 
     local task_description_text_array=(
-        "$(center_heading_text "Maintenance: Updates & Upgrades")\n\n"
+        "$(center_heading_text "$task_name")\n\n"
         "During this Task you will:\n\n"
         "1) Log the time of Maintenance Start\n"
         "2) Updates\n"
@@ -103,7 +103,7 @@ run_task_2() {
             printf "$(center_heading_text "apt update output below")\n\n"
             log_answer "running apt update" "yes"
 
-            sudo apt update
+            sudo apt update | tee -a "$logDir/apt-update/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "apt update output above")\n\n"
             log_answer "compleated running apt update" "automated"
@@ -157,7 +157,7 @@ run_task_2() {
             printf "$(center_heading_text "apt upgrade output below")\n\n"
             log_answer "running apt upgrade" "yes"
 
-            sudo apt upgrade
+            sudo apt upgrade | tee -a "$logDir/apt-upgrade/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "apt upgrade output above")\n\n"
             log_answer "upgrade completed" "automated"
@@ -213,7 +213,7 @@ run_task_2() {
             printf "$(center_heading_text "apt autoremove output below")\n\n"
             log_answer "running apt autoremove" "yes"
 
-            sudo apt autoremove
+            sudo apt autoremove | tee -a "$logDir/apt-autoremove/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "apt autoremove output above")\n\n"
             log_answer "autoremove completed" "automated"
@@ -271,7 +271,7 @@ run_task_2() {
             printf "$(center_heading_text "apt dist-upgrade output below")\n\n"
             log_answer "running apt dist-upgrade" "yes"
 
-            sudo apt dist-upgrade
+            sudo apt dist-upgrade | tee -a "$logDir/apt-dist-upgrade/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "apt dist-upgrade output above")\n\n"
             log_answer "dist-upgrade completed" "automated"
@@ -346,8 +346,8 @@ run_task_2() {
             clear
             printf "$(center_heading_text "Plesk Updates output below")\n\n"
             log_answer "running Plesk Updates" "yes"
-            
-            sudo plesk installer install-all-updates
+
+            sudo plesk installer install-all-updates | tee -a "$logDir/apt-plesk-installer/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "Plesk Updates output above")\n\n"
             log_answer "compleated running Plesk Updates" "automated"

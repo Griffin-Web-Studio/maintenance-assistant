@@ -150,3 +150,10 @@ center_heading_text() {
         printf "="
     fi
 }
+
+
+# Generate Password
+generate_password() {
+  password=$(head -c "$1" /dev/random | base64 | tr -dc '[:alnum:][:punct:]')
+  echo $password
+}

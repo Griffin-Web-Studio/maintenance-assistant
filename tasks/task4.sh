@@ -12,28 +12,41 @@ run_task_4() {
     clear
 
     local task_description_text_array=(
-        "$(center_heading_text "some text here")\n\n"
-        "PLACEHOLDER\n\n"
+        "$(center_heading_text "$task_name")\n\n"
+        "During this task we will look to ensure all of the server security is in place\n"
+        "and still does what we expect it to.\n\n"
+        "What steps to expect in this task:\n"
+        "1) Check SSH Configuration\n"
+        "2) Change root password\n"
+        "3) Run Antivirus\n"
+        "\n\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
 
-    log_task "Task: $task_name (Task 3)" >>$logFile
+    log_task "Task: $task_name (Task 4)" >>$logFile
 
 
 
     # function to ask user if they created a VPS snapshot
-    initiate_monitoring_soft() {
+    check_sshd_config() {
         clear
+        
         description_text_array=(
-            "$(center_heading_text "Start load Monitoring")\n\n"
-            "We will initiate a Load Monitoring software, please monitor it for about 5 min\n"
-            "and report any findings on the wiki website.\n\n"
-            "Are you Ready to start Load Monitorig soft?\n\n"
+            #********************************************************************************.\n
+            "$(center_heading_text "SSH Server")\n\n"
+            "Nice work! Now let make sure the serer security configurations and just security\n"
+            "in general is in good order, first we must must check the ssh configurations.\n\n"
+
+            "When you say YES, a nano editor will open, in there you must make sure that\n"
+            "These two configs are like this, feel free to copy them (PLEASE NOTE that they\n"
+            "may be on different lines from each other, however always in the same file):\n\n"
+            "    PermitRootLogin without-password\n"
+            "    PasswordAuthentication no\n\n"
+            "Do you wish to proceed (we will tempereraly elivate your privilaes to sudo)?\n\n"
             "1) yes\n"
-            "2) no\n"
-            "3) no (after reboot)\n\n"
+            "2) no (skip)\n"
         )
 
         print_message_array "${main_banner_text_array[@]}"
@@ -46,17 +59,24 @@ run_task_4() {
         case $log_main_start_time in
         1)
             clear_lines 1
-            log_answer "Started Load Monitorig soft" "yes"
+            log_answer "Started Checking the SSH Config" "yes"
 
-            sudo gotop-cjbassi
+            sudo nano /etc/ssh/sshd_config
 
-            log_answer "compleated Load Monitorig soft" "yes"
+            log_answer "compleated Checking the SSH Config" "yes"
+
+            wait_for_input "Press any key to restart the SSH Server..."
+
+            sudo service sshd restart
+
+            log_answer "SSH Server Restarted" "yes"
+
             answer_1=true
             ;;
         2)
             clear_lines 1
-            answer_1=false
-            log_answer "Started Load Monitorig soft" "no"
+            answer_1=true
+            log_answer "Started Checking the SSH Config" "no"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
@@ -65,15 +85,23 @@ run_task_4() {
 
 
     # function to ask user if they completed the backup process
-    run_disk_check() {
+    change_root_password() {
         clear
+
         description_text_array=(
-            "$(center_heading_text "Start SMART Disk check")\n\n"
-            "We will initiate a SMART Disk software, please monitor it for about 5 min\n"
-            "and report any findings on the wiki website.\n\n"
-            "Are you running a virtualised Server aka VPS?\n\n"
-            "1) yes (skip)\n"
-            "2) no\n"
+            "$(center_heading_text "Change Root Password")\n\n"
+            "Now we will change the root password for best security.\n"
+            "You will now be provided with 5 random passwords to choose from:\n\n"
+            "1) $(generate_password 230)\n\n"
+            "2) $(generate_password 230)\n\n"
+            "3) $(generate_password 230)\n\n"
+            "4) $(generate_password 230)\n\n"
+            "5) $(generate_password 230)\n\n"
+            "PLEASE COPY ONE OF THE PASSWORDS ABOVE and test it in an editor to make sure you\n"
+            "didn't copy nothing\n\n"
+            "Ready To Change the Password?\n\n"
+            "1) yes\n"
+            "2) no (skip)\n"
         )
 
         print_message_array "${main_banner_text_array[@]}"
@@ -85,44 +113,18 @@ run_task_4() {
         shopt -u nocasematch
         case $log_main_start_time in
         1)
-            clear_lines 1
+            log_answer "Changing Root Password" "yes"
+
+            sudo passwd root
+
+            log_answer "Changed Root Password" "yes"
+
             answer_2=true
-            log_answer "Skipping SMART Information collection" "yes"
             ;;
         2)
             clear
-            log_answer "Started SMART Information collection" "yes"
+            log_answer "Changing Root Password" "no"
 
-            printf "$(center_heading_text "SMART Information collection output below")\n\n"
-
-            sudo smartctl -a /dev/sda
-            
-            printf "\n$(center_heading_text "SMART Information collection output above")\n\n"
-            log_answer "compleated SMART Information collection" "yes"
-
-            log_answer "Started Short SMART Tests" "yes"
-            printf "$(center_heading_text "Short SMART Tests output below")\n\n"
-
-            sudo smartctl -t short /dev/sda
-
-            wait_for_input "Press any key to check status..."
-
-            sudo smartctl -a /dev/sda
-
-            printf "\n$(center_heading_text "Short SMART Tests output above")\n\n"
-            log_answer "compleated Short SMART Tests" "yes"
-
-            log_answer "Started Long SMART Tests" "yes"
-            printf "$(center_heading_text ""Long SMART Tests output below)\n\n"
-
-            sudo smartctl -t long /dev/sda
-
-            wait_for_input "Press any key to check status..."
-
-            sudo smartctl -a /dev/sda
-
-            printf "\n$(center_heading_text "Long SMART Tests output above")\n\n"
-            log_answer "compleated Long SMART Tests" "yes"
             answer_2=true
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
@@ -136,8 +138,8 @@ run_task_4() {
         clear
 
         local description_text_array=(
-            "$(center_heading_text "Task 3 Completed ✅")\n\n"
-            "Nice Work! The task 3 is now complete!\n\n"
+            "$(center_heading_text "Task 4 Completed ✅")\n\n"
+            "Nice Work! The task 4 is now complete!\n\n"
             "You now have a choice of either going straight to the next task or back to the\n"
             "main menu.\n\n"
         )
@@ -158,7 +160,7 @@ run_task_4() {
             log_task "Task $task_name: completed"
             log_task "User chose to go straight to Next Task: yes"
 
-            run_task_4
+            run_task_5
             ;;
         2)
             answer_7=true
@@ -173,11 +175,11 @@ run_task_4() {
 
 
     while [ "$answer_1" != "true" ]; do
-        initiate_monitoring_soft
+        check_sshd_config
     done
 
     while [ "$answer_2" != "true" ]; do
-        run_disk_check
+        change_root_password
     done
 
     # while [ "$answer_3" != "true" ]; do

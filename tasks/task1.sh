@@ -12,7 +12,7 @@ run_task_1() {
     clear
 
     local task_description_text_array=(
-        "$(center_heading_text "Maintenance Preperation")\n\n"
+        "$(center_heading_text "$task_name")\n\n"
         "During this Task you will be required to collect the information about the\n"
         "server you are maintaining and ensure all data is backed up before real work\n"
         "begins.\n\n"
@@ -143,9 +143,8 @@ run_task_1() {
 
         printf "$(center_heading_text "copy the banner below this line")\n\n"
 
-        run-parts /etc/update-motd.d/ 2>&1 | tee output.txt
-        local line_count=$(wc -l <output.txt)
-        rm output.txt
+        run-parts /etc/update-motd.d/ | tee -a "$logDir/mot.d/log-$maintenance_start_time.log"
+
         log_answer "compleated printing the banner" "automated banner message"
 
         printf "\n$(center_heading_text "copy the banner above this line")\n\n"
@@ -194,56 +193,57 @@ run_task_1() {
 
         log_answer "user clicked the key to get the server info" "aknowledged prompt"
 
-        printf "$(center_heading_text "copy the server info below this line")\n\n"
+        local temp=(
+            "$(center_heading_text "copy the server info below this line")\n\n"
 
-        printf "==> Basic server info:\n"
-        printf "Server Name/Identifier: %s\n" $(hostname)
-        printf "Server OS: %s\n" $(lsb_release -d | cut -f2)
-        printf "Server Kernel: %s\n" $(uname -r)
-        printf "Server Uptime: %s\n" $(uptime -p)
-        printf "\n"
+            "==> Basic server info:\n"
+            "Server Name/Identifier: $(hostname)\n"
+            "Server OS: $(lsb_release -d | cut -f2)\n"
+            "Server Kernel: $(uname -r)\n"
+            "Server Uptime: $(uptime -p)\n\n"
+            
+            "==> Server Network Info:\n"
+            "Server IP: $(hostname -I)\n"
+            "Server Local IP: $(hostname -I)\n"
+            "Server Public IP: $(curl -s ifconfig.me)\n"
+            "Server Addresses:\n"
+        )
 
-        printf "==> Server Network Info:\n"
-        printf "Server IP: %s\n" $(hostname -I)
-        printf "Server Local IP: %s\n" $(hostname -I)
-        printf "Server Public IP: %s\n" $(curl -s ifconfig.me)
+        print_message_array "${temp[@]}" | tee -a "$logDir/server-info/log-$maintenance_start_time.log"
 
-        printf "Server Addresses:\n"
         ip -o addr | awk '{split($4, a, "/"); print a[1]" "$2}' | while read -r ip iface; do
-            printf "  Interface: %s\n" "$iface"
-            printf "    IP: %s\n" "$ip"
+            printf "  Interface: $iface\n" | tee -a "$logDir/server-info/log-$maintenance_start_time.log"
+            printf "    IP: $ip\n" | tee -a "$logDir/server-info/log-$maintenance_start_time.log"
             if [ "$iface" = "lo" ]; then
                 continue
             fi
-            printf "    MAC: %s\n" "$(ip link show $iface | awk '/ether/ {print $2}')"
+            printf "    MAC: $(ip link show $iface | awk '/ether/ {print $2}')\n" | tee -a "$logDir/server-info/log-$maintenance_start_time.log"
         done
 
-        printf "\n"
-        printf "Server Name Servers: %s\n" $(cat /etc/resolv.conf | grep -oP '(?<=nameserver\s)\d+(\.\d+){3}')
-        printf "Server Default Gateway: %s\n" $(ip route | awk '/default/ { print $3 }')
-        printf "\n"
+        local temp=(
+            "\nServer Name Servers: $(cat /etc/resolv.conf | grep -oP '(?<=nameserver\s)\d+(\.\d+){3}')\n"
+            "Server Default Gateway: $(ip route | awk '/default/ { print $3 }')\n\n"
 
-        printf "==> Server CPU Info:\n"
-        printf "Server Processes: %s\n" $(ps ax | wc -l | tr -d " ")
-        printf "Server Architecture: %s\n" $(uname -m)
-        printf "Server Load Average: %s\n" $(uptime | awk '{print $10 $11 $12}')
-        printf "Server CPU Usage: %s\n" $(top -bn1 | grep load | awk '{printf "%.2f%%\t\t", $(NF-2)}')
-        printf "\n"
+            "==> Server CPU Info:\n"
+            "Server Processes: $(ps ax | wc -l | tr -d " ")\n"
+            "Server Architecture: $(uname -m)\n"
+            "Server Load Average: $(uptime | awk '{print $10 $11 $12}')\n"
+            "Server CPU Usage: $(top -bn1 | grep load | awk '{printf "%.2f%%\t\t", $(NF-2)}')"
 
-        printf "==> Server Memory Info:\n"
-        printf "Server Memory Usage: %s\n" $(free -m | awk 'NR==2{printf "%.2f%%\t\t", $3*100/$2 }')
-        printf "Server Disk Usage: %s\n" $(df -h | awk '$NF=="/"{printf "%d/%dGB (%s)\t\t", $3,$2,$5}')
-        printf "Server Swap Usage: %s\n" $(free -m | awk 'NR==3{printf "%.2f%%\t\t", $3*100/$2 }')
-        printf "\n"
+            "\n\n==> Server Memory Info:\n"
+            "Server Memory Usage: $(free -m | awk 'NR==2{printf "%.2f%%\t\t", $3*100/$2 }')"
+            "\nServer Disk Usage: $(df -h | awk '$NF=="/"{printf "%d/%dGB (%s)\t\t", $3,$2,$5}')"
+            "\nServer Swap Usage: $(free -m | awk 'NR==3{printf "%.2f%%\t\t", $3*100/$2 }')"
 
-        printf "==> Server User Info:\n"
-        printf "Server Users: %s\n" $(users | wc -w)
-        printf "\n"
+            "\n\n==> Server User Info:\n"
+            "Server Users: $(users | wc -w)\n\n"
 
-        printf "==> Server Date: %s\n" $(date)
-        printf "Server Time: %s\n" $(date +"%T")
-        printf "Server Timezone: %s\n" $(timedatectl | grep "Time zone" | cut -d':' -f2 | tr -d ' ')
-        printf "\n"
+            "==> Server Date: $(date)\n"
+            "Server Time: $(date +"%T")\n"
+            "Server Timezone: $(timedatectl | grep "Time zone" | cut -d':' -f2 | tr -d ' ')\n\n"
+        )
+
+        print_message_array "${temp[@]}" | tee -a "$logDir/server-info/log-$maintenance_start_time.log"
 
         log_answer "compleated printing the server info" "automated banner message"
 
@@ -252,6 +252,7 @@ run_task_1() {
         printf "Did you copy the info above?\n"
         printf "1) yes\n"
         printf "2) no\n\n"
+
         read -p "Possible answers (1/2): " copied_motd_banner
 
         shopt -u nocasematch
