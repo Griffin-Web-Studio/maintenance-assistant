@@ -59,7 +59,7 @@ check_for_updates() {
         printf "$(center_heading_text "Updated Successfuly ✅")\n\n"
 
         # restart script
-        exec "bash main.sh"
+        exec "./main.sh"
     fi
 
     printf "$(center_heading_text "Already Up-to-date ✅")\n\n"

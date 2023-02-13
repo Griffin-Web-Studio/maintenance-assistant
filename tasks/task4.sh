@@ -134,6 +134,55 @@ run_task_4() {
 
 
     # function to ask user if they completed the backup process
+    run_antivirus() {
+        clear
+
+        description_text_array=(
+            "$(center_heading_text "Change Root Password")\n\n"
+            "Now we will change the root password for best security.\n"
+            "You will now be provided with 5 random passwords to choose from:\n\n"
+            "1) $(generate_password 230)\n\n"
+            "2) $(generate_password 230)\n\n"
+            "3) $(generate_password 230)\n\n"
+            "4) $(generate_password 230)\n\n"
+            "5) $(generate_password 230)\n\n"
+            "PLEASE COPY ONE OF THE PASSWORDS ABOVE and test it in an editor to make sure you\n"
+            "didn't copy nothing\n\n"
+            "Ready To Change the Password?\n\n"
+            "1) yes\n"
+            "2) no (skip)\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+
+        read -p "Possible answers (1/2): " log_main_start_time
+
+        shopt -u nocasematch
+        case $log_main_start_time in
+        1)
+            log_answer "Changing Root Password" "yes"
+
+            sudo passwd root
+
+            log_answer "Changed Root Password" "yes"
+
+            answer_2=true
+            ;;
+        2)
+            clear
+            log_answer "Changing Root Password" "no"
+
+            answer_2=true
+            ;;
+        *) echo "Invalid answer, please enter (1/2)" ;;
+        esac
+    }
+
+
+
+    # function to ask user if they completed the backup process
     complete_step() {
         clear
 
