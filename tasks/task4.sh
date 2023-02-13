@@ -138,17 +138,11 @@ run_task_4() {
         clear
 
         description_text_array=(
-            "$(center_heading_text "Change Root Password")\n\n"
-            "Now we will change the root password for best security.\n"
-            "You will now be provided with 5 random passwords to choose from:\n\n"
-            "1) $(generate_password 230)\n\n"
-            "2) $(generate_password 230)\n\n"
-            "3) $(generate_password 230)\n\n"
-            "4) $(generate_password 230)\n\n"
-            "5) $(generate_password 230)\n\n"
-            "PLEASE COPY ONE OF THE PASSWORDS ABOVE and test it in an editor to make sure you\n"
-            "didn't copy nothing\n\n"
-            "Ready To Change the Password?\n\n"
+            "$(center_heading_text "Run Antivirus")\n\n"
+            "Now we will run an antivirus and keep it running in the background.\n"
+            "Logs will be present here: $logDir/antivirus/log-run-$maintenance_start_time.log\n\n"
+            "use for live updates: tail -f $logDir/antivirus/log-run-$maintenance_start_time.log\n\n"
+            "Ready To Start Antivirus Check?\n\n"
             "1) yes\n"
             "2) no (skip)\n"
         )
@@ -162,19 +156,25 @@ run_task_4() {
         shopt -u nocasematch
         case $log_main_start_time in
         1)
-            log_answer "Changing Root Password" "yes"
+            log_answer "Running Antivirus" "yes"
 
-            sudo passwd root
+            sudo systemctl stop clamav-freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log"
 
-            log_answer "Changed Root Password" "yes"
+            sudo freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log"
 
-            answer_2=true
+            sudo systemctl start clamav-freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log"
+
+            sudo screen -dm -S virusscan clamscan -ri -l "$logDir/antivirus/log-run-$maintenance_start_time.log"
+
+            log_answer "Run Antivirus" "yes"
+
+            answer_3=true
             ;;
         2)
             clear
-            log_answer "Changing Root Password" "no"
+            log_answer "Running Antivirus" "no"
 
-            answer_2=true
+            answer_3=true
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
@@ -231,9 +231,9 @@ run_task_4() {
         change_root_password
     done
 
-    # while [ "$answer_3" != "true" ]; do
-    #     run_upgrade_step
-    # done
+    while [ "$answer_3" != "true" ]; do
+        run_antivirus
+    done
 
     # while [ "$answer_4" != "true" ]; do
     #     run_autoremove_step
