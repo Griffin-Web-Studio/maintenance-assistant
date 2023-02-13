@@ -162,7 +162,7 @@ run_task_4() {
 
             sudo freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log"
 
-            sudo systemctl start clamav-freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log"
+            sudo systemctl start clamav-freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log" /
 
             sudo screen -dm -S virusscan clamscan -ri -l "$logDir/antivirus/log-run-$maintenance_start_time.log"
 
