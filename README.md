@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to GWS - Server-side Maintenance Assistant 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.3-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.4-blue.svg?cacheSeconds=2592000" />
   <a href="https://gitlab.griffin-studio.dev/external-projects/gws-maintenance/-/wikis/home" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
