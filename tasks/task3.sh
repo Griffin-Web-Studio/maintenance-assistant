@@ -91,6 +91,7 @@ run_task_3() {
             log_answer "Skipping SMART Information collection" "yes"
             ;;
         2)
+            # Collect Smart Current Smart Info
             clear
             log_answer "Started SMART Information collection" "yes"
 
@@ -99,31 +100,47 @@ run_task_3() {
             sudo smartctl -a /dev/sda | tee -a "$logDir/SMART/info/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "SMART Information collection output above")\n\n"
+
+            wait_for_input "Press any key when you finished copying the info above..."
+            clear
+
             log_answer "compleated SMART Information collection" "yes"
 
-            log_answer "Started Short SMART Tests" "yes"
-            printf "$(center_heading_text "Short SMART Tests output below")\n\n"
-
+            # Collect Short Smart Info
+            ## initiate short test
             sudo smartctl -t short /dev/sda | tee -a "$logDir/SMART/short/log-$maintenance_start_time.log"
+            log_answer "Started Short SMART Tests" "yes"
 
             wait_for_input "Press any key to check status..."
+
+            ## get short test result
+            printf "$(center_heading_text "Short SMART Tests output below")\n\n"
 
             sudo smartctl -a /dev/sda | tee -a "$logDir/SMART/short/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "Short SMART Tests output above")\n\n"
+
+            wait_for_input "Press any key when you finished copying the info above..."
+            clear
+
             log_answer "compleated Short SMART Tests" "yes"
 
-            log_answer "Started Long SMART Tests" "yes"
-            printf "$(center_heading_text "Long SMART Tests output below")\n\n"
-
+            # Collect Long Smart Info
+            ## initiate long test
             sudo smartctl -t long /dev/sda | tee -a "$logDir/SMART/long/log-$maintenance_start_time.log"
+            log_answer "Started Long SMART Tests" "yes"
 
             wait_for_input "Press any key to check status..."
+
+            ## get long test result
+            printf "$(center_heading_text "Long SMART Tests output below")\n\n"
 
             sudo smartctl -a /dev/sda | tee -a "$logDir/SMART/long/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "Long SMART Tests output above")\n\n"
+
             log_answer "compleated Long SMART Tests" "yes"
+            wait_for_input "Press any key when you finished copying the info above..."
             answer_2=true
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
