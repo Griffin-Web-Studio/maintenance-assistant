@@ -15,6 +15,7 @@ logFile="$logDir/maintenance-$maintenance_start_time.log"
 
 # 'Dot' means 'source', i.e. 'include':
 . "$DIR/helpers/helpers.sh"
+. "$DIR/tasks/server-init.sh"
 . "$DIR/tasks/task5.sh"
 . "$DIR/tasks/task4.sh"
 . "$DIR/tasks/task3.sh"
@@ -86,6 +87,8 @@ display_menu() {
 
     printf "Server Maintenance Menu:\n\n"
     printf "==========================\n"
+    printf "0. Initialise the Server\n"
+    printf "--------------------------\n"
     printf "1. Preperation\n"
     printf "2. Updates & Upgrades\n"
     printf "3. Server Load Monitoring\n"
@@ -98,6 +101,7 @@ display_menu() {
 # function to run selected task or exit
 run_task() {
     case $choice in
+    0) run_init_0 ;;
     1) run_task_1 ;;
     2) run_task_2 ;;
     3) run_task_3 ;;

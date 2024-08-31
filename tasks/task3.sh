@@ -49,7 +49,7 @@ run_task_3() {
             log_answer "Started Load Monitorig soft" "yes"
             answer_1=true
 
-            gotop-cjbassi
+            btop
 
             log_answer "compleated Load Monitorig soft" "yes"
             ;;
