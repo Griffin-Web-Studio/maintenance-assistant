@@ -58,6 +58,7 @@ run_init_0() {
             answer_1=true
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
+        esac
 
         printf "\n$(center_heading_text "Test Password")\n\n"
 
@@ -65,8 +66,6 @@ run_init_0() {
         printf "work, hit \"Ctr + C\" and use \"passwd\" command to change the password again.\n\n"
 
         wait_for_input "Press any key when you finished test the password..."
-
-        esac
     }
 
 
