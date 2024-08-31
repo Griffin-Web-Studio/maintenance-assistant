@@ -88,7 +88,7 @@ display_menu() {
     printf "Server Maintenance Menu:\n\n"
     printf "==========================\n"
     printf "0. Initialise the Server\n"
-    printf "--------------------------\n"
+    printf '--------------------------\n'
     printf "1. Preperation\n"
     printf "2. Updates & Upgrades\n"
     printf "3. Server Load Monitoring\n"
