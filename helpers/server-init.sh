@@ -222,7 +222,7 @@ run_init_0() {
         # Use sed to comment out the specific lines
         sed -i 's|^printf " \* Documentation:  https://help.ubuntu.com\\n"|#&|' "$motd_10_help_text"
         sed -i 's|^printf " \* Management:     https://landscape.canonical.com\\n"|#&|' "$motd_10_help_text"
-        sed -i 's|^printf " \* Support:        https://ubuntu.com/advantage\\n"|#&|' "$motd_10_help_text"
+        sed -i 's|^printf " \* Support:        https://ubuntu.com/pro\\n"|#&|' "$motd_10_help_text"
 
         wait_for_input "Press any key when you are ready to go to next task..."
     }
