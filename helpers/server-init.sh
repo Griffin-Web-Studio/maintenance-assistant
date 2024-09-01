@@ -94,6 +94,10 @@ run_init_0() {
 
         sudo nano /etc/ssh/sshd_config
 
+        wait_for_input "Press any key when you are ready to add your SSH public key..."
+
+        nano ~/.ssh/authorized_keys
+
         wait_for_input "Press any key to restart the SSH Server..."
 
         sudo service sshd restart
@@ -268,7 +272,7 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Installing: Clam-AV Antivirus")\n\n"
 
-        sudo apt install clamav clamav-daemon
+        sudo apt install clamav clamav-daemon -y
 
         sudo systemctl stop clamav-freshclam
 
