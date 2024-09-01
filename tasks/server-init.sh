@@ -167,8 +167,8 @@ run_init_0() {
 
         sudo localectl set-locale LANG=en_GB.UTF-8 LANGUAGE=en_GB:en
 
-        printf "\n\n"
-        wait_for_input "Ok Everything as it should be?\nIf so press any key when you are ready to reboot..."
+        printf "\n\nOk Everything as it should be?\n"
+        wait_for_input "If so press any key when you are ready to reboot..."
 
         sudo reboot
     }
