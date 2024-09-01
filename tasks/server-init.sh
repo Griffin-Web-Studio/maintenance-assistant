@@ -58,7 +58,7 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Test Password")\n\n"
 
-        printf "Now open a new terminal window, reconnect and try the new password, if it didn't"
+        printf "Now open a new terminal window, reconnect and try the new password, if it didn't\n"
         printf "work, hit \"Ctr + C\" and use \"passwd root\" command to change the password again.\n\n"
 
         wait_for_input "Press any key when you finished test the password..."
@@ -126,9 +126,10 @@ run_init_0() {
         timedatectl
 
         printf "\n\nCurrent Locale:\n"
-        lcoale
+        locale
 
-        wait_for_input "\n\nPress any key when you are ready to set timezone..."
+        printf "\n\n"
+        wait_for_input "Press any key when you are ready to set timezone..."
         
         read -p "please Specify the timezone (default: Europe/London): " set_timezone_string
 
@@ -147,7 +148,8 @@ run_init_0() {
         printf "\nCurrent Time & Timezone:\n"
         timedatectl
 
-        wait_for_input "\n\nPress any key when you are ready to set locale..."
+        printf "\n\n"
+        wait_for_input "Press any key when you are ready to set locale..."
 
         printf "\n$(center_heading_text "Enabling Locale \"en_GB.UTF-8 UTF-8\"")\n\n"
 
@@ -163,9 +165,10 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Updating Locale \"en_GB.UTF-8 UTF-8\"")\n\n"
 
-        sudo localectl set-locale LANG=en_GB.UTF-8 LANGUAGE=en_GB:en LC_ALL=en_GB.UTF-8
+        sudo localectl set-locale LANG=en_GB.UTF-8 LANGUAGE=en_GB:en
 
-        wait_for_input "\n\nOk Everything as it should be?\nIf so press any key when you are ready to reboot..."
+        printf "\n\n"
+        wait_for_input "Ok Everything as it should be?\nIf so press any key when you are ready to reboot..."
 
         sudo reboot
     }
