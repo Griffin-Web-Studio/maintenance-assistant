@@ -339,7 +339,7 @@ run_init_0() {
         "8) Distro upgrade\n"
         "9) DO Last Reboot\n"
 
-        "\n\nDid you complete Steps 1-4?.\n\n"
+        "\n\nDid you complete Steps 1-4?\n\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
@@ -347,21 +347,6 @@ run_init_0() {
 
 
 
-    read -p "Possible answers (Anything other than "n"/"no" is considered as yes): " first_reboot
-
-    shopt -u nocasematch
-    case $first_reboot in
-        n|no|2)
-            while [ "$answer_1" != "true" ]; do
-                change_root_password
-            done
-
-            check_sshd_config
-            set_locale_and_timezone
-            ;;
-    esac
-
-    printf "\n\nDid you complete Stages 5-9?"
     read -p "Possible answers (Anything other than "n"/"no" is considered as yes): " first_reboot
 
     shopt -u nocasematch
