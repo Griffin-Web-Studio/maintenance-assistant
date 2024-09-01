@@ -87,12 +87,13 @@ display_menu() {
 
     printf "Server Maintenance Menu:\n\n"
     printf "==========================\n"
-    printf "0. Initialise the Server\n"
-    printf '--------------------------\n'
     printf "1. Preperation\n"
     printf "2. Updates & Upgrades\n"
     printf "3. Server Load Monitoring\n"
-    printf "4. Server Security\n"
+    printf "4. Server Security\n\n"
+    printf -- "--------------------------\n"
+    printf "0. Initialise the Server\n"
+    printf -- "--------------------------\n\n"
     printf "==========================\n"
     printf "5. Exit\n\n"
     read -p "Enter your choice [1-5]: " choice
