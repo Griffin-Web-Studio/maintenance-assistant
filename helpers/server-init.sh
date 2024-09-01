@@ -175,6 +175,132 @@ run_init_0() {
 
 
 
+    set_server_identifier() {
+        clear
+        
+        description_text_array=(
+            #********************************************************************************.\n
+            "$(center_heading_text "Set Server Identifier")\n\n"
+            "Now let's make sure that this server is identifieble when SSH into it.\n\n"
+
+            "First we will set the server hostname, then mod.d banner to reflect it's\n"
+            "Geographical location and unit encoded in the identifier e.g. gws-uk-1 GWS UK 1.\n\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+
+
+        printf "\n$(center_heading_text "Enforcing retention of custom hostname")\n\n"
+
+        sed -i '/preserve_hostname: false/c\preserve_hostname: true' /etc/cloud/cloud.cfg
+
+        printf "\n$(center_heading_text "Setting the Hostname")\n\n"
+
+        wait_for_input "Press any key when you are ready to set the hostname..."
+        clear_lines 1
+        
+        read -p "please Specify the server hostname (e.g. "gws-uk-1"): " set_hostname_string
+
+        hostnamectl set-hostname "$set_hostname_string"
+
+        wait_for_input "Press any key when you are ready to set MOT.d message..."
+
+        printf "\n$(center_heading_text "Setting the MOT.d banner")\n\n"
+
+        sudo nano /etc/update-motd.d/00-header
+
+        printf "\n$(center_heading_text "Setting the MOT.d banner")\n\n"
+
+        motd_10_help_text="/etc/update-motd.d/10-help-text"
+
+        # Use sed to comment out the specific lines
+        sed -i 's|^printf " \* Documentation:  https://help.ubuntu.com\\n"|#&|' "$motd_10_help_text"
+        sed -i 's|^printf " \* Management:     https://landscape.canonical.com\\n"|#&|' "$motd_10_help_text"
+        sed -i 's|^printf " \* Support:        https://ubuntu.com/advantage\\n"|#&|' "$motd_10_help_text"
+
+        wait_for_input "Press any key when you are ready to go to next task..."
+    }
+
+
+
+    update_server_packages() {
+        clear
+        
+        description_text_array=(
+            #********************************************************************************.\n
+            "$(center_heading_text "Update packages")\n\n"
+            "Now let's make sure that all packages on the server are up-to-date.\n\n"
+
+            "First we will update packages, then the distro.\n\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+
+        wait_for_input "Press any key when you are ready to update packages..."
+
+        printf "\n$(center_heading_text "Updating Packages")\n\n"
+
+        sudo apt update
+        sudo apt upgrade -y
+        sudo apt clean
+        sudo apt autoremove -y
+
+        wait_for_input "Press any key when you are ready to run install additional packages..."
+
+        printf "\n$(center_heading_text "Installing: btop, snapd, backblaze-b2, and screen")\n\n"
+
+        sudo apt install btop snapd screen backblaze-b2 -y
+
+        printf "\n$(center_heading_text "prep: backblaze backup script")\n\n"
+
+        nano /opt/j6dlh6-backup-util/scripts/backup.sh
+
+        mkdir -p /opt/j6dlh6-backup-util/{backups,logs,scripts}
+
+        sudo curl -o /opt/j6dlh6-backup-util/scripts/backup.sh https://gitlab.griffin-studio.dev/external-projects/b2-backup-script/-/raw/main/auto_backup.sh
+
+        printf "\n$(center_heading_text "Installing: netdata")\n\n"
+
+        wget -O /tmp/netdata-kickstart.sh https://get.netdata.cloud/kickstart.sh
+        sh /tmp/netdata-kickstart.sh
+
+        printf "\n$(center_heading_text "Installing: Clam-AV Antivirus")\n\n"
+
+        sudo apt install clamav clamav-daemon
+
+        sudo systemctl stop clamav-freshclam
+
+        sudo freshclam
+
+        sudo systemctl start clamav-freshclam
+
+        printf "\n$(center_heading_text "Installing: VPN")\n\n"
+
+        curl -fsSL https://pkgs.netbird.io/install.sh | sh
+        
+        read -p "please Specify VPN Management URL (e.g. "https://vpn.your-org.com"): " set_vpn_management_url
+        
+        read -p "please Specify VPN Management Key (e.g. "xxx-xxx-xxx-xxx-xxx"): " set_vpn_management_key
+
+        netbird up --management-url "$set_vpn_management_url" --setup-key "$set_vpn_management_key"
+
+        wait_for_input "Press any key when you added the VPN peer to the appropriet group, and applied the specific policies..."
+
+        wait_for_input "Press any key when you are ready to run Dist Upgrade..."
+
+        printf "\n$(center_heading_text "Running Dist Upgrade")\n\n"
+
+        apt dist-upgrade
+
+        wait_for_input "All went well? Press any key to continue..."
+    }
+
+
+
     # function to ask user if they completed the backup process
     complete_step() {
         clear
@@ -188,8 +314,8 @@ run_init_0() {
         print_message_array "${task_description_text_array[@]}"
         print_message_array "${description_text_array[@]}"
 
-        wait_for_input "Hit any key to end task..."
-        answer_99=true
+        wait_for_input "Hit any key to end maintenance and reboot..."
+        sudo reboot
     }
 
     # MAIN ================================================================================
@@ -199,13 +325,21 @@ run_init_0() {
     local task_description_text_array=(
         "$(center_heading_text "$task_name")\n\n"
 
-        "During this task we will initialise the new server and prep it for work.\n\n"
+        "During this task we will initialise the new server and prep it for work.\n"
+        "Follow along here https://wiki.griffin-web.studio/linux/setting-up-a-new-vps-server/ \n\n"
 
         "What steps to expect in this task:\n"
         "1) Change root password\n"
         "2) Check SSH Configuration\n"
-        "3) Run Antivirus\n"
-        "\n\n"
+        "3) Set correct Locale & Timezone\n"
+        "4) DO First reboot\n"
+        "5) Set Server Identifier\n"
+        "6) Package upgrade\n"
+        "7) Install additional nececery backages\n"
+        "8) Distro upgrade\n"
+        "9) DO Last Reboot\n"
+
+        "\n\nDid you complete Steps 1-4?.\n\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
@@ -213,7 +347,7 @@ run_init_0() {
 
 
 
-    read -p "Possible answers (n/no/2): " first_reboot
+    read -p "Possible answers (Anything other than "n"/"no" is considered as yes): " first_reboot
 
     shopt -u nocasematch
     case $first_reboot in
@@ -226,6 +360,24 @@ run_init_0() {
             set_locale_and_timezone
             ;;
     esac
+
+    printf "\n\nDid you complete Stages 5-9?"
+    read -p "Possible answers (Anything other than "n"/"no" is considered as yes): " first_reboot
+
+    shopt -u nocasematch
+    case $first_reboot in
+        n|no|2)
+            while [ "$answer_1" != "true" ]; do
+                change_root_password
+            done
+
+            check_sshd_config
+            set_locale_and_timezone
+            ;;
+    esac
+
+    set_server_identifier
+    update_server_packages
     
 
     while [ "$answer_99" != "true" ]; do
