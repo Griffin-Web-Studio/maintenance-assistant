@@ -207,7 +207,7 @@ run_init_0() {
         
         read -p "please Specify the server hostname (e.g. "gws-uk-1"): " set_hostname_string
 
-        hostnamectl set-hostname "$set_hostname_string"
+        hostnamectl set-hostname "$set_hostname_string.gwssecureserver.co.uk"
 
         wait_for_input "Press any key when you are ready to set MOT.d message..."
 
