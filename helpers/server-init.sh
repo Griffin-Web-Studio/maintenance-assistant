@@ -263,7 +263,7 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Installing: netdata")\n\n"
 
-        wget -O /tmp/netdata-kickstart.sh https://get.netdata.cloud/kickstart.sh
+        sudo curl -o /tmp/netdata-kickstart.sh https://get.netdata.cloud/kickstart.sh
         sh /tmp/netdata-kickstart.sh
 
         printf "\n$(center_heading_text "Installing: Clam-AV Antivirus")\n\n"
