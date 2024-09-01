@@ -257,8 +257,6 @@ run_init_0() {
 
         printf "\n$(center_heading_text "prep: backblaze backup script")\n\n"
 
-        nano /opt/j6dlh6-backup-util/scripts/backup.sh
-
         mkdir -p /opt/j6dlh6-backup-util/{backups,logs,scripts}
 
         sudo curl -o /opt/j6dlh6-backup-util/scripts/backup.sh https://gitlab.griffin-studio.dev/external-projects/b2-backup-script/-/raw/main/auto_backup.sh
