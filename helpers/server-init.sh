@@ -289,6 +289,7 @@ run_init_0() {
         read -p "please Specify VPN Management Key (e.g. "xxx-xxx-xxx-xxx-xxx"): " set_vpn_management_key
 
         netbird up --management-url "$set_vpn_management_url" --setup-key "$set_vpn_management_key"
+        netbird down
 
         wait_for_input "Press any key when you added the VPN peer to the appropriet group, and applied the specific policies..."
 
