@@ -5,6 +5,7 @@ THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
 
 # The directory where current script resides
 DIR=$(dirname "${THIS}")
+
 up_to_date
 
 maintenance_start_time=$(date +\%Y\%m\%d_\%H\%M)
@@ -46,12 +47,12 @@ check_for_updates() {
     printf "$(center_heading_text "Fetching Maintenance Script Updates 🔍")\n\n"
     # check if there is an updates in the remote repo
 
-    git fetch
-    if [ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]; then
+    git -C $DIR fetch
+    if [ "$(git -C "$DIR" rev-parse HEAD)" != "$(git -C "$DIR" rev-parse @{u})" ]; then
 
         printf "$(center_heading_text "Pulling New Updates 📥")\n\n"
         # pull new changes from git
-        git pull
+        git -C $DIR pull
 
         wait_for_input "Press any key to restart script... 🔄️"
 
@@ -60,7 +61,7 @@ check_for_updates() {
         printf "$(center_heading_text "Updated Successfuly ✅")\n\n"
 
         # restart script
-        exec "./main.sh"
+        exec "$DIR/main.sh"
     fi
 
     printf "$(center_heading_text "Already Up-to-date ✅")\n\n"
