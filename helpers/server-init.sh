@@ -248,16 +248,16 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Updating Packages")\n\n"
 
-        sudo apt update
-        sudo apt upgrade -y
-        sudo apt clean
-        sudo apt autoremove -y
+        sudo apt-get update
+        sudo apt-get upgrade -y
+        sudo apt-get clean
+        sudo apt-get autoremove -y
 
         wait_for_input "Press any key when you are ready to run install additional packages..."
 
         printf "\n$(center_heading_text "Installing: btop, snapd, backblaze-b2, and screen")\n\n"
 
-        sudo apt install btop snapd screen backblaze-b2 -y
+        sudo apt-get install btop snapd screen backblaze-b2 -y
 
         printf "\n$(center_heading_text "prep: backblaze backup script")\n\n"
 
@@ -272,7 +272,7 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Installing: Clam-AV Antivirus")\n\n"
 
-        sudo apt install clamav clamav-daemon -y
+        sudo apt-get install clamav clamav-daemon -y
 
         sudo systemctl stop clamav-freshclam
 
@@ -297,7 +297,7 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Running Dist Upgrade")\n\n"
 
-        apt dist-upgrade
+        sudo apt-get dist-upgrade
 
         wait_for_input "All went well? Press any key to continue..."
     }
