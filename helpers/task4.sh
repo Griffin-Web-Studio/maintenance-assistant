@@ -141,7 +141,7 @@ run_task_4() {
             "$(center_heading_text "Run Antivirus")\n\n"
             "Now we will run an antivirus and keep it running in the background.\n"
             "Logs will be present here: $logDir/antivirus/log-run-$maintenance_start_time.log\n\n"
-            "use for live updates:\e[5mtail -f -n 30 $logDir/antivirus/log-run-$maintenance_start_time.log\e[0m\n\n"
+            "use for live updates: \e[5mtail -f -n 30 $logDir/antivirus/log-run-$maintenance_start_time.log\e[0m\n\n"
             "Ready To Start Antivirus Check?\n\n"
             "1) yes\n"
             "2) no (skip)\n"
