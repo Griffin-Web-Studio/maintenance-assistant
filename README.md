@@ -5,7 +5,7 @@
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
   <a href="https://gitlab.griffin-studio.dev/external-projects/gws-maintenance/-/blob/main/LICENSE" target="_blank">
-    <img alt="License: Modified GNU General Public License (GPL) version 3" src="https://img.shields.io/badge/License-Modified GNU General Public License (GPL) version 3-yellow.svg" />
+    <img alt="License: GNU General Public License (GPL) version 3" src="https://img.shields.io/badge/License-Modified GNU General Public License (GPL) version 3-yellow.svg" />
   </a>
 </p>
 
@@ -25,9 +25,9 @@ bash main.sh
 
 👤 **Rihards Simanovics**
 
--   Website: https://griffin-web.studio/
--   Github: [@rihards-s](https://gitlab.griffin-studio.dev/rihards-s)
--   LinkedIn: [@https:\/\/www.linkedin.com\/in\/rihardssimanovics\/](https://linkedin.com/in/https://www.linkedin.com/in/rihardssimanovics/)
+- Website: https://griffin-web.studio/
+- Github: [@rihards-s](https://gitlab.griffin-studio.dev/rihards-s)
+- LinkedIn: [@https:\/\/www.linkedin.com\/in\/rihardssimanovics\/](https://linkedin.com/in/https://www.linkedin.com/in/rihardssimanovics/)
 
 ## 🤝 Contributing
 
