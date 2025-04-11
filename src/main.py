@@ -7,10 +7,11 @@ from forms.main_menu import MainMenuForm
 class SMA(NPSAppManaged):
     def __init__(self, args):
         super().__init__()
+        self.args = args
 
     def onStart(self):
 
 
 if __name__ == "__main__":
-    app = SMA()
+    app = SMA(parse_args())
     app.run()
