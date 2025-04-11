@@ -1,9 +1,16 @@
+from npyscreen import NPSAppManaged
+
 from helpers.cli_params import parse_args
+from forms.main_menu import MainMenuForm
 
 
-def main():
-    args = parse_args()
+class SMA(NPSAppManaged):
+    def __init__(self, args):
+        super().__init__()
+
+    def onStart(self):
 
 
 if __name__ == "__main__":
-    main()
+    app = SMA()
+    app.run()
