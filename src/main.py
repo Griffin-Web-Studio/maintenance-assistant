@@ -10,6 +10,7 @@ class SMA(NPSAppManaged):
         self.args = args
 
     def onStart(self):
+        self.addForm("MAIN", MainMenuForm)
 
 
 if __name__ == "__main__":

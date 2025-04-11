@@ -2,8 +2,10 @@ argcomplete==3.5.3
 cfgv==3.4.0
 charset-normalizer==3.4.1
 colorama==0.4.6
+conventional-commits-check==2.9.0
 decli==0.6.2
 distlib==0.3.9
+distro==1.9.0
 filelock==3.18.0
 identify==2.6.9
 Jinja2==3.1.6
