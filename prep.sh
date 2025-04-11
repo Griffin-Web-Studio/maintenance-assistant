@@ -12,7 +12,7 @@ if [ -d ".venv" ]; then
     
     # Run main.py
     echo "Running main.py..."
-    # python main.py
+    python src/main.py "$@"
 else
     echo "Failed to create virtual environment."
 fi

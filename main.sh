@@ -17,7 +17,7 @@ check_screen_installed
 SESSION_NAME="gws-maintenance"
 
 # Start a new screen session and run the prep.sh script
-screen -dmS "$SESSION_NAME" ./prep.sh
+screen -dmS "$SESSION_NAME" ./prep.sh "$@"
 
 # Attach to the screen session
 screen -r "$SESSION_NAME"
