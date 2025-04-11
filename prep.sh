@@ -16,12 +16,3 @@ if [ -d ".venv" ]; then
 else
     echo "Failed to create virtual environment."
 fi
-
-wait_for_input() {
-    read -n 1 -r -s -p "$1" key
-    printf "\n"
-    clear_lines 1
-}
-
-echo "Rrrra ta ta ta ta ta, test!"
-wait_for_input
