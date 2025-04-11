@@ -1,5 +1,8 @@
+from helpers.cli_params import parse_args
+
+
 def main():
-    pass
+    args = parse_args()
 
 
 if __name__ == "__main__":
