@@ -9,6 +9,13 @@ THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
 # The directory where current script resides
 DIR=$(dirname "${THIS}")
 
+# import bundles
+source "$DIR/scripts/utils/bundle.sh"
+source "$DIR/scripts/helpers/bundle.sh"
+
+# Check if required software exists
+check_screen_installed
+
 # Check if the screen session already exists
 if screen -list | grep -q "$SESSION_NAME"; then
     echo "Attaching to existing screen session: $SESSION_NAME"
