@@ -1,5 +1,27 @@
-
 #!/bin/bash
+
+# Full path of the current script
+THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
+
+# The directory where current script resides
+DIR=$(dirname "${THIS}")
+
+up_to_date
+
+maintenance_start_time=$(date +\%Y\%m\%d_\%H\%M)
+
+logDir="$DIR/logs"
+
+logFile="$logDir/maintenance-$maintenance_start_time.log"
+
+# 'Dot' means 'source', i.e. 'include':
+. "$DIR/utils/utils.sh"
+. "$DIR/helpers/server-init.sh"
+. "$DIR/helpers/task5.sh"
+. "$DIR/helpers/task4.sh"
+. "$DIR/helpers/task3.sh"
+. "$DIR/helpers/task2.sh"
+. "$DIR/helpers/task1.sh"
 
 # array of banner text
 main_banner_text_array=(
