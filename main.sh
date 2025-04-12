@@ -3,6 +3,12 @@
 # Name of the screen session
 SESSION_NAME="gws-maintenance"
 
+# Full path of the current script
+THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
+
+# The directory where current script resides
+DIR=$(dirname "${THIS}")
+
 # Check if the screen session already exists
 if screen -list | grep -q "$SESSION_NAME"; then
     echo "Attaching to existing screen session: $SESSION_NAME"
