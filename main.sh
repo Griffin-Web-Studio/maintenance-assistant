@@ -15,6 +15,7 @@ source "$DIR/scripts/helpers/bundle.sh"
 
 # Check if required software exists
 check_screen_installed
+check_python_installed
 
 # Check if the screen session already exists
 if screen -list | grep -q "$SESSION_NAME"; then
