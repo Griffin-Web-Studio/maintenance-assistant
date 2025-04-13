@@ -20,7 +20,10 @@ check_python_installed
 # Open existing or create new screen session
 is_screen_session
 
+# Activate virtual python environment
+activate_venv
+
 
 echo "Starting Maintenance..."
 sleep 2
-python src/prep.py "$@"
+python src/main.py "$@"
