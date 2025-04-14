@@ -12,7 +12,7 @@ function is_screen_session() {
         echo "Not running inside a screen session. Checking if one exists..."
         
         # Check if session exists
-        find_screen_session
+        find_screen_session "$@"
     fi
 }
 
@@ -26,7 +26,7 @@ function find_screen_session() {
         
         exit 0
     else
-        activate_screen
+        activate_screen "$@"
     fi
 }
 
