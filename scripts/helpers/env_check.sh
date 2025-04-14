@@ -47,10 +47,11 @@ activate_venv() {
         source .venv/bin/activate
 
     else
-        if [ $attempts -eq 0 ]; then
-            echo ".venv directory not found. Creating virtual environment..."
-            python3 -m venv .venv
-        fi
+        echo ".venv directory not found. Creating virtual environment..."
+        python3 -m venv .venv
+
+        echo "Activating virtual environment..."
+        source .venv/bin/activate
     fi
 
     # Check if the virtual environment was activated successfully
