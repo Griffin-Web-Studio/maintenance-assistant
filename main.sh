@@ -23,6 +23,8 @@ is_screen_session "$@"
 # Activate virtual python environment
 activate_venv
 
+# Run upgrades
+check_for_upgrades "$@"
 
 echo "Starting Maintenance..."
 sleep 1

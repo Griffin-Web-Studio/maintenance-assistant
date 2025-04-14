@@ -14,6 +14,9 @@ def parse_args():
 
     # Flags
     parser.add_argument(
+        "--debug", action="store_true", help="is debugging (use in development)"
+    )
+    parser.add_argument(
         "-c",
         "--crontab",
         action="store_true",
