@@ -1,12 +1,5 @@
 #!/bin/bash
 
-#function to print message array from parameters it receives
-print_message_array() {
-    for i in "${@}"; do
-        printf "$i"
-    done
-}
-
 # Print Table
 function printTable() {
     local -r delimiter="${1}"
