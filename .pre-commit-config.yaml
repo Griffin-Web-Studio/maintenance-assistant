@@ -1,12 +1,12 @@
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0 # Use the latest release version
-    hooks:
-      - id: check-merge-conflict
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v5.0.0 # Use the latest release version
+      hooks:
+          - id: check-merge-conflict
 
-  - repo: https://github.com/AliYmn/conventional-commits-check
-    rev: v2.9.0 # Use the latest release version
-    hooks:
-      - id: conventional-commits-check
-        stages: [commit-msg]
-        args: ["--emoji-disabled"] # Use this argument to disable emojis
+    - repo: https://github.com/AliYmn/conventional-commits-check
+      rev: v2.9.0 # Use the latest release version
+      hooks:
+          - id: conventional-commits-check
+            stages: [commit-msg]
+            args: ["--emoji-disabled"] # Use this argument to disable emojis

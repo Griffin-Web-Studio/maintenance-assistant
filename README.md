@@ -25,9 +25,9 @@ bash main.sh
 
 👤 **Rihards Simanovics**
 
-- Website: https://griffin-web.studio/
-- Github: [@rihards-s](https://gitlab.griffin-studio.dev/rihards-s)
-- LinkedIn: [@https:\/\/www.linkedin.com\/in\/rihardssimanovics\/](https://linkedin.com/in/https://www.linkedin.com/in/rihardssimanovics/)
+-   Website: https://griffin-web.studio/
+-   Github: [@rihards-s](https://gitlab.griffin-studio.dev/rihards-s)
+-   LinkedIn: [@https:\/\/www.linkedin.com\/in\/rihardssimanovics\/](https://linkedin.com/in/https://www.linkedin.com/in/rihardssimanovics/)
 
 ## 🤝 Contributing
 
