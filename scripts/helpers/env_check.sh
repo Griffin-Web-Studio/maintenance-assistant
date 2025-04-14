@@ -37,6 +37,10 @@ activate_screen() {
     screen -dmS "$SESSION_NAME" "$THIS" "$@"
     # Attach to the new screen session
     screen -r "$SESSION_NAME"
+    wait_for_input "End of Maintenance Script pres [ANY] key to quit! [ANY]:"
+    echo "Cleaning Up 🧹"
+    sleep 1
+    clear_lines 14 # clear all text and banner
     exit 0
 }
 
