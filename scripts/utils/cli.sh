@@ -17,3 +17,10 @@ function wait_for_input() {
     printf "\n"
     clear_lines 1
 }
+
+# print message array from array of strings
+print_message_array() {
+    for i in "${@}"; do
+        printf "$i"
+    done
+}
