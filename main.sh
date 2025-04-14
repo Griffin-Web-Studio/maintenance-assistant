@@ -25,5 +25,5 @@ activate_venv
 
 
 echo "Starting Maintenance..."
-sleep 2
+sleep 1
 python src/main.py "$@"
