@@ -33,3 +33,4 @@ check_for_upgrades "$@"
 echo "Starting Maintenance..."
 sleep 1
 python src/main.py "$@"
+wait_for_input
