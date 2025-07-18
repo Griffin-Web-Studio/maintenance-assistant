@@ -14,7 +14,7 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install -r requirements.txt && echo 'alias ll=\"ls -l\"' >> ~/.bashrc && echo 'alias la=\"ls -la\"' >> ~/.bashrc && echo 'alias l=\"ls -l\"' >> ~/.bashrc",
+	"postCreateCommand": "./scripts/dev_prep.sh --docker",
 	"customizations": {
 		"vscode": {
 			"extensions": [
