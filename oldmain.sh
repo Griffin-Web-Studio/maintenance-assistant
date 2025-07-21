@@ -1,20 +1,4 @@
 #!/bin/bash
-
-# Name of the screen session
-SESSION_NAME="gws-maintenance"
-
-# Full path of the current script
-THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
-
-# The directory where current script resides
-DIR=$(dirname "${THIS}")
-
-# import bundles
-source "$DIR/scripts/configs/settings.sh"
-source "$DIR/scripts/utils/bundle.sh"
-source "$DIR/scripts/helpers/bundle.sh"
-
-
 print_message_array "${main_banner_text_array[@]}"
 
 # Check if required software exists
@@ -27,7 +11,3 @@ is_screen_session "$@"
 # Activate virtual python environment
 activate_venv
 
-echo "Starting Maintenance..."
-sleep 1
-python src/main.py "$@"
-wait_for_input
