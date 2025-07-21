@@ -23,6 +23,9 @@ if [[ "$1" == "--docker" ]]; then
     echo 'alias ll="ls -la"' >> ~/.bashrc
     echo 'alias la="ls -la"' >> ~/.bashrc
     echo 'alias l="ls -l"' >> ~/.bashrc
+    echo "Installing tmux..."
+    sudo apt update
+    sudo apt install -y tmux
 else
     echo "No --docker flag provided, skipping alias creation."
 fi
