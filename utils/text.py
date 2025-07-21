@@ -25,3 +25,13 @@ def center_text(text: str, spacer: str = "=", length: Optional[int] = None) -> s
     padding_text = spacer * math.floor(padding)
 
     return padding_text + " " + text + " " + padding_text
+
+
+def print_message_array(message_array: list[str]) -> None:
+    """Prints an array of messages, each on a new line.
+
+    Args:
+        message_array (list[str]): Array of messages to print.
+    """
+    for message in message_array:
+        print(message)
