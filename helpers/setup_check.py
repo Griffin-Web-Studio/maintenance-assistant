@@ -1,3 +1,8 @@
+"""
+setup_check.py contains initialisation functions to check for required commands,
+initialize tmux sessions, and run updates.
+"""
+
 import subprocess
 import os
 import sys
