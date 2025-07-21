@@ -11,6 +11,7 @@ gitdb==4.0.12
 GitPython==3.1.44
 identify==2.6.9
 Jinja2==3.1.6
+libtmux==0.46.2
 MarkupSafe==3.0.2
 nodeenv==1.9.1
 npyscreen==4.10.5
@@ -20,6 +21,7 @@ pre_commit==4.2.0
 prompt_toolkit==3.0.50
 PyYAML==6.0.2
 questionary==2.1.0
+setuptools==75.6.0
 smmap==5.0.2
 termcolor==2.5.0
 tomlkit==0.13.2

@@ -13,7 +13,6 @@
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "./scripts/dev_prep.sh --docker",
 	"customizations": {
 		"vscode": {
@@ -25,7 +24,10 @@
 				"SonarSource.sonarlint-vscode",
 				"streetsidesoftware.code-spell-checker",
 				"streetsidesoftware.code-spell-checker-british-english",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"njpwerner.autodocstring",
+				"donjayamanne.python-extension-pack",
+				"donjayamanne.python-environment-manager"
 			]
 		}
 	}
