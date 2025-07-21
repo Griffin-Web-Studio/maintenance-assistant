@@ -1,3 +1,5 @@
+from pathlib import Path
+
 APP_NAME = "GWS Server-side Maintenance Assistant"
 
 MAIN_BANNER_ARRAY = [
@@ -11,3 +13,7 @@ MAIN_BANNER_ARRAY = [
     " 00                                                   1<      \n",
     "01100000001001011001000000100110010101110101011100010<<       \n\n",  # slant
 ]
+
+
+def get_script_directory() -> Path:
+    return Path(__file__).resolve().parent
