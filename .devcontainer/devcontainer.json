@@ -27,7 +27,8 @@
 				"eamodio.gitlens",
 				"njpwerner.autodocstring",
 				"donjayamanne.python-extension-pack",
-				"donjayamanne.python-environment-manager"
+				"donjayamanne.python-environment-manager",
+				"MASSHUU12.too-long-line-limit"
 			]
 		}
 	}
