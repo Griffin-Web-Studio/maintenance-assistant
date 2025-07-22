@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT_DIR: Path = Path(__file__).resolve().parent.parent
 APP_NAME = "Griffin Web Studio - Maintenance Assistant"
 SESSION_NAME = "gws-maintenance"
-LOG_FILE = ROOT_DIR / "logs" / "gws-maintenance"
+LOG_FILE = ROOT_DIR / "logs" / "gws-maintenance.log"
 MAIN_BANNER_ARRAY = [
     '',
     '       >>01000111010101110101001100100000010011010010000000110',
