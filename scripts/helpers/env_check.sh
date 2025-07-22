@@ -6,20 +6,20 @@
 
 # Checks and activate the virtual environment
 activate_venv() {
-    if [ -d ".venv" ]; then
+    if [ -d "$DIR/.venv" ]; then
         echo "Activating virtual environment..."
-        source .venv/bin/activate
+        source $DIR/.venv/bin/activate
 
     else
         echo ".venv directory not found. Creating virtual environment..."
-        python3 -m venv .venv
+        python3 -m venv $DIR/.venv
 
         echo "Activating virtual environment..."
-        source .venv/bin/activate
+        source $DIR/.venv/bin/activate
     fi
 
     # Check if the virtual environment was activated successfully
-    if [ ! -d ".venv" ]; then
+    if [ ! -d "$DIR/.venv" ]; then
         echo "Failed to activate the virtual environment after two attempts."
         exit 1  # Exit with an error
     fi
