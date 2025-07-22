@@ -14,4 +14,4 @@ activate_venv
 
 echo "Starting Maintenance..."
 sleep 1
-python main.py "$@"
+python $DIR/main.py "$@"
