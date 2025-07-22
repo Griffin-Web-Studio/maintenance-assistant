@@ -1,3 +1,6 @@
+"""configs.settings - Configuration settings for the
+Griffin Web Studio Maintenance Assistant application. This module defines
+various constants used throughout the application."""
 from pathlib import Path
 
 ROOT_DIR: Path = Path(__file__).resolve().parent.parent
