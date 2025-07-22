@@ -77,8 +77,13 @@ def init_tmux() -> None:
     existing_session = server.find_where({'session_name': SESSION_NAME})
 
     if existing_session:
-        existing_session.attach()
-        print(f"Attached to existing session: {SESSION_NAME}")
+        try:
+            existing_session.attach()
+        except Exception:
+            print(
+                "Session closed, feel free to reattach later using"
+                f"`tmux attach -t {SESSION_NAME}`")
+            sys.exit(0)
     else:
         # Create a new session
         session = server.new_session(session_name=SESSION_NAME)
@@ -96,10 +101,12 @@ def init_tmux() -> None:
         # Send commands to the panes
         # execute assistant and pass through the current scripts arguments
         window.panes[0].send_keys(
-            f'python {ROOT_DIR}/assistant.py {" ".join(sys.argv[1:])}')
-        window.panes[1].send_keys(f'python {ROOT_DIR}/queue_worker.py')
+            f'clear && python {ROOT_DIR}/assistant.py {" ".join(sys.argv[1:])}')
+        window.panes[1].send_keys(
+            f'clear && python {ROOT_DIR}/queue_worker.py && exit')
         window.panes[2].send_keys(
-            'echo "use this terminal for manual commands"')
+            'clear && sleep 1 && echo ">_ Use this terminal for manual commands:"')
+        window.panes[0].select()  # focus on the first pane
 
         try:
             session.attach()
