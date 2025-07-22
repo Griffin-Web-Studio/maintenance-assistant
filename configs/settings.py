@@ -1,8 +1,9 @@
 from pathlib import Path
 
-APP_NAME = "GWS Server-side Maintenance Assistant"
-
+ROOT_DIR: Path = Path(__file__).resolve().parent.parent
+APP_NAME = "Griffin Web Studio - Maintenance Assistant"
 SESSION_NAME = "gws-maintenance"
+LOG_FILE = ROOT_DIR / "logs" / "gws-maintenance"
 MAIN_BANNER_ARRAY = [
     '',
     '       >>01000111010101110101001100100000010011010010000000110',
@@ -15,7 +16,3 @@ MAIN_BANNER_ARRAY = [
     '01100000001001011001000000100110010101110101011100010<<',  # slant
     '',
 ]
-
-
-def get_script_directory() -> Path:
-    return Path(__file__).resolve().parent
