@@ -1,13 +1,4 @@
 <h1 align="center">Welcome to Maintenance Assistant 🤖</h1>
-<p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.4-blue.svg?cacheSeconds=2592000" />
-  <a href="https://gitlab.griffin-studio.dev/external-projects/maintenance-assistant/-/wikis/home" target="_blank">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
-  </a>
-  <a href="https://gitlab.griffin-studio.dev/external-projects/maintenance-assistant/-/blob/main/LICENSE" target="_blank">
-    <img alt="License: GNU General Public License (GPL) version 3" src="https://img.shields.io/badge/License-Modified GNU General Public License (GPL) version 3-yellow.svg" />
-  </a>
-</p>
 
 > This is a maintenance assistant tool built to make it easier to carry out repetetive tasks in a more automated and streamlined manner.
 
@@ -19,6 +10,9 @@
 
 ```sh
 python main.py
+
+# legacy
+./main.sh
 ```
 
 ## Author
