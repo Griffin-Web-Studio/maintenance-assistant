@@ -23,4 +23,12 @@ activate_venv() {
         echo "Failed to activate the virtual environment after two attempts."
         exit 1  # Exit with an error
     fi
+
+    # Install pip modules from requirements.txt
+    if [ -f "$DIR/requirements.txt" ]; then
+        echo "Installing pip modules from requirements.txt..."
+        pip install -r "$DIR/requirements.txt"
+    else
+        echo "requirements.txt not found. Skipping pip installation."
+    fi
 }
