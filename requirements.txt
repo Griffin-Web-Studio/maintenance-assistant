@@ -21,7 +21,7 @@ pre_commit==4.2.0
 prompt_toolkit==3.0.50
 PyYAML==6.0.2
 questionary==2.1.0
-setuptools==75.6.0
+setuptools==78.1.1
 smmap==5.0.2
 termcolor==2.5.0
 tomlkit==0.13.2
