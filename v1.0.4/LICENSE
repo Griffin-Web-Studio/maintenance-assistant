@@ -646,6 +646,14 @@ the "copyright" line and a pointer to where the full notice is found.
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+    Commercial use of this program is strictly prohibited without
+    obtaining a separate license from the copyright holder.
+
+    This license should cover this and any prior versions of the software
+    if no LICENSE file exists or is attached to the version.
+
+Also add information on how to contact you by electronic and paper mail.
+
   If your software can interact with users remotely through a computer
 network, you should also make sure that it provides a way for users to
 get its source.  For example, if your program is a web application, its
