@@ -4,6 +4,7 @@ import time
 import subprocess
 
 from configs.settings import ROOT_DIR
+from utils.cli import clear_lines
 
 QUEUE_FILE = ROOT_DIR / "command_queue.txt"
 READY_FLAG = ROOT_DIR / "queue.ready"
@@ -54,8 +55,21 @@ def main():
 
 if __name__ == "__main__":
     # add blinking text to indicate the worker is not yet implemented
-    print(
-        "\033[5mQueue worker is not yet implemented. Please check back later.\033[0m")
-    # sleep for 20 seconds then exit
-    time.sleep(20)
+    blinking_text = ("❗️Queue worker is not yet implemented. "
+                     "Keep tabs on for feature updates.")
+    for i in range(10, 0, -1):
+        # based on odd or even number, print message with different intensity
+        if i % 2 == 0:
+            print(
+                f"\033[1;31m{blinking_text}\n\033[0m"
+            )
+        else:
+            print(
+                f"\033[1;33m{blinking_text}\n\033[0m"
+            )
+        print(f"Terminating this pane in {i} seconds...")
+        # sleep for 20 seconds then exit
+        time.sleep(1)
+        clear_lines(3)
+
     # main()  # Uncomment this line to run the worker when ready
