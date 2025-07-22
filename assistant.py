@@ -1,7 +1,8 @@
 import time
 import libtmux
 
-from configs.settings import SESSION_NAME
+from configs.settings import ROOT_DIR, SESSION_NAME
+from helpers.cli import run_command
 
 
 def countdown(start):
@@ -31,5 +32,9 @@ def close_tmux_session(session_name) -> None:
 
 
 if __name__ == "__main__":
-    countdown(5)
-    close_tmux_session(SESSION_NAME)
+    while True:
+        print("Starting Maintenance Assistant...")
+        run_command(['bash', f'{ROOT_DIR}/v1.0.4/main.sh'])
+        print("Maintenance Assistant has stopped.")
+        if input("Do you want to restart the Maintenance Assistant? (y/n): ").lower() != 'y':
+            close_tmux_session(SESSION_NAME)
