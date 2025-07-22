@@ -31,5 +31,5 @@ def close_tmux_session(session_name) -> None:
 
 
 if __name__ == "__main__":
-    countdown(20)
+    countdown(5)
     close_tmux_session(SESSION_NAME)
