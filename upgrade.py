@@ -1,6 +1,5 @@
-"""
-Software Self Upgrade script
-"""
+"""upgrade - A script to check for and apply updates to the
+Griffin Web Studio Maintenance Assistant application."""
 
 import sys
 import os
@@ -13,56 +12,62 @@ from helpers.cli_params import parse_args
 from utils.text import center_text
 
 
-def main(args: Namespace):
-    print(f"\n{center_text('Fetching Maintenance Script Updates 🔍', spacer='/')}\n")
+def run_upgrade(args: Namespace):
+    print("\n/ / / / / Fetching Maintenance Script Updates 🔍 / / / / /\n")
 
-    # Get the current working directory
     repo_path = os.getcwd()
 
-    # Open the repository
     try:
         repo = git.Repo(repo_path)
+
     except git.exc.InvalidGitRepositoryError:
         print("No valid Git repository found in the current directory.")
         return 1
 
-    # Check if is a branch
     try:
         current_branch = repo.active_branch
-        print("- Detected current branch! 😱")
+        print("- Attached to a branch. 😱")
         print(f"- Current branch: {current_branch}")
-        print("- You are currently on a branch that may be ahead of the latest tag.")
         print(
-            "⚠️  Please manually upgrade your software to ensure you are on the latest version."
+            "- You are currently on a branch that may be ahead of the"
+            " latest tag."
         )
         print(
-            "📝 if you are developing, then happy coding time 😊. psst, pss... pSSSt you may want to use `--debug` option"
+            "⚠️  Please manually upgrade your software to ensure you are on "
+            "the latest version."
         )
 
         # Let's not disturb the flow 😌
         # 🍾, what, wha, what was I thinking about... uuuuh....... ahA 💡
         if not args.debug and not args.unattended and not args.crontab:
+            print(
+                "📝 if you are developing, then happy coding time 😊.\n"
+                "psst, pss... pSSSt you may want to use `--debug` option"
+            )
             input("Hit enter to continue: [ENTER]")
 
         return 1
     except TypeError:
-        print("Not in a branch, good.")
+        print("In Detached HEAD state, safe to proceed.")
 
     # Get the current commit
     current_commit = repo.head.commit
 
     # Check if the current HEAD is on a tag
     if current_commit not in repo.tags:
-        print("You are in a detached HEAD state, not on a branch or tag either.")
-
         # Don't let this continue, clearly a bad state
-        while True:
-            input("soooo, what now? [TEXT]: ")
-            print("yeah didn't really care...")
-
+        print(
+            "Current HEAD is not on a tag. "
+            "Please check your repository state."
+        )
+        print("Heuston, we have a problem! 🚨")
+        print("Please ensure you are on a tag before running this script.")
+        print("Exiting...")
         return 1
 
-    current_tag = next(tag for tag in repo.tags if tag.commit == current_commit)
+    current_tag = next(
+        tag for tag in repo.tags if tag.commit == current_commit
+    )
     print(f"- Current version is on tag: {current_tag}")
 
     # Get all tags and sort them
@@ -81,7 +86,8 @@ def main(args: Namespace):
     latest_version = Version(latest_tag.name.strip().replace("v", ""))
 
     if current_version < latest_version:
-        print(f"- Update available: {latest_version} is newer than {current_version}")
+        print(
+            f"- Update available: {latest_version} is newer than {current_version}")
         # TODO: Add Upgrading mechanism
         sys.exit(0)
     else:
@@ -89,4 +95,4 @@ def main(args: Namespace):
 
 
 if __name__ == "__main__":
-    sys.exit(main(parse_args()))
+    sys.exit(run_upgrade(parse_args()))
