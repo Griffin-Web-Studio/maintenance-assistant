@@ -9,17 +9,30 @@ import sys
 
 import libtmux
 
-from configs.settings import SESSION_NAME
+from configs.settings import ROOT_DIR, SESSION_NAME
+from helpers.cli import log_command
 
 
 def run_updates() -> None:
     """Run application updates."""
-    # TODO: Implement the update logic here
 
-    return None  # Placeholder for update logic, if needed in the future
+    print("Checking for updates...")
+    try:
+        if not log_command(["python", f'{ROOT_DIR}/upgrade.py', *sys.argv[1:]]):
+            print(
+                "No updates found or update failed."
+                "see the output above for details."
+            )
+
+            return  # early, no updates found
+
+        print("Updates applied successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error during update: {e}")
+        sys.exit(1)
 
     # Restart the script after updates
-    # os.execv(sys.executable, ['python'] + sys.argv)
+    os.execv(sys.executable, ['python'] + sys.argv)
 
 
 def command_installed(command: str, install_instructions: str) -> None:
