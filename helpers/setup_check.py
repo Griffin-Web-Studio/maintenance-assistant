@@ -58,32 +58,40 @@ def in_tmux() -> bool:
     return 'TMUX' in os.environ
 
 
-def init_tmux():
+def init_tmux() -> None:
+    """Initialize a tmux session with a specific layout."""
     server = libtmux.Server()
     existing_session = server.find_where({'session_name': SESSION_NAME})
 
-    try:
-        if existing_session:
-            existing_session.attach()
-            print(f"Attached to existing session: {SESSION_NAME}")
-        else:
-            # Create a new session
-            session = server.new_session(session_name=SESSION_NAME)
+    if existing_session:
+        existing_session.attach()
+        print(f"Attached to existing session: {SESSION_NAME}")
+    else:
+        # Create a new session
+        session = server.new_session(session_name=SESSION_NAME)
+        session.set_option('mouse', 'on')
 
-            # Create a new window
-            window = session.active_window
+        # Create a new window
+        window = session.active_window
 
-            # Split the window into panes
-            pane1 = window.split_window(vertical=False)  # Horizontal split
-            pane2 = window.split_window(vertical=True)    # Vertical split
+        # Split the window into panes
+        right_pane = window.split_window(
+            vertical=False)
+        right_pane.split_window(
+            vertical=True)  # right_top_pane
 
-            # Send commands to the panes
-            pane1.send_keys('python ./assistant.py')
-            pane2.send_keys('echo "Running in Pane 2"')
-            window.panes[2].send_keys('echo "Running in Pane 3"')
+        # Send commands to the panes
+        # execute assistant and pass through the current scripts arguments
+        window.panes[0].send_keys(
+            f'python {ROOT_DIR}/assistant.py {" ".join(sys.argv[1:])}')
+        window.panes[1].send_keys(f'python {ROOT_DIR}/queue_worker.py')
+        window.panes[2].send_keys(
+            'echo "use this terminal for manual commands"')
 
+        try:
             session.attach()
-
-    except libtmux.libtmux.TmuxException:
-        print("Failed to initialize tmux session, or session ended.")
-        sys.exit(1)
+        except Exception:
+            print(
+                "Session closed, feel free to reattach later using"
+                f"`tmux attach -t {SESSION_NAME}`")
+            sys.exit(0)
