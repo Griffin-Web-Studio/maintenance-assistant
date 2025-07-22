@@ -4,7 +4,8 @@ from utils.text import print_message_array
 
 print_message_array(MAIN_BANNER_ARRAY)
 
-run_updates()
+# TODO: Uncomment the following line when the update script is ready
+# run_updates()
 
 command_installed(
     'tmux',
