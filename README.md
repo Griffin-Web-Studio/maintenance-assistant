@@ -8,7 +8,7 @@
 - venv (if your os python doesn't have it)
 
 ### Ubuntu/Debian
-- python3.10-venv (`apt install python3.10-venv`)
+- python3.xx-venv (`apt install python3.xx-venv`) xx for the version of python
 
 ## Usage
 
