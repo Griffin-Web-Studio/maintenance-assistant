@@ -4,31 +4,33 @@
 ## DO NOT EXECUTE THIS SCRIPT DIRECTLY ##
 #########################################
 
-# Checks and activate the virtual environment
 activate_venv() {
-    if [ -d "$DIR/.venv" ]; then
-        echo "Activating virtual environment..."
-        source $DIR/.venv/bin/activate
+    local attempts=0
+    local max_attempts=3
 
-    else
-        echo ".venv directory not found. Creating virtual environment..."
-        python3 -m venv $DIR/.venv
+    while [ $attempts -lt $max_attempts ]; do
+        if [ -d "$DIR/.venv" ] && [ -f "$DIR/.venv/bin/activate" ]; then
+            echo "Activating virtual environment..."
+            source "$DIR/.venv/bin/activate"
+            return 0
+        else
+            echo "Virtual environment not found or activation script missing."
+            echo "Attempting to create a new virtual environment..."
+            rm -rf "$DIR/.venv"
+            echo "‼️ Pay close attention to the output below, as it may contain important information. ‼️"
+            python3 -m venv "$DIR/.venv"
+        fi
 
-        echo "Activating virtual environment..."
-        source $DIR/.venv/bin/activate
-    fi
+        if [ -f "$DIR/.venv/bin/activate" ]; then
+            echo "Activating virtual environment..."
+            source "$DIR/.venv/bin/activate"
+            return 0
+        fi
 
-    # Check if the virtual environment was activated successfully
-    if [ ! -d "$DIR/.venv" ]; then
-        echo "Failed to activate the virtual environment after two attempts."
-        exit 1  # Exit with an error
-    fi
+        attempts=$((attempts + 1))
+        echo "Attempt $attempts failed. Retrying..."
+    done
 
-    # Install pip modules from requirements.txt
-    if [ -f "$DIR/requirements.txt" ]; then
-        echo "Installing pip modules from requirements.txt..."
-        pip install -r "$DIR/requirements.txt"
-    else
-        echo "requirements.txt not found. Skipping pip installation."
-    fi
+    echo "Failed to activate the virtual environment after $max_attempts attempts."
+    exit 1
 }
