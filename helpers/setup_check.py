@@ -71,6 +71,15 @@ def in_tmux() -> bool:
     return 'TMUX' in os.environ
 
 
+def venv_activated() -> bool:
+    """Check if the script is running inside a virtual environment.
+
+    Returns:
+        bool: True if running inside a virtual environment, False otherwise.
+    """
+    return hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
+
+
 def init_tmux() -> None:
     """Initialize a tmux session with a specific layout."""
     server = libtmux.Server()
