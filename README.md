@@ -35,4 +35,4 @@ Give a ⭐️ if this project helped you!
 
 Copyright © 2023 [Griffin Web Studio Limited](https://griffin-web.studio).
 Copyright © 2023 [Rihards Simanovics](https://gitlab.griffin-studio.dev/rihards-s).
-This project is [GNU General Public License (GPL) version 3](./blob/main/LICENSE) licensed.
+This project is [GNU General Public License (GPL) version 3](./LICENSE) licensed.
