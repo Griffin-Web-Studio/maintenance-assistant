@@ -75,8 +75,12 @@ def log_command(command: list, log_file: str = LOG_FILE) -> bool:
                             # Send input to the command
                             os.write(master_fd, input_data)
 
-                # Wait for the child process to finish
-                _, exit_code = os.waitpid(pid, 0)
+                    # Check if the child process has finished
+                    pid, exit_code = os.waitpid(pid, os.WNOHANG)
+                    if pid > 0:
+                        # Child process has finished
+                        break
+
                 return exit_code == 0
 
     except Exception as e:

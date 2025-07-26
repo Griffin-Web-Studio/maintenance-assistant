@@ -3,10 +3,19 @@ Griffin Web Studio Maintenance Assistant application. This module defines
 various constants used throughout the application."""
 from pathlib import Path
 
+from helpers.lock_manager import LockManager
+
 ROOT_DIR: Path = Path(__file__).resolve().parent.parent
 APP_NAME = "Griffin Web Studio - Maintenance Assistant"
 SESSION_NAME = "gws-maintenance"
-LOG_FILE = ROOT_DIR / "logs" / "gws-maintenance.log"
+MAINTENANCE_LOCK = ROOT_DIR / "maintenance.lock"
+
+# Create an instance of LockManager
+lock_mgr = LockManager(MAINTENANCE_LOCK)
+
+LOCK_TIMESTAMP = lock_mgr.get_lock_timestamp()
+LOG_FILE = ROOT_DIR / "logs" / f"gws-maintenance-{LOCK_TIMESTAMP}.log"
+
 MAIN_BANNER_ARRAY = [
     '',
     '       >>01000111010101110101001100100000010011010010000000110',
