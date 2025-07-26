@@ -18,13 +18,12 @@
 
 ## Author
 
-👤 **Rihards Simanovics**
-
+**Rihards Simanovics**
 -   Website: https://griffin-web.studio/
 -   Github: [@rihards-simanovics](https://gitlab.griffin-studio.dev/rihards-simanovics)
 -   LinkedIn: [@rihardssimanovics](https://linkedin.com/in/https://www.linkedin.com/in/rihardssimanovics/)
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, issues and feature requests are welcome! Feel free to check [issues page](./issues). You can also take a look at the [contributing guide](https://gitlab.griffin-studio.dev/external-projects/maintenance-assistant/-/wikis/home).
 
@@ -32,7 +31,7 @@ Contributions, issues and feature requests are welcome! Feel free to check [issu
 
 Give a ⭐️ if this project helped you!
 
-## 📝 License
+## License
 
 Copyright © 2023 [Griffin Web Studio Limited](https://griffin-web.studio).
 Copyright © 2023 [Rihards Simanovics](https://gitlab.griffin-studio.dev/rihards-s).
