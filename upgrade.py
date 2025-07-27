@@ -9,7 +9,6 @@ import git
 import git.exc
 
 from helpers.cli_params import parse_args
-from utils.text import center_text
 
 
 def run_upgrade(args: Namespace):
