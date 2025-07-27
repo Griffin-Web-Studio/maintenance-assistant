@@ -2,6 +2,8 @@
 
 > This is a maintenance assistant tool built to make it easier to carry out repetitive tasks in a more automated and streamlined manner.
 
+![preview of maintenance assistant](./static/banner.png)
+
 ## Software Prerequisite
 - python3
 - tmux
