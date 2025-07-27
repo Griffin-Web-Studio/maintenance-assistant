@@ -36,7 +36,7 @@ def close_tmux_session(session_name) -> None:
 if __name__ == "__main__":
     while True:
         print("Starting Maintenance Assistant...")
-        cmd.run(['bash', f'{ROOT_DIR}/v1.0.4/main.sh'])
+        cmd.run(['bash', f'{ROOT_DIR}/assistant.legacy.sh'])
         print("Maintenance Assistant has stopped.")
         if input("Do you want to restart the Maintenance Assistant? (y/n): ").lower() != 'y':
             close_tmux_session(SESSION_NAME)

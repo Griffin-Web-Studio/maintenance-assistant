@@ -29,7 +29,7 @@ class LockManager:
         Returns:
             str: Current timestamp formatted as 'YYYYMMDDHHMMSS'.
         """
-        return datetime.now().strftime("%Y%m%d%H%M%S")
+        return datetime.now().strftime("%Y%m%d_%H%M%S")
 
     def __create_lock_file(self) -> None:
         """ Create a lock file with the current timestamp."""
@@ -51,7 +51,7 @@ class LockManager:
                 lock_timestamp_str = lock_file.read().strip()
                 print(f"Current lock timestamp: {lock_timestamp_str}")
                 lock_timestamp = datetime.strptime(
-                    lock_timestamp_str, "%Y%m%d%H%M%S")
+                    lock_timestamp_str, "%Y%m%d_%H%M%S")
                 print(f"Lock timestamp: {lock_timestamp}")
 
             # Check if the lock file is older than 3 hours
