@@ -11,7 +11,9 @@ import sys
 import libtmux
 
 from configs.settings import ROOT_DIR, SESSION_NAME
-from helpers.cli import log_command
+from helpers.cli import CommandRunner
+
+cmd = CommandRunner()
 
 
 def run_updates() -> None:
@@ -19,7 +21,7 @@ def run_updates() -> None:
 
     print("Checking for updates...")
     try:
-        if not log_command(["python", f'{ROOT_DIR}/upgrade.py', *sys.argv[1:]]):
+        if not cmd.run_and_log(["python", f'{ROOT_DIR}/upgrade.py', *sys.argv[1:]]):
             print(
                 "No updates found or update failed."
                 "see the output above for details."
