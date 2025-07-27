@@ -1,4 +1,8 @@
-"""helpers.cli - A helper module for command-line interface operations."""
+""" helpers.cli.py - This module provides a utility class for running shell
+commands in a pseudo-terminal. It includes a method for logging command output
+to a file while displaying it.
+"""
+
 import os
 import pty
 import select
