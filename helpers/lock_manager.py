@@ -1,4 +1,9 @@
-# lock_manager.py
+""" helpers.lock_manager.py - This module provides a LockManager class that
+manages a lock file indicating whether the server is under maintenance. It
+creates or updates the lock file with the current timestamp, and removes it if
+it is older than 3 hours.
+"""
+
 from pathlib import Path
 from datetime import datetime, timedelta
 import os

@@ -1,3 +1,8 @@
+""" helpers.cli_params.py - This module provides command-line argument parsing
+for the GWS Server-side Maintenance Assistant. It defines various flags to
+control the behavior of the application, such as debug mode, unattended mode,
+and web interface mode.
+"""
 import argparse
 
 

@@ -1,6 +1,7 @@
-"""
-setup_check.py contains initialisation functions to check for required commands,
-initialize tmux sessions, and run updates.
+""" helpers.setup_check.py - This module provides functions to check the
+environment setup for the Maintenance Assistant. It checks if the required
+commands are installed, if the virtual environment is activated, and initializes
+a tmux session. It also includes a function to run updates for the application.
 """
 
 import subprocess
