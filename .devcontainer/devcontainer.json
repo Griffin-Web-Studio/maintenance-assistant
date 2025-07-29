@@ -28,7 +28,10 @@
 				"njpwerner.autodocstring",
 				"donjayamanne.python-extension-pack",
 				"donjayamanne.python-environment-manager",
-				"MASSHUU12.too-long-line-limit"
+				"MASSHUU12.too-long-line-limit",
+				"Gruntfuggly.todo-tree",
+				"qwtel.sqlite-viewer",
+				"tal7aouy.icons"
 			]
 		}
 	}
