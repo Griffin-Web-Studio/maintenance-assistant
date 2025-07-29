@@ -49,10 +49,9 @@ class LockManager:
             # Read the timestamp from the lock file
             with open(self.lock_file, 'r') as lock_file:
                 lock_timestamp_str = lock_file.read().strip()
-                print(f"Current lock timestamp: {lock_timestamp_str}")
                 lock_timestamp = datetime.strptime(
                     lock_timestamp_str, "%Y%m%d_%H%M%S")
-                print(f"Lock timestamp: {lock_timestamp}")
+                print(f"Current Lock timestamp: {lock_timestamp}")
 
             # Check if the lock file is older than 3 hours
             if datetime.now() - lock_timestamp > timedelta(hours=3):
