@@ -3,6 +3,7 @@
 
 ## Maintenance Assistant ##
 maintenance.lock
+config.yml
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
