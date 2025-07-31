@@ -1,6 +1,7 @@
 import sys
 from configs.settings import MAIN_BANNER_ARRAY
-from helpers.setup_check import command_installed, init_tmux, run_updates, venv_activated
+from helpers.setup_check import (
+    command_installed, init_tmux, run_updates, venv_activated)
 from utils.text import print_message_array
 
 print_message_array(MAIN_BANNER_ARRAY)
