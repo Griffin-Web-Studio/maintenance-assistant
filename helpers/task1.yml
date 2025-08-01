@@ -1,0 +1,30 @@
+task-version: 0.0.1-dev
+
+task:
+  id: task1
+  order: 1
+  name: Details Collection
+  description: |
+    This task collects details about the current state of the system.
+    It includes gathering information from various sources and preparing
+    a report for further analysis.
+
+steps:
+  - step_1:
+    order: 1
+    description: |
+      description of step 1
+    actions:
+      - action_1:
+        type: command
+        command: echo "Executing action 1"
+        log_output: true
+        post_event:
+          label: Continue to action 2
+          choices:
+            options:
+              accept: "Continue to action 2"
+              reject: "Reject action 1"
+              skip: "Skip action 2"
+              retry: "Retry action 1"
+      - action_2:

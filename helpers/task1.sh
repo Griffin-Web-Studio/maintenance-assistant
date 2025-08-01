@@ -7,7 +7,7 @@ run_task_1() {
     local answer_5
     local answer_6
     local answer_7
-    local task_name="Details Collection"
+    local task_name="Details Collection (Legacy)"
 
     clear
 
