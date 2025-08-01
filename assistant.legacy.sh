@@ -6,8 +6,6 @@ THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
 # The directory where current script resides
 DIR=$(dirname "${THIS}")
 
-up_to_date
-
 maintenance_start_time=$(date +\%Y\%m\%d_\%H\%M)
 
 logDir="$DIR/logs"
@@ -37,37 +35,6 @@ main_banner_text_array=(
 )
 
 log_task "Started Maintenance script"
-
-# check if there is an updates in the remote repo, pull new changes from git and restart script
-check_for_updates() {
-    clear
-
-    log_task "check for updates ⌛"
-
-    printf "$(center_heading_text "Fetching Maintenance Script Updates 🔍")\n\n"
-    # check if there is an updates in the remote repo
-
-    git -C $DIR fetch
-    if [ "$(git -C "$DIR" rev-parse HEAD)" != "$(git -C "$DIR" rev-parse @{u})" ]; then
-
-        printf "$(center_heading_text "Pulling New Updates 📥")\n\n"
-        # pull new changes from git
-        git -C $DIR pull
-
-        wait_for_input "Press any key to restart script... 🔄️"
-
-        up_to_date=true
-
-        printf "$(center_heading_text "Updated Successfuly ✅")\n\n"
-
-        # restart script
-        exec "$DIR/main.sh"
-    fi
-
-    printf "$(center_heading_text "Already Up-to-date ✅")\n\n"
-    wait_for_input "Press any key to start script... 💨"
-    up_to_date=true
-}
 
 # function to display menu and ask user for input
 display_menu() {
@@ -117,11 +84,6 @@ run_task() {
 }
 
 #       ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-# loop to display menu and run tasks
-while [ "$up_to_date" != "true" ]; do
-    check_for_updates
-done
 
 while true; do
     display_menu

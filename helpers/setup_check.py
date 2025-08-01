@@ -21,7 +21,8 @@ def run_updates() -> None:
 
     print("Checking for updates...")
     try:
-        if not cmd.run_and_log(["python", f'{ROOT_DIR}/upgrade.py', *sys.argv[1:]]):
+        # if not cmd.run_and_log(["python", f'{ROOT_DIR}/upgrade.py', *sys.argv[1:]]):
+        if not cmd.run_and_log(["bash", f'{ROOT_DIR}/upgrade.legacy.sh', *sys.argv[1:]]):
             print(
                 "No updates found or update failed."
                 "see the output above for details."
