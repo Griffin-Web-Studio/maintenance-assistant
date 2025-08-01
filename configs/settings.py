@@ -4,6 +4,7 @@ various constants used throughout the application."""
 from pathlib import Path
 from typing import List
 import yaml
+from configs.config_file import init_config_file
 from helpers.lock_manager import LockManager
 
 ROOT_DIR: Path = Path(__file__).resolve().parent.parent
@@ -15,6 +16,8 @@ lock_mgr = LockManager(MAINTENANCE_LOCK)
 LOCK_TIMESTAMP = lock_mgr.get_lock_timestamp()
 LOG_FILE = ROOT_DIR / "logs" / f"maintenance-{LOCK_TIMESTAMP}.log"
 
+
+init_config_file(ROOT_DIR)
 
 # Customisation settings
 with open(ROOT_DIR / 'config.yml', 'r') as file:
