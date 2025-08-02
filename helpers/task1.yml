@@ -12,6 +12,8 @@ task:
 steps:
   - step_1:
     order: 1
+    id: task1_step1
+    name: Collect System Details
     description: |
       description of step 1
     actions:
