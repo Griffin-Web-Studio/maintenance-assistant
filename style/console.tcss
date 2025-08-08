@@ -1,0 +1,12 @@
+#output {
+    margin: 1 1 0 1;
+    border: solid white round;
+    background: black;
+}
+
+#input {
+    border: solid white round;
+    margin: 0 1 1 1;
+    color: green;
+    border-title-color: green;
+}

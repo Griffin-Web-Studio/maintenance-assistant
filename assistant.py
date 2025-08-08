@@ -15,10 +15,16 @@ cmd = CommandRunner()
 
 
 class MyApp(App):
+    CSS_PATH = f"{ROOT_DIR}/style/console.tcss"
 
     def compose(self) -> ComposeResult:
-        yield Log(id="output", highlight=True, auto_scroll=True)
-        yield Input(placeholder=">", id="input")
+        log = Log(id="output", highlight=True,
+                  auto_scroll=True, classes="panel")
+        log.border_title = "Command Output"
+        yield log
+        console_input = Input(placeholder=">", id="input", classes="panel")
+        console_input.border_title = "Interactive Input"
+        yield console_input
 
     async def on_mount(self) -> None:
         self.process = await asyncio.create_subprocess_exec(
