@@ -43,9 +43,11 @@ class MyApp(App):
             while "\n" in buffer:
                 line, buffer = buffer.split("\n", 1)
                 log_widget.write(line + "\n")
+                log_widget.scroll_end(animate=False)
 
         if buffer:
             log_widget.write(buffer)
+            log_widget.scroll_end(animate=False)
 
     async def monitor_process(self):
         await self.process.wait()
