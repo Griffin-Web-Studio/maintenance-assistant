@@ -37,6 +37,8 @@ def run_updates() -> None:
 
     # Restart the script after updates
     os.execv(sys.executable, ['python'] + sys.argv)
+    # and exit once said script stops to prevent re-execution
+    sys.exit(0)
 
 
 def command_installed(command: str, install_instructions: str) -> None:

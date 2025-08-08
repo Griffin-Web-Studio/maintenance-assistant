@@ -32,6 +32,8 @@ def close_tmux_session(session_name) -> None:
     else:
         print(f"No session found with the name '{session_name}'.")
 
+    sys.exit(0)  # Exit the script after closing the session
+
 
 if __name__ == "__main__":
     while True:
