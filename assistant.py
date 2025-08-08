@@ -24,6 +24,7 @@ class MyApp(App):
         yield log
         console_input = Input(placeholder=">", id="input", classes="panel")
         console_input.border_title = "Interactive Input"
+        console_input.focus()
         yield console_input
 
     async def on_mount(self) -> None:
