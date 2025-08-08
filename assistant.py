@@ -1,6 +1,8 @@
 import asyncio
 from textual.app import App, ComposeResult
 from textual.widgets import Log, Input
+from textual.events import Click
+
 
 import sys
 import libtmux
@@ -58,6 +60,11 @@ class MyApp(App):
         self.process.stdin.write(user_input.encode())
         await self.process.stdin.drain()
         message.input.value = ""
+
+    async def on_click(self, event: Click) -> None:
+        print(vars(event))
+        if event.widget.id == "output":
+            self.query_one("#input", Input).focus()
 
 
 def close_tmux_session(session_name) -> None:
