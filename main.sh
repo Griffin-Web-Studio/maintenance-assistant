@@ -22,7 +22,7 @@ else
     sleep 1
 
     # installing pip dependencies
-    pip install -r requirements.txt
+    pip install -r $DIR/requirements.txt
 
     python $DIR/main.py "$@"
 fi
