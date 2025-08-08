@@ -116,9 +116,9 @@ def init_tmux() -> None:
         # Send commands to the panes
         # execute assistant and pass through the current scripts arguments
         window.panes[0].send_keys(
-            f'clear && python {ROOT_DIR}/assistant.py {" ".join(sys.argv[1:])}')
+            f'clear && {ROOT_DIR}/main.sh --assistant {" ".join(sys.argv[1:])}')
         window.panes[1].send_keys(
-            f'clear && python {ROOT_DIR}/queue_worker.py && exit')
+            f'clear && {ROOT_DIR}/main.sh --worker && exit')
         window.panes[2].send_keys(
             'clear && sleep 1 && echo ">_ Use this terminal for manual commands:"')
         window.panes[0].select()  # focus on the first pane

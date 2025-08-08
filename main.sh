@@ -12,6 +12,17 @@ source "$DIR/scripts/helpers/env_check.sh"
 # Activate virtual python environment
 activate_venv
 
-echo "Starting Maintenance..."
-sleep 1
-python $DIR/main.py "$@"
+# add an alias for ls -la commands if --docker flag is provided
+if [[ "$1" == "--assistant" ]]; then
+    python $DIR/assistant.py "$@"
+elif [[ "$1" == "--worker" ]]; then
+    python $DIR/queue_worker.py "$@"
+else
+    echo "Starting Maintenance..."
+    sleep 1
+
+    # installing pip dependencies
+    pip install -r requirements.txt
+
+    python $DIR/main.py "$@"
+fi
