@@ -8,7 +8,7 @@ from packaging.version import Version
 import git
 import git.exc
 
-from helpers.cli_params import parse_args
+from helpers.cli_params import ArgumentsManager
 
 
 def run_upgrade(args: Namespace):
@@ -94,4 +94,5 @@ def run_upgrade(args: Namespace):
 
 
 if __name__ == "__main__":
-    sys.exit(run_upgrade(parse_args()))
+    arg_man = ArgumentsManager()
+    sys.exit(run_upgrade(arg_man.get_args()))
