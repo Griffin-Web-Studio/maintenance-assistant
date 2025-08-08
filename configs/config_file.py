@@ -4,7 +4,7 @@ It ensures that the configuration file exists and is readable, copying a sample
 file if necessary.
 """
 import os
-from click import Path
+from pathlib import Path
 
 
 def init_config_file(root_dir: Path) -> None:
