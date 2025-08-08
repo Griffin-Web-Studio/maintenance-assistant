@@ -1,17 +1,61 @@
-import time
+import asyncio
+from textual.app import App, ComposeResult
+from textual.widgets import Log, Input
+
+import sys
 import libtmux
 
-from configs.settings import ROOT_DIR, SESSION_NAME
+from configs.settings import SESSION_NAME, ROOT_DIR
 from helpers.cli import CommandRunner
+from textual.app import App
 
 cmd = CommandRunner()
 
 
-def countdown(start):
-    # TODO: remove this temp countdown function as it will be replaced by a the actual application logic
-    for i in range(start, -1, -1):
-        print(i)
-        time.sleep(1)
+class MyApp(App):
+
+    def compose(self) -> ComposeResult:
+        yield Log(id="output", highlight=True, auto_scroll=True)
+        yield Input(placeholder=">", id="input")
+
+    async def on_mount(self) -> None:
+        self.process = await asyncio.create_subprocess_exec(
+            f"{ROOT_DIR}/assistant.legacy.sh",
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT
+        )
+        self.output_task = asyncio.create_task(self.read_output())
+        self.monitor_task = asyncio.create_task(self.monitor_process())
+
+    async def read_output(self):
+        log_widget = self.query_one("#output", Log)
+        buffer = ""
+
+        while True:
+            chunk = await self.process.stdout.readline()
+            if not chunk:
+                break
+
+            decoded_chunk = chunk.decode()
+            buffer += decoded_chunk
+
+            while "\n" in buffer:
+                line, buffer = buffer.split("\n", 1)
+                log_widget.write(line + "\n")
+
+        if buffer:
+            log_widget.write(buffer)
+
+    async def monitor_process(self):
+        await self.process.wait()
+        self.exit(message="Process finished.")
+
+    async def on_input_submitted(self, message: Input.Submitted) -> None:
+        user_input = message.value + "\n"
+        self.process.stdin.write(user_input.encode())
+        await self.process.stdin.drain()
+        message.input.value = ""
 
 
 def close_tmux_session(session_name) -> None:
@@ -38,7 +82,8 @@ def close_tmux_session(session_name) -> None:
 if __name__ == "__main__":
     while True:
         print("Starting Maintenance Assistant...")
-        cmd.run(['bash', f'{ROOT_DIR}/assistant.legacy.sh'])
+        app = MyApp()
+        app.run()
         print("Maintenance Assistant has stopped.")
         if input("Do you want to restart the Maintenance Assistant? (y/N): ").lower() != 'y':
             close_tmux_session(SESSION_NAME)
