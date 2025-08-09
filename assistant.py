@@ -15,7 +15,7 @@ cmd = CommandRunner()
 
 
 class MyApp(App):
-    CSS_PATH = f"{ROOT_DIR}/style/console.tcss"
+    CSS_PATH = f"{ROOT_DIR}/app/styles/console.tcss"
 
     def compose(self) -> ComposeResult:
         log = Log(id="output", highlight=True,
