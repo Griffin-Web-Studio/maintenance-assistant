@@ -7,7 +7,7 @@ import yaml
 from pathlib import Path
 from typing import List
 from configs.config_file import init_config_file
-from helpers.lock_manager import LockManager
+from app.utils.lock_manager import LockManager
 
 ROOT_DIR: Path = Path(os.path.dirname(
     sys.modules['__main__'].__file__)).resolve()
