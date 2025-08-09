@@ -6,7 +6,7 @@ import sys
 import yaml
 from pathlib import Path
 from typing import List
-from configs.config_file import init_config_file
+from app.configs.config_file import init_config_file
 from app.utils.lock_manager import LockManager
 
 ROOT_DIR: Path = Path(os.path.dirname(

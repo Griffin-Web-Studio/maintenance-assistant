@@ -1,7 +1,6 @@
-"""configs.config_file - This module houses the configuration file
-initialisation logic for the Griffin Web Studio Maintenance Assistant.
-It ensures that the configuration file exists and is readable, copying a sample
-file if necessary.
+""" config_file - This module houses the configuration file initialisation logic
+for the Griffin Web Studio Maintenance Assistant. It ensures that the
+configuration file exists and is readable, copying a sample file if necessary.
 """
 import os
 from pathlib import Path
@@ -14,7 +13,8 @@ def init_config_file(root_dir: Path) -> None:
     If not, it copies a sample configuration file to the expected location.
 
     Args:
-        root_dir (Path): The root directory of the application where the config file is located.
+        root_dir (Path): The root directory of the application where the config
+        file is located.
     """
 
     config_file = root_dir / "config.yml"
@@ -26,7 +26,10 @@ def init_config_file(root_dir: Path) -> None:
             "does not exist or is not readable.",
             f"\nCopying sample config file to {config_file}.")
 
-        with open(config_file_sample, 'r') as src, open(config_file, 'w') as dst:
+        with (
+            open(config_file_sample, 'r') as src,
+            open(config_file, 'w') as dst
+        ):
             dst.write(src.read())
 
     print("Configuration file is present and readable.")
