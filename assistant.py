@@ -8,7 +8,7 @@ import sys
 import libtmux
 
 from app.configs.constants import SESSION_NAME, ROOT_DIR
-from helpers.cli import CommandRunner
+from app.utils.command_runner import CommandRunner
 from textual.app import App
 
 cmd = CommandRunner()

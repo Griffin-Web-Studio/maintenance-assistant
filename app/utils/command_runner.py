@@ -1,5 +1,5 @@
-""" helpers.cli.py - This module provides a utility class for running shell
-commands in a pseudo-terminal. It includes a method for logging command output
+""" CommandRunner - This module provides a utility class for running shell
+commands in a pseudo-terminal. It includes a methods for logging command output
 to a file while displaying it.
 """
 
