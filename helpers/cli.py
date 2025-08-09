@@ -9,7 +9,7 @@ import select
 import sys
 from typing import List
 
-from configs.settings import LOG_FILE
+from app.configs.constants import LOG_FILE
 
 
 class CommandRunner:

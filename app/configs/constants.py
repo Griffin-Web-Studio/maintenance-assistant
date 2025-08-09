@@ -1,4 +1,4 @@
-"""configs.settings - Configuration settings for the
+"""configs.constants - Configuration settings for the
 Griffin Web Studio Maintenance Assistant application. This module defines
 various constants used throughout the application."""
 from pathlib import Path

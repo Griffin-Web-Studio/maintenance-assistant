@@ -2,7 +2,7 @@
 Form Util Functions
 """
 
-from configs.settings import APP_NAME
+from app.configs.constants import APP_NAME
 
 
 def form_title(title: str) -> str:

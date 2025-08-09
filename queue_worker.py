@@ -3,7 +3,7 @@ import os
 import time
 import subprocess
 
-from configs.settings import ROOT_DIR
+from app.configs.constants import ROOT_DIR
 from utils.cli import clear_lines
 
 QUEUE_FILE = ROOT_DIR / "command_queue.txt"

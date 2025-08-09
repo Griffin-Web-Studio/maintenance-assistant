@@ -10,7 +10,7 @@ import sys
 
 import libtmux
 
-from configs.settings import ROOT_DIR, SESSION_NAME
+from app.configs.constants import ROOT_DIR, SESSION_NAME
 from helpers.cli import CommandRunner
 
 cmd = CommandRunner()

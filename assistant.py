@@ -7,7 +7,7 @@ from textual.events import Click
 import sys
 import libtmux
 
-from configs.settings import SESSION_NAME, ROOT_DIR
+from app.configs.constants import SESSION_NAME, ROOT_DIR
 from helpers.cli import CommandRunner
 from textual.app import App
 
