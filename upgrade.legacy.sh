@@ -10,7 +10,7 @@ maintenance_start_time=$(date +\%Y\%m\%d_\%H\%M)
 logDir="$DIR/logs"
 logFile="$logDir/maintenance-$maintenance_start_time.log"
 
-source "$DIR/utils/utils.sh"
+source "$DIR/scripts/utils/utils.sh"
 
 log_task "check for updates ⌛"
 

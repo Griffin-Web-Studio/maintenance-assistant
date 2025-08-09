@@ -13,7 +13,7 @@ logDir="$DIR/logs"
 logFile="$logDir/maintenance-$maintenance_start_time.log"
 
 # 'Dot' means 'source', i.e. 'include':
-. "$DIR/utils/utils.sh"
+. "$DIR/scripts/utils/utils.sh"
 . "$DIR/tasks/server-init.sh"
 . "$DIR/tasks/task5.sh"
 . "$DIR/tasks/task4.sh"
