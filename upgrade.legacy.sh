@@ -28,9 +28,9 @@ if [ "$(git -C "$DIR" rev-parse HEAD)" != "$(git -C "$DIR" rev-parse @{u})" ]; t
 
     printf "$(center_heading_text "Updated Successfully ✅")\n\n"
 
-    # restart script
-    exec "$DIR/main.sh"
+    exit 1
 fi
 
 printf "$(center_heading_text "Already Up-to-date ✅")\n\n"
 wait_for_input "Press any key to start script... 💨"
+exit 0

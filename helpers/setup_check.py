@@ -21,24 +21,20 @@ def run_updates() -> None:
 
     print("Checking for updates...")
     try:
-        # if not cmd.run_and_log(["python", f'{ROOT_DIR}/upgrade.py', *sys.argv[1:]]):
-        if not cmd.run_and_log(["bash", f'{ROOT_DIR}/upgrade.legacy.sh', *sys.argv[1:]]):
+        if not cmd.run(["bash", f'{ROOT_DIR}/upgrade.legacy.sh', *sys.argv[1:]]):
             print(
                 "No updates found or update failed."
                 "see the output above for details."
             )
 
-            return  # early, no updates found
+            # Restart the script after updates
+            os.execv(sys.executable, ['python'] + sys.argv)
+            sys.exit(0)
 
         print("Updates applied successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error during update: {e}")
         sys.exit(1)
-
-    # Restart the script after updates
-    os.execv(sys.executable, ['python'] + sys.argv)
-    # and exit once said script stops to prevent re-execution
-    sys.exit(0)
 
 
 def command_installed(command: str, install_instructions: str) -> None:
