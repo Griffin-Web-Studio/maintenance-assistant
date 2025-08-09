@@ -18,6 +18,12 @@
 ./main.sh
 ```
 
+## Development
+
+Open two consoles if you are debugging assistant.py
+1. `textual console` or `textual console -v`, and
+2. `textual run --dev assistant.py`
+
 ## Author
 
 **Rihards Simanovics**
