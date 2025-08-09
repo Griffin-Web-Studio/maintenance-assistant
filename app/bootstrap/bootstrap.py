@@ -5,7 +5,7 @@ import sys
 from app.bootstrap.setup_check import init_tmux, run_updates, venv_activated
 from app.configs.constants import MAIN_BANNER_ARRAY
 from app.utils.command_runner import CommandRunner
-from utils.text import print_message_array
+from app.utils.text import print_message_array
 
 
 cmd = CommandRunner()

@@ -4,7 +4,7 @@ import time
 import subprocess
 
 from app.configs.constants import ROOT_DIR
-from utils.cli import clear_lines
+from app.utils.cli import clear_lines
 
 QUEUE_FILE = ROOT_DIR / "command_queue.txt"
 READY_FLAG = ROOT_DIR / "queue.ready"
