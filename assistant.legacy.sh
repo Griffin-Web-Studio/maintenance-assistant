@@ -14,12 +14,12 @@ logFile="$logDir/maintenance-$maintenance_start_time.log"
 
 # 'Dot' means 'source', i.e. 'include':
 . "$DIR/utils/utils.sh"
-. "$DIR/helpers/server-init.sh"
-. "$DIR/helpers/task5.sh"
-. "$DIR/helpers/task4.sh"
-. "$DIR/helpers/task3.sh"
-. "$DIR/helpers/task2.sh"
-. "$DIR/helpers/task1.sh"
+. "$DIR/tasks/server-init.sh"
+. "$DIR/tasks/task5.sh"
+. "$DIR/tasks/task4.sh"
+. "$DIR/tasks/task3.sh"
+. "$DIR/tasks/task2.sh"
+. "$DIR/tasks/task1.sh"
 
 # array of banner text
 main_banner_text_array=(
