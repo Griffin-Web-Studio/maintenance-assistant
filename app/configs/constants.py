@@ -1,13 +1,16 @@
 """configs.constants - Configuration settings for the
 Griffin Web Studio Maintenance Assistant application. This module defines
 various constants used throughout the application."""
+import os
 from pathlib import Path
+import sys
 from typing import List
 import yaml
 from configs.config_file import init_config_file
 from helpers.lock_manager import LockManager
 
-ROOT_DIR: Path = Path(__file__).resolve().parent.parent
+ROOT_DIR: Path = Path(os.path.dirname(
+    sys.modules['__main__'].__file__)).resolve()
 MAINTENANCE_LOCK = ROOT_DIR / "maintenance.lock"
 
 # Create an instance of LockManager
