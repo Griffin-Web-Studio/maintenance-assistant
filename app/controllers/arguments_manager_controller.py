@@ -1,13 +1,13 @@
-""" controller.ArgumentsManager - This module provides command-line argument parsing
-for the GWS Server-side Maintenance Assistant. It defines various flags to
-control the behaviour of the application, such as debug mode, unattended mode,
-and web interface mode.
+""" controller.ArgumentsManagerController - This module provides command-line
+argument parsing controller Maintenance Assistant. It defines various
+subcommands, attributes, and flags to control the behaviour of the application,
+such as debug mode, unattended mode, web interface mode etc.
 """
 import argparse
 import sys
 
 
-class ArgumentsManager():
+class ArgumentsManagerController():
     """ Class to manage application subcommands and arguments"""
 
     _parser = argparse.ArgumentParser(
