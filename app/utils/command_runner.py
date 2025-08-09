@@ -4,6 +4,7 @@ to a file while displaying it.
 """
 import os
 import pty
+import subprocess
 import sys
 import select
 from typing import List
@@ -23,6 +24,28 @@ class CommandRunner:
             Defaults to LOG_FILE.
         """
         self.__log_file = log_file
+
+    def can_execute(self, command: str) -> bool:
+        """Check if a command can be executed on the system.
+
+        Args:
+            command (str): The command to check for installation.
+        """
+
+        try:
+            subprocess.run(
+                ['which', command],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True
+            )
+        except subprocess.CalledProcessError:
+            print(
+                command.capitalize(),
+                " is not installed. Please install it first."
+            )
+            return False
+        return True
 
     def run_and_log(self, command: List[str], log_file: str = LOG_FILE):
         """Run a shell command in a pseudo-terminal to support interactive
@@ -77,10 +100,10 @@ class CommandRunner:
 
         try:
             while True:
-                rlist, _, _ = select.select([fd, sys.stdin], [], [])
-                if fd in rlist and not self.__read_output(fd):
+                read_list, _, _ = select.select([fd, sys.stdin], [], [])
+                if fd in read_list and not self.__read_output(fd):
                     break
-                if sys.stdin in rlist:
+                if sys.stdin in read_list:
                     self.__forward_input(fd)
         except OSError:
             pass
