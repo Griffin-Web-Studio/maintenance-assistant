@@ -2,10 +2,10 @@
 Griffin Web Studio Maintenance Assistant application. This module defines
 various constants used throughout the application."""
 import os
-from pathlib import Path
 import sys
-from typing import List
 import yaml
+from pathlib import Path
+from typing import List
 from configs.config_file import init_config_file
 from helpers.lock_manager import LockManager
 
