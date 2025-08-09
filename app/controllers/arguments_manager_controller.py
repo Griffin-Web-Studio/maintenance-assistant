@@ -1,7 +1,7 @@
-""" controller.ArgumentsManagerController - This module provides command-line
-argument parsing controller Maintenance Assistant. It defines various
-subcommands, attributes, and flags to control the behaviour of the application,
-such as debug mode, unattended mode, web interface mode etc.
+""" ArgumentsManagerController - This module provides command-line argument
+parsing controller Maintenance Assistant. It defines various subcommands,
+attributes, and flags to control the behaviour of the application, such as debug
+mode, unattended mode, web interface mode etc.
 """
 import argparse
 import sys

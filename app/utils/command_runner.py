@@ -2,7 +2,6 @@
 commands in a pseudo-terminal. It includes a methods for logging command output
 to a file while displaying it.
 """
-
 import os
 import pty
 import sys

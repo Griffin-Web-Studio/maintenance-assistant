@@ -1,11 +1,12 @@
-"""configs.constants - Configuration settings for the
-Griffin Web Studio Maintenance Assistant application. This module defines
-various constants used throughout the application."""
+""" constants - This module defines various constants used throughout the
+application.
+"""
 import os
 import sys
 import yaml
 from pathlib import Path
 from typing import List
+
 from app.configs.config_file import init_config_file
 from app.utils.lock_manager import LockManager
 

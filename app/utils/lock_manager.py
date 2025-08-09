@@ -3,10 +3,9 @@ file indicating whether the server is under maintenance. It creates or updates
 said lock file with the current timestamp, and removes it if it is older than 3
 hours.
 """
-
+import os
 from pathlib import Path
 from datetime import datetime, timedelta
-import os
 
 
 class LockManager:
