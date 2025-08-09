@@ -8,7 +8,7 @@ from packaging.version import Version
 import git
 import git.exc
 
-from helpers.cli_params import ArgumentsManager
+from app.controllers.ArgumentsManager import ArgumentsManager
 
 
 def run_upgrade(args: Namespace):
