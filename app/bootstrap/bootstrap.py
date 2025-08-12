@@ -37,8 +37,7 @@ def bootstrap():
         print("Run what? Please re-run use -h for more info")
         return
 
-    # TODO: Uncomment the following line when the update script is ready
-    if args.skip_updates_check:
+    if not args.skip_updates_check:
         run_updates()
 
     if not cmd.can_execute('tmux'):
