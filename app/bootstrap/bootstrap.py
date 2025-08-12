@@ -23,6 +23,9 @@ def bootstrap():
     arg_parse = ArgumentParser()
     args = arg_parse.parse_args()
 
+    if args.debug:
+        print(args)
+
     if args.command == "run":
         if args.run == "assistant":
             assistant()
