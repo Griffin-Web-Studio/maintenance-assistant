@@ -1,4 +1,5 @@
 #!/bin/bash
+skip_dep_check=false
 
 # Full path of the current script
 THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
@@ -14,7 +15,15 @@ activate_venv
 
 sleep 1
 
-if [[ "$1" == "--skip-dep-check" ]]; then
+# find arguments
+for arg in "$@"; do
+    if [[ "$arg" == "--skip-dep-check" ]]; then
+        skip_dep_check=true
+        break
+    fi
+done
+
+if $skip_dep_check; then
     echo "Skipping pip install due to --skip-dep-check flag."
     python $DIR/main.py "$@"
 else
