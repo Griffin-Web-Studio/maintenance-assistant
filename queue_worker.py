@@ -53,7 +53,7 @@ def main():
         time.sleep(POLL_INTERVAL)
 
 
-if __name__ == "__main__":
+def queue_worker():
     # add blinking text to indicate the worker is not yet implemented
     blinking_text = ("❗️Queue worker is not yet implemented. "
                      "Keep tabs on for feature updates.")
@@ -73,3 +73,7 @@ if __name__ == "__main__":
         clear_lines(3)
 
     # main()  # Uncomment this line to run the worker when ready
+
+
+if __name__ == "__main__":
+    queue_worker()

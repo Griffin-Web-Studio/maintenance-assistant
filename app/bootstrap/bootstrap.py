@@ -7,6 +7,8 @@ from app.configs.constants import MAIN_BANNER_ARRAY
 from app.utils.argument_parser import ArgumentParser
 from app.utils.command_runner import CommandRunner
 from app.utils.text import print_message_array
+from assistant import assistant
+from queue_worker import queue_worker
 
 
 cmd = CommandRunner()
@@ -23,12 +25,10 @@ def bootstrap():
 
     if args.command == "run":
         if args.run == "assistant":
-            print("Hi!")
+            assistant()
             return
         if args.run == "worker":
-            print(
-                "So work 'til you bleed, ennobled by labour\n"
-                "Then purchase relief from your local retailer")
+            queue_worker()
             return
 
         print("Run what? Please re-run use -h for more info")

@@ -95,7 +95,7 @@ def close_tmux_session(session_name) -> None:
     sys.exit(0)  # Exit the script after closing the session
 
 
-if __name__ == "__main__":
+def assistant():
     while True:
         print("Starting Maintenance Assistant...")
         app = MyApp()
@@ -103,3 +103,7 @@ if __name__ == "__main__":
         print("Maintenance Assistant has stopped.")
         if input("Do you want to restart the Maintenance Assistant? (y/N): ").lower() != 'y':
             close_tmux_session(SESSION_NAME)
+
+
+if __name__ == "__main__":
+    assistant()
