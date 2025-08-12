@@ -7,6 +7,7 @@ import pty
 import subprocess
 import sys
 import select
+import time
 from typing import List
 
 from app.configs.constants import LOG_FILE
@@ -62,7 +63,7 @@ class CommandRunner:
 
         return self.run(command)
 
-    def run(self, command: List[str]) -> bool:
+    def run(self, command: List[str], force_line_flush: bool = False) -> bool:
         """Run a shell command in a pseudo-terminal to support interactive
         applications.
 
@@ -73,18 +74,19 @@ class CommandRunner:
         Returns:
             bool: True if the command ran successfully, False otherwise.
         """
+
         try:
             pid, fd = pty.fork()
             if pid == 0:
                 # Child process
                 os.execvp(command[0], command)
             else:
-                return self.__monitor_process(pid, fd)
+                return self.__monitor_process(pid, fd, force_line_flush)
         except Exception as e:
             print(f"Error running command: {e}")
             return False
 
-    def __monitor_process(self, pid: int, fd: int) -> bool:
+    def __monitor_process(self, pid: int, fd: int, force_line_flush: bool = False) -> bool:
         """Monitors the child process and handles interactive I/O.
 
         Uses `select` to multiplex between the child process's output and
@@ -93,24 +95,48 @@ class CommandRunner:
         Args:
             pid (int): Process ID of the child.
             fd (int): File descriptor for the pseudo-terminal.
+            force_line_flush (bool, optional): whether STDOUT should force line
+                flush - useful when what reads the output of cmd buffers lines.
+                Defaults to False.
 
         Returns:
             bool: True if the process exited successfully, False otherwise.
         """
+        last_partial_time = None
 
         try:
             while True:
-                read_list, _, _ = select.select([fd, sys.stdin], [], [])
-                if fd in read_list and not self.__read_output(fd):
-                    break
+                read_list, _, _ = select.select([fd, sys.stdin], [], [], 0.1)
+
+                if fd in read_list:
+                    result = self.__read_output(fd)
+
+                    if result is None:
+                        break
+
+                    _, ends_with_newline = result
+
+                    if ends_with_newline:
+                        last_partial_time = None
+                    else:
+                        if last_partial_time is None:
+                            last_partial_time = time.time()
+
+                if force_line_flush and last_partial_time:
+                    if time.time() - last_partial_time > 1:
+                        os.write(sys.stdout.fileno(), b"\n")
+                        last_partial_time = None
+
                 if sys.stdin in read_list:
                     self.__forward_input(fd)
+
         except OSError:
             pass
+
         _, status = os.waitpid(pid, 0)
         return os.WIFEXITED(status) and os.WEXITSTATUS(status) == 0
 
-    def __read_output(self, fd: int) -> bool:
+    def __read_output(self, fd: int) -> tuple[bytes, bool] | None:
         """Reads output from the child process and writes it to stdout.
 
         Also writes the output to the log file if logging is enabled.
@@ -119,24 +145,24 @@ class CommandRunner:
             fd (int): File descriptor for the pseudo-terminal.
 
         Returns:
-            bool: True if output was read successfully, False if EOF or error.
+            tuple[bytes, bool] | None: Output bytes and whether it ends with newline.
         """
 
         try:
             output = os.read(fd, 1024)
 
             if not output:
-                return False
+                return None
 
             if self.__log_file:
                 with open(self.__log_file, "ab") as f:
                     f.write(output)
 
             os.write(sys.stdout.fileno(), output)
-            return True
+            return output, output.endswith(b"\n")
 
         except OSError:
-            return False
+            return None
 
     def __forward_input(self, fd: int):
         """Reads user input from stdin and forwards it to the child process.
