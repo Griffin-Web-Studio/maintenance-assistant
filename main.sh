@@ -1,5 +1,6 @@
 #!/bin/bash
 skip_dep_check=false
+debug_mode=false
 
 # Full path of the current script
 THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
@@ -20,6 +21,8 @@ for arg in "$@"; do
     if [[ "$arg" == "--skip-dep-check" ]]; then
         skip_dep_check=true
         break
+    elif [[ "$arg" == "--debug" || "$arg" == "-d" ]]; then
+        debug_mode=true
     fi
 done
 
@@ -27,13 +30,15 @@ if $skip_dep_check; then
     echo "Skipping pip install due to --skip-dep-check flag."
     python $DIR/main.py "$@"
 else
-    echo "Starting Maintenance..."
-    printf "3 "
-    sleep 1
-    printf "2 "
-    sleep 1
-    printf "1"
-    sleep 1
+    if ! $debug_mode; then
+        printf "3 "
+        sleep 1
+        printf "2 "
+        sleep 1
+        printf "1"
+        echo ""
+        sleep 1
+    fi
 
     # installing pip dependencies
     pip install -r $DIR/requirements.txt
