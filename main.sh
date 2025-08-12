@@ -42,6 +42,12 @@ else
         sleep 1
     fi
 
+    # Upgrading pip
+    pip install --upgrade pip \
+        --log $DIR/logs/pip/install-$maintenance_start_time.log \
+        --require-virtualenv \
+        $(if ! $debug_mode; then echo " -q --no-input"; fi)
+
     # installing pip dependencies
     pip install -r $DIR/requirements.txt \
         --log $DIR/logs/pip/install-$maintenance_start_time.log \
