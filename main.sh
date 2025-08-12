@@ -29,9 +29,10 @@ for arg in "$@"; do
 done
 
 if $skip_dep_check; then
-    echo "Skipping pip install due to --skip-dep-check flag."
+    echo "⏩️  Skipping pip install due to --skip-dep-check flag."
     python $DIR/main.py "$@"
 else
+    echo "▶️  Starting Pre-Maintenance Environment..."
     if ! $debug_mode; then
         printf "3 "
         sleep 1
@@ -43,15 +44,19 @@ else
     fi
 
     # Upgrading pip
+    echo "📥️  Checking pip for upgrades..."
     pip install --upgrade pip \
         --log $DIR/logs/pip/install-$maintenance_start_time.log \
         --require-virtualenv \
         $(if ! $debug_mode; then echo " -q --no-input"; fi)
 
     # installing pip dependencies
+    echo "📦️  Checking that all Python dependencies are in place..."
     pip install -r $DIR/requirements.txt \
         --log $DIR/logs/pip/install-$maintenance_start_time.log \
         --require-virtualenv \
         $(if ! $debug_mode; then echo " -q --no-input"; fi)
+
+    echo "✅ Pre-Maintenance Environment setup. Elevating to Python."
     python $DIR/main.py "$@"
 fi
