@@ -12,17 +12,21 @@ source "$DIR/scripts/helpers/env_check.sh"
 # Activate virtual python environment
 activate_venv
 
-# add an alias for ls -la commands if --docker flag is provided
-if [[ "$1" == "--assistant" ]]; then
-    python $DIR/assistant.py "$@"
-elif [[ "$1" == "--worker" ]]; then
-    python $DIR/queue_worker.py "$@"
+sleep 1
+
+if [[ "$1" == "--skip-dep-check" ]]; then
+    echo "Skipping pip install due to --skip-dep-check flag."
+    python $DIR/main.py "$@"
 else
     echo "Starting Maintenance..."
+    printf "3 "
+    sleep 1
+    printf "2 "
+    sleep 1
+    printf "1"
     sleep 1
 
     # installing pip dependencies
     pip install -r $DIR/requirements.txt
-
     python $DIR/main.py "$@"
 fi
