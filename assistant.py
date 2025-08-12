@@ -29,7 +29,7 @@ class MyApp(App):
 
     async def on_mount(self) -> None:
         self.process = await asyncio.create_subprocess_exec(
-            f"{ROOT_DIR}/assistant.legacy.sh",
+            "python", f"{ROOT_DIR}/main.py", "run", "legacy", "assistant",
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT

@@ -3,7 +3,7 @@
 
 import sys
 from app.bootstrap.setup_check import init_tmux, run_updates, tmux_activated, venv_activated
-from app.configs.constants import MAIN_BANNER_ARRAY
+from app.configs.constants import MAIN_BANNER_ARRAY, ROOT_DIR
 from app.utils.argument_parser import ArgumentParser
 from app.utils.command_runner import CommandRunner
 from app.utils.text import print_message_array
@@ -38,7 +38,8 @@ def bootstrap():
                       f"tmux active: {tmux_activated()}\n"
                       f"venv active: {venv_activated()}\n")
             return
-        if args.run == "worker":
+
+        elif args.run == "worker":
             if tmux_activated() and venv_activated():
                 queue_worker()
             else:
@@ -46,6 +47,11 @@ def bootstrap():
                       "See printout below:\n"
                       f"tmux active: {tmux_activated()}\n"
                       f"venv active: {venv_activated()}\n")
+            return
+
+        elif args.run == "legacy" and getattr(args, 'legacy', False):
+            cmd.run(["bash", f'{ROOT_DIR}/assistant.legacy.sh',
+                    *sys.argv[1:]], force_line_flush=True)
             return
 
         print("Run what? Please re-run use -h for more info")

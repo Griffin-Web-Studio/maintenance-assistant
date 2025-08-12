@@ -35,8 +35,8 @@ class ArgumentParser(argparse.ArgumentParser):
 
         args = super().parse_args()
 
-        if args.command == 'run' and args.run:
-            if args.log and not args.log_path:
+        if args.command == 'run' and args.run != "legacy":
+            if not getattr(args, 'legacy', None) and args.log and not args.log_path:
                 print("Error: -L or --log-path is required when logging is enabled.")
                 sys.exit(1)
 
@@ -55,6 +55,7 @@ class ArgumentParser(argparse.ArgumentParser):
         self._add_run_module_parser("assistant")
         self._add_run_module_parser("upgrade")
         self._add_run_module_parser("worker")
+        self._add_temp_legacy_run_module_parser()
 
     def _set_script_subparser(
             self, parser: argparse.ArgumentParser, dest: str, **kwargs):
@@ -133,15 +134,16 @@ class ArgumentParser(argparse.ArgumentParser):
         self._set_script_subparser(
             dest="run", parser=run_parser, help="What Module Should be run")
 
-    def _add_run_module_parser(self, name: str):
+    def _add_run_module_parser(self, name: str, subparser: str = "run"):
         """sets the sub command modules and their args for the run subparser.
         some of the run commands have common arguments so this is here to
         provide ability to aupdate them all simultaneously.
 
         Args:
             name (str): Name of the module
+            subparser (str, optional): subparser to use. Defaults to "run".
         """
-        run_subparser = self._get_script_subparser("run")
+        run_subparser = self._get_script_subparser(subparser)
 
         run_module_parser: ArgumentParser = run_subparser.add_parser(
             name, help=f"Run {name} module")
@@ -161,3 +163,21 @@ class ArgumentParser(argparse.ArgumentParser):
             default=False,
             help="Will the executed command be logged?",
         )
+
+    def _add_temp_legacy_run_module_parser(self):
+        """sets the sub command modules and their args for the run subparser.
+        some of the run commands have common arguments so this is here to
+        provide ability to aupdate them all simultaneously.
+
+        Args:
+            name (str): Name of the module
+        """
+        run_subparser = self._get_script_subparser("run")
+
+        run_module_parser: ArgumentParser = run_subparser.add_parser(
+            "legacy", help="Run legacy module")
+
+        self._set_script_subparser(
+            parser=run_module_parser, dest="legacy", help="legacy module runner")
+
+        self._add_run_module_parser("assistant", "legacy")
