@@ -35,7 +35,8 @@ def bootstrap():
         return
 
     # TODO: Uncomment the following line when the update script is ready
-    run_updates()
+    if args.skip_updates_check:
+        run_updates()
 
     if not cmd.can_execute('tmux'):
         print(

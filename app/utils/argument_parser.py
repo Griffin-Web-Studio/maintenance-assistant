@@ -117,6 +117,11 @@ class ArgumentParser(argparse.ArgumentParser):
             help="Skip dependencies check?",
         )
         self.add_argument(
+            "--skip-updates-check",
+            action="store_true",
+            help="Skip Updates check?",
+        )
+        self.add_argument(
             "-w", "--web", action="store_true", help="is running web interface?"
         )
 
