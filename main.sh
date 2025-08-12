@@ -43,6 +43,9 @@ else
     fi
 
     # installing pip dependencies
-    pip install -r $DIR/requirements.txt -log $DIR/logs/pip/install-$maintenance_start_time.log
+    pip install -r $DIR/requirements.txt \
+        --log $DIR/logs/pip/install-$maintenance_start_time.log \
+        --require-virtualenv \
+        $(if ! $debug_mode; then echo " -q --no-input"; fi)
     python $DIR/main.py "$@"
 fi
