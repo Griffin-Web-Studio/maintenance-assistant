@@ -22,9 +22,9 @@ def init_config_file(root_dir: Path) -> None:
 
     if not config_file.exists() or not os.access(config_file, os.R_OK):
         print(
-            f"Configuration file {config_file}",
+            f"🫗  Configuration file {config_file}",
             "does not exist or is not readable.",
-            f"\nCopying sample config file to {config_file}.")
+            f"\n📖  Copying sample config file to {config_file}.")
 
         with (
             open(config_file_sample, 'r') as src,
@@ -32,4 +32,4 @@ def init_config_file(root_dir: Path) -> None:
         ):
             dst.write(src.read())
 
-    print("Configuration file is present and readable.")
+    print("📜  Configuration file is present and readable.")

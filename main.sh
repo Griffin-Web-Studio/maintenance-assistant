@@ -57,5 +57,5 @@ else
         $(if ! $debug_mode; then echo " -q --no-input"; fi)
 fi
 
-echo "✅ Pre-Maintenance Environment setup. Elevating to Python."
+echo "✅  Pre-Maintenance Environment setup. Elevating to Python."
 python $DIR/main.py "$@"

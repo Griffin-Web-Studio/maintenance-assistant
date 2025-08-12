@@ -17,6 +17,8 @@ cmd = CommandRunner()
 def bootstrap():
     """Bootstrap"""
 
+    print("✅ Python Maintenance bootstrap loaded correctly.\n")
+
     print_message_array(MAIN_BANNER_ARRAY)
     print("")
 

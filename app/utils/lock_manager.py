@@ -32,9 +32,12 @@ class LockManager:
 
     def __create_lock_file(self) -> None:
         """ Create a lock file with the current timestamp."""
+
         lock_timestamp_str = self.__get_current_timestamp()
+
         with open(self.lock_file, 'w') as lock_file:
             lock_file.write(lock_timestamp_str)
+
         print(f"Lock file created with timestamp: {lock_timestamp_str}")
 
     def get_lock_timestamp(self) -> str:
@@ -44,18 +47,20 @@ class LockManager:
         Returns:
             str: The current timestamp used for the lock file.
         """
+
         if self.lock_file.exists():
             # Read the timestamp from the lock file
             with open(self.lock_file, 'r') as lock_file:
                 lock_timestamp_str = lock_file.read().strip()
                 lock_timestamp = datetime.strptime(
                     lock_timestamp_str, "%Y%m%d_%H%M%S")
-                print(f"\nCurrent Lock timestamp: {lock_timestamp}\n")
+
+                print(f"⏳️  Current Lock timestamp: {lock_timestamp}")
 
             # Check if the lock file is older than 3 hours
             if datetime.now() - lock_timestamp > timedelta(hours=3):
                 os.remove(self.lock_file)  # Remove the old lock file
-                print("Lock file is older than 3 hours, removed.")
+                print("⌛️  Lock file is older than 3 hours, removed.")
                 lock_timestamp_str = self.__get_current_timestamp()
         else:
             # Create a new lock file if it doesn't exist
