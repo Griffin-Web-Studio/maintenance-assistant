@@ -112,6 +112,11 @@ class ArgumentParser(argparse.ArgumentParser):
             help="is running unattended?",
         )
         self.add_argument(
+            "--skip-dep-check",
+            action="store_true",
+            help="Skip dependencies check?",
+        )
+        self.add_argument(
             "-w", "--web", action="store_true", help="is running web interface?"
         )
 
