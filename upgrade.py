@@ -8,8 +8,6 @@ from packaging.version import Version
 import git
 import git.exc
 
-from app.controllers.arguments_manager_controller import ArgumentsManagerController
-
 
 def run_upgrade(args: Namespace):
     print("\n/ / / / / Fetching Maintenance Script Updates 🔍 / / / / /\n")
@@ -91,8 +89,3 @@ def run_upgrade(args: Namespace):
         sys.exit(0)
     else:
         print("You are on the latest version.")
-
-
-if __name__ == "__main__":
-    arg_man = ArgumentsManagerController()
-    sys.exit(run_upgrade(arg_man.get_args()))

@@ -4,6 +4,7 @@
 import sys
 from app.bootstrap.setup_check import init_tmux, run_updates, venv_activated
 from app.configs.constants import MAIN_BANNER_ARRAY
+from app.utils.argument_parser import ArgumentParser
 from app.utils.command_runner import CommandRunner
 from app.utils.text import print_message_array
 
@@ -16,6 +17,9 @@ def bootstrap():
 
     print_message_array(MAIN_BANNER_ARRAY)
     print("")
+
+    arg_parse = ArgumentParser()
+    args = arg_parse.parse_args()
 
     # TODO: Uncomment the following line when the update script is ready
     run_updates()
