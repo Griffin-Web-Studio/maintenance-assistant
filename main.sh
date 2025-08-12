@@ -30,7 +30,6 @@ done
 
 if $skip_dep_check; then
     echo "⏩️  Skipping pip install due to --skip-dep-check flag."
-    python $DIR/main.py "$@"
 else
     echo "▶️  Starting Pre-Maintenance Environment..."
     if ! $debug_mode; then
@@ -56,7 +55,7 @@ else
         --log $DIR/logs/pip/install-$maintenance_start_time.log \
         --require-virtualenv \
         $(if ! $debug_mode; then echo " -q --no-input"; fi)
-
-    echo "✅ Pre-Maintenance Environment setup. Elevating to Python."
-    python $DIR/main.py "$@"
 fi
+
+echo "✅ Pre-Maintenance Environment setup. Elevating to Python."
+python $DIR/main.py "$@"
