@@ -21,6 +21,19 @@ def bootstrap():
     arg_parse = ArgumentParser()
     args = arg_parse.parse_args()
 
+    if args.command == "run":
+        if args.run == "assistant":
+            print("Hi!")
+            return
+        if args.run == "worker":
+            print(
+                "So work 'til you bleed, ennobled by labour\n"
+                "Then purchase relief from your local retailer")
+            return
+
+        print("Run what? Please re-run use -h for more info")
+        return
+
     # TODO: Uncomment the following line when the update script is ready
     run_updates()
 
