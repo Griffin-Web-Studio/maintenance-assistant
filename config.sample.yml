@@ -1,5 +1,5 @@
 config:
-  app_name: Griffin Web Studio Maintenance Assistant
+  app_name: Griffin Web Studio | Maintenance Assistant
   session_name: gws_maintenance_session
   main_banner: |
     >>0100011101010111010100110010000001001101001000000011000000

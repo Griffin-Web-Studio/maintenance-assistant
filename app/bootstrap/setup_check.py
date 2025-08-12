@@ -21,7 +21,8 @@ def run_updates() -> None:
 
     print("Checking for updates...")
     try:
-        if not cmd.run(["bash", f'{ROOT_DIR}/upgrade.legacy.sh', *sys.argv[1:]]):
+        if not cmd.run(
+                ["bash", f'{ROOT_DIR}/upgrade.legacy.sh', *sys.argv[1:]]):
             print(
                 "No updates found or update failed."
                 "see the output above for details."
@@ -52,7 +53,12 @@ def venv_activated() -> bool:
     Returns:
         bool: True if running inside a virtual environment, False otherwise.
     """
-    return hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
+    return (
+        hasattr(sys, 'real_prefix') or (
+            hasattr(sys, 'base_prefix')
+            and sys.base_prefix != sys.prefix
+        )
+    )
 
 
 def init_tmux() -> None:
@@ -83,19 +89,30 @@ def init_tmux() -> None:
             vertical=True)  # right_top_pane
 
         # Send commands to the panes
+
         # execute assistant and pass through the current scripts arguments
         window.panes[0].send_keys(
-            f'clear && python {ROOT_DIR}/main.py {" ".join(sys.argv[1:])} run assistant')
+            f"clear && python {ROOT_DIR}/main.py {" ".join(sys.argv[1:])} "
+            "run assistant")
+
+        # execute worker and pass through the current scripts arguments
         window.panes[1].send_keys(
-            f'clear && python {ROOT_DIR}/main.py {" ".join(sys.argv[1:])} run worker && exit')
+            f"clear && python {ROOT_DIR}/main.py {" ".join(sys.argv[1:])} "
+            "run worker && exit")
+
+        # open clean shell pane
         window.panes[2].send_keys(
-            'clear && sleep 1 && echo ">_ Use this terminal for manual commands:"')
-        window.panes[0].select()  # focus on the first pane
+            'clear && sleep 1 && '
+            'echo ">_ Use this terminal for manual commands:"')
+
+        # focus on the first pane
+        window.panes[0].select()
 
         try:
             session.attach()
         except Exception:
             print(
-                "Session closed, feel free to reattach later using"
+                "Session closed or detached.\n"
+                "if it is detached feel free to reattach later using"
                 f"`tmux attach -t {SESSION_NAME}`")
             sys.exit(0)
