@@ -23,16 +23,14 @@ def run_updates() -> None:
     try:
         if not cmd.run(
                 ["bash", f'{ROOT_DIR}/upgrade.legacy.sh', *sys.argv[1:]]):
-            print(
-                "No updates found or update failed."
-                "see the output above for details."
-            )
+            print("Updates applied successfully.")
 
             # Restart the script after updates
             os.execv(sys.executable, ['python'] + sys.argv)
             sys.exit(0)
 
-        print("Updates applied successfully.")
+        print("No updates found or update failed. "
+              "See the output above for details.")
     except subprocess.CalledProcessError as e:
         print(f"Error during update: {e}")
         sys.exit(1)
