@@ -1,4 +1,4 @@
-""" helpers.setup_check.py - This module provides functions to check the
+""" bootstrap.setup_check - This module provides functions to check the
 environment setup for the Maintenance Assistant. It checks if the required
 commands are installed, if the virtual environment is activated, and initializes
 a tmux session. It also includes a function to run updates for the application.
