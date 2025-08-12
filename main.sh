@@ -8,6 +8,8 @@ THIS=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)
 # The directory where current script resides
 DIR=$(dirname "${THIS}")
 
+maintenance_start_time=$(date +\%Y\%m\%d_\%H\%M)
+
 # import bundles
 source "$DIR/scripts/helpers/env_check.sh"
 
@@ -41,6 +43,6 @@ else
     fi
 
     # installing pip dependencies
-    pip install -r $DIR/requirements.txt
+    pip install -r $DIR/requirements.txt -log $DIR/logs/pip/install-$maintenance_start_time.log
     python $DIR/main.py "$@"
 fi
