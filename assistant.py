@@ -3,7 +3,7 @@ from textual.app import App, ComposeResult
 from textual.widgets import Log, Input
 from textual.events import Click
 
-
+import re
 import sys
 import libtmux
 
@@ -11,6 +11,7 @@ from app.configs.constants import SESSION_NAME, ROOT_DIR
 from app.utils.command_runner import CommandRunner
 from textual.app import App
 
+CLEAR_SCREEN_PATTERN = re.compile(r"\x1b\[H\x1b\[J")
 cmd = CommandRunner()
 
 
@@ -48,6 +49,12 @@ class MyApp(App):
 
             decoded_chunk = chunk.decode()
             buffer += decoded_chunk
+
+            # Check for clear screen sequence
+            if CLEAR_SCREEN_PATTERN.search(buffer):
+                # Remove everything before and including the clear screen sequence
+                buffer = CLEAR_SCREEN_PATTERN.split(buffer, maxsplit=1)[-1]
+                log_widget.clear()
 
             while "\n" in buffer:
                 line, buffer = buffer.split("\n", 1)
