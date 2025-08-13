@@ -1,6 +1,7 @@
 """ bootstrap - just a bootstrap file :)
 """
 
+import os
 import sys
 from app.bootstrap.setup_check import init_tmux, run_updates, tmux_activated, venv_activated
 from app.configs.constants import MAIN_BANNER_ARRAY, ROOT_DIR
@@ -49,10 +50,10 @@ def bootstrap():
                       f"venv active: {venv_activated()}\n")
             return
 
-        elif args.run == "legacy" and getattr(args, 'legacy', False):
-            cmd.run(["bash", f'{ROOT_DIR}/assistant.legacy.sh',
-                    *sys.argv[1:]], force_line_flush=True)
-            return
+        elif args.run == "legacy" and getattr(args, 'legacy', False) == "assistant":
+            os.execv(
+                "/bin/bash", ['bash', f'{ROOT_DIR}/assistant.legacy.sh'] + sys.argv[1:])
+            sys.exit(0)
 
         print("Run what? Please re-run use -h for more info")
         return

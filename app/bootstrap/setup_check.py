@@ -91,7 +91,7 @@ def init_tmux() -> None:
         # execute assistant and pass through the current scripts arguments
         window.panes[0].send_keys(
             f'clear && {ROOT_DIR}/main.sh --skip-updates-check --skip-dep-check {" ".join(sys.argv[1:])} '
-            "run assistant")
+            "run legacy assistant")
 
         # execute worker and pass through the current scripts arguments
         window.panes[1].send_keys(
