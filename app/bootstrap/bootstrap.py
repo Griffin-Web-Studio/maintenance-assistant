@@ -8,8 +8,8 @@ from app.configs.constants import MAIN_BANNER_ARRAY, ROOT_DIR
 from app.utils.argument_parser import ArgumentParser
 from app.utils.command_runner import CommandRunner
 from app.utils.text import print_message_array
-from assistant import assistant
-from queue_worker import queue_worker
+from app.assistant import assistant
+from app.queue_worker import queue_worker
 
 
 cmd = CommandRunner()
