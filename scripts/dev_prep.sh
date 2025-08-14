@@ -32,7 +32,7 @@ fi
 
 # Install required Python packages
 echo "Installing required packages..."
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 # Install pre-commit hooks
 echo "Installing pre-commit hooks..."

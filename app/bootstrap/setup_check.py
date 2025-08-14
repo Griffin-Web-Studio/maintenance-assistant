@@ -26,7 +26,7 @@ def run_updates() -> None:
             print("Updates applied successfully.")
 
             # Restart the script after updates
-            os.execv(sys.executable, ['python'] + sys.argv)
+            os.execv(sys.executable, ['python3'] + sys.argv)
             sys.exit(0)
 
         print("No updates found or update failed. "

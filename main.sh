@@ -44,18 +44,18 @@ else
 
     # Upgrading pip
     echo "📥️  Checking pip for upgrades..."
-    pip install --upgrade pip \
+    pip3 install --upgrade pip \
         --log $DIR/logs/pip/install-$maintenance_start_time.log \
         --require-virtualenv \
         $(if ! $debug_mode; then echo " -q --no-input"; fi)
 
     # installing pip dependencies
     echo "📦️  Checking that all Python dependencies are in place..."
-    pip install -r $DIR/requirements.txt \
+    pip3 install -r $DIR/requirements.txt \
         --log $DIR/logs/pip/install-$maintenance_start_time.log \
         --require-virtualenv \
         $(if ! $debug_mode; then echo " -q --no-input"; fi)
 fi
 
 echo "✅  Pre-Maintenance Environment setup. Elevating to Python."
-python $DIR/main.py "$@"
+python3 $DIR/main.py "$@"

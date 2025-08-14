@@ -54,7 +54,7 @@ class CommandRunner:
 
         Args:
             command (List[str]): The command to run,
-            e.g., ['python', 'script.py']
+            e.g., ['python3', 'script.py']
 
             log_file (str, optional): Path to the log file.
             Defaults to LOG_FILE.
@@ -69,7 +69,7 @@ class CommandRunner:
 
         Args:
             command (List[str]): The command to run,
-            e.g., ['python', 'script.py']
+            e.g., ['python3', 'script.py']
 
         Returns:
             bool: True if the command ran successfully, False otherwise.
