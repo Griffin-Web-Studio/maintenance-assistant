@@ -178,10 +178,10 @@ run_init_0() {
         print_message_array "${description_text_array[@]}"
 
         printf "Current Time & Timezone:\n"
-        timedatectl
+        sudo timedatectl
 
         printf "\n\nCurrent Locale:\n"
-        locale
+        sudo locale
 
         printf "\n\n"
         wait_for_input "Press any key when you are ready to set timezone..."
@@ -191,17 +191,17 @@ run_init_0() {
         shopt -u nocasematch
         case $set_timezone_string in
             "")
-                timedatectl set-timezone Europe/London
+                sudo timedatectl set-timezone Europe/London
                 ;;
             *)
-                timedatectl set-timezone "$set_timezone_string"
+                sudo timedatectl set-timezone "$set_timezone_string"
                 ;;
         esac
 
         printf "\n\n$(center_heading_text "Here is the new Timezone values")\n\n"
 
         printf "\nCurrent Time & Timezone:\n"
-        timedatectl
+        sudo timedatectl
 
         printf "\n\n"
         wait_for_input "Press any key when you are ready to set locale..."
@@ -212,11 +212,11 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Generating Locale \"en_GB.UTF-8 UTF-8\"")\n\n"
 
-        locale-gen en_GB.UTF-8
+        sudo locale-gen en_GB.UTF-8
 
         printf "\n$(center_heading_text "Updating Locale \"en_GB.UTF-8 UTF-8\"")\n\n"
 
-        update-locale en_GB.UTF-8 UTF-8
+        sudo update-locale en_GB.UTF-8 UTF-8
 
         printf "\n$(center_heading_text "Updating Locale \"en_GB.UTF-8 UTF-8\"")\n\n"
 
@@ -249,16 +249,16 @@ run_init_0() {
 
         printf "\n$(center_heading_text "Enforcing retention of custom hostname")\n\n"
 
-        sed -i '/preserve_hostname: false/c\preserve_hostname: true' /etc/cloud/cloud.cfg
+        sudo sed -i '/preserve_hostname: false/c\preserve_hostname: true' /etc/cloud/cloud.cfg
 
         printf "\n$(center_heading_text "Setting the Hostname")\n\n"
 
         wait_for_input "Press any key when you are ready to set the hostname..."
         clear_lines 1
         
-        read -p "please Specify the server hostname (e.g. "gws-uk-1"): " set_hostname_string
+        read -p "please Specify the server hostname (e.g. "srv-idnt-1"): " set_hostname_string
 
-        hostnamectl set-hostname "$set_hostname_string.gwssecureserver.co.uk"
+        sudo hostnamectl set-hostname "$set_hostname_string"
 
         wait_for_input "Press any key when you are ready to set MOT.d message..."
 
@@ -271,9 +271,9 @@ run_init_0() {
         motd_10_help_text="/etc/update-motd.d/10-help-text"
 
         # Use sed to comment out the specific lines
-        sed -i 's|^printf " \* Documentation:  https://help.ubuntu.com\\n"|#&|' "$motd_10_help_text"
-        sed -i 's|^printf " \* Management:     https://landscape.canonical.com\\n"|#&|' "$motd_10_help_text"
-        sed -i 's|^printf " \* Support:        https://ubuntu.com/pro\\n"|#&|' "$motd_10_help_text"
+        sudo sed -i 's|^printf " \* Documentation:  https://help.ubuntu.com\\n"|#&|' "$motd_10_help_text"
+        sudo sed -i 's|^printf " \* Management:     https://landscape.canonical.com\\n"|#&|' "$motd_10_help_text"
+        sudo sed -i 's|^printf " \* Support:        https://ubuntu.com/pro\\n"|#&|' "$motd_10_help_text"
 
         wait_for_input "Press any key when you are ready to go to next task..."
     }
