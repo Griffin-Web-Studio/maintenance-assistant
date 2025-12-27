@@ -100,14 +100,14 @@ run_init_0() {
         if sudo grep -q "^PermitRootLogin" "$SSH_CONFIG"; then
             sudo sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' "$SSH_CONFIG"
         else
-            echo "PermitRootLogin no" >> "$SSH_CONFIG"
+            sudo echo "PermitRootLogin no" >> "$SSH_CONFIG"
         fi
 
         # Update PasswordAuthentication to no
         if sudo grep -q "^PasswordAuthentication" "$SSH_CONFIG"; then
             sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$SSH_CONFIG"
         else
-            echo "PasswordAuthentication no" >> "$SSH_CONFIG"
+            sudo echo "PasswordAuthentication no" >> "$SSH_CONFIG"
         fi
 
         # Handle the cloud-init SSH config
@@ -115,7 +115,7 @@ run_init_0() {
             if sudo grep -q "^PasswordAuthentication" "$CLOUD_INIT_CONFIG"; then
                 sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$CLOUD_INIT_CONFIG"
             else
-                echo "PasswordAuthentication no" >> "$CLOUD_INIT_CONFIG"
+                sudo echo "PasswordAuthentication no" >> "$CLOUD_INIT_CONFIG"
             fi
         else
             echo "Cloud-init SSH config file not found."
