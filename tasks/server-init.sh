@@ -4,7 +4,7 @@ run_init_0() {
     local answer_99
     local task_name="Init: Server Initialiser"
     local SSH_CONFIG="/etc/ssh/sshd_config"
-    local CLOUD_INIT_CONFIG="/etc/ssh/50-cloud-init.conf"
+    local CLOUD_INIT_CONFIG="/etc/ssh/sshd_config.d/50-cloud-init.conf"
     local CURRENT_USER=$(whoami)
 
 
