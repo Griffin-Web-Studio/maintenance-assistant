@@ -96,23 +96,23 @@ run_init_0() {
         wait_for_input "Press any key when you are ready..."
 
         # Update PermitRootLogin to no
-        if grep -q "^PermitRootLogin" "$SSH_CONFIG"; then
-            sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' "$SSH_CONFIG"
+        if sudo grep -q "^PermitRootLogin" "$SSH_CONFIG"; then
+            sudo sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' "$SSH_CONFIG"
         else
             echo "PermitRootLogin no" >> "$SSH_CONFIG"
         fi
 
         # Update PasswordAuthentication to no
-        if grep -q "^PasswordAuthentication" "$SSH_CONFIG"; then
-            sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$SSH_CONFIG"
+        if sudo grep -q "^PasswordAuthentication" "$SSH_CONFIG"; then
+            sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$SSH_CONFIG"
         else
             echo "PasswordAuthentication no" >> "$SSH_CONFIG"
         fi
 
         # Handle the cloud-init SSH config
         if [ -f "$CLOUD_INIT_CONFIG" ]; then
-            if grep -q "^PasswordAuthentication" "$CLOUD_INIT_CONFIG"; then
-                sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$CLOUD_INIT_CONFIG"
+            if sudo grep -q "^PasswordAuthentication" "$CLOUD_INIT_CONFIG"; then
+                sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$CLOUD_INIT_CONFIG"
             else
                 echo "PasswordAuthentication no" >> "$CLOUD_INIT_CONFIG"
             fi
@@ -121,8 +121,8 @@ run_init_0() {
         fi
 
         # Set AllowUsers to only the current user
-        if grep -q "^AllowUsers" "$SSH_CONFIG"; then
-            sed -i "s/^AllowUsers.*/AllowUsers $CURRENT_USER/" "$SSH_CONFIG"
+        if sudo grep -q "^AllowUsers" "$SSH_CONFIG"; then
+            sudo sed -i "s/^AllowUsers.*/AllowUsers $CURRENT_USER/" "$SSH_CONFIG"
         else
             echo "AllowUsers $CURRENT_USER" >> "$SSH_CONFIG"
         fi
