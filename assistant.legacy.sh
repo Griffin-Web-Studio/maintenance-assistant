@@ -54,6 +54,16 @@ display_menu() {
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${description_text_array[@]}"
 
+    # Check if the script is run as root or with sudo
+    if [ "$EUID" -eq 0 ]; then
+        printf "  ===============================================\n"
+        printf "  = \e[5mThis script cannot be run as the root user.\e[0m =\n"
+        printf "  ===============================================\n\n"
+        printf "  INSTEAD! Run it as a user who has root privileges\n"
+        printf "           and elevate as needed.\n\n"
+        exit 1
+    fi
+
     printf "Server Maintenance Menu:\n\n"
     printf "==========================\n"
     printf "1. Preperation\n"
