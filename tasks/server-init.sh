@@ -311,6 +311,8 @@ run_init_0() {
         sudo apt-get install btop snapd screen -y
 
         echo "Would you like to install Netdata?"
+        printf "\n1) yes\n"
+        printf "2) no (skip)\n\n"
         read -p "Possible answers (1/2): " install_netdata
 
         shopt -u nocasematch
@@ -339,6 +341,8 @@ run_init_0() {
         sudo systemctl start clamav-freshclam
 
         echo "Would you like to install Netdbird?"
+        printf "\n1) yes\n"
+        printf "2) no (skip)\n\n"
         read -p "Possible answers (1/2): " install_netbird
 
         shopt -u nocasematch
