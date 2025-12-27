@@ -97,23 +97,29 @@ run_init_0() {
 
         # Update PermitRootLogin to no
         if sudo grep -q "^PermitRootLogin" "$SSH_CONFIG"; then
+            echo "Override \"^PermitRootLogin\" to \"PermitRootLogin no\" in the $SSH_CONFIG"
             sudo sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' "$SSH_CONFIG"
         else
+            echo "Add \"PermitRootLogin no\" in the $SSH_CONFIG"
             echo "PermitRootLogin no" | sudo tee -a "$SSH_CONFIG" > /dev/null
         fi
 
         # Update PasswordAuthentication to no
         if sudo grep -q "^PasswordAuthentication" "$SSH_CONFIG"; then
+            echo "Override \"^PasswordAuthentication\" to \"PasswordAuthentication no\" in the $SSH_CONFIG"
             sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$SSH_CONFIG"
         else
+            echo "Add \"PasswordAuthentication no\" in the $SSH_CONFIG"
             echo "PasswordAuthentication no" | sudo tee -a "$SSH_CONFIG" > /dev/null
         fi
 
         # Handle the cloud-init SSH config
         if [ -f "$CLOUD_INIT_CONFIG" ]; then
             if sudo grep -q "^PasswordAuthentication" "$CLOUD_INIT_CONFIG"; then
+                echo "Override \"^PasswordAuthentication\" to \"PasswordAuthentication no\" in the $CLOUD_INIT_CONFIG"
                 sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$CLOUD_INIT_CONFIG"
             else
+                echo "Add \"PasswordAuthentication no\" in the $CLOUD_INIT_CONFIG"
                 echo "PasswordAuthentication no" | sudo tee -a "$CLOUD_INIT_CONFIG" > /dev/null
             fi
         else
@@ -122,8 +128,10 @@ run_init_0() {
 
         # Set AllowUsers to only the current user
         if sudo grep -q "^AllowUsers" "$SSH_CONFIG"; then
+            echo "Override \"^AllowUsers\" to \"AllowUsers $CURRENT_USER\" in the $SSH_CONFIG"
             sudo sed -i "s/^AllowUsers.*/AllowUsers $CURRENT_USER/" "$SSH_CONFIG"
         else
+            echo "Add \"AllowUsers $CURRENT_USER\" in the $SSH_CONFIG"
             echo "AllowUsers $CURRENT_USER" | sudo tee -a "$SSH_CONFIG" > /dev/null
         fi
 
