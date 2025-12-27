@@ -3,6 +3,8 @@ run_init_0() {
     local answer_1
     local answer_99
     local task_name="Init: Server Initialiser"
+    local SSH_CONFIG="/etc/ssh/sshd_config"
+    local CLOUD_INIT_CONFIG="/etc/ssh/50-cloud-init.conf"
 
 
 
@@ -44,7 +46,8 @@ run_init_0() {
         shopt -u nocasematch
         case $log_main_start_time in
             1)
-                sudo passwd root
+                sudo passwd
+                sudo usermod -s /usr/sbin/nologin root
 
                 answer_1=true
                 ;;
@@ -82,7 +85,7 @@ run_init_0() {
             "NOTE: that they may be on different lines from each other, however always in the\n"
             "same file):\n\n"
 
-            "    PermitRootLogin without-password\n"
+            "    PermitRootLogin no\n"
             "    PasswordAuthentication no\n\n"
         )
 
@@ -92,7 +95,37 @@ run_init_0() {
 
         wait_for_input "Press any key when you are ready..."
 
-        sudo nano /etc/ssh/sshd_config
+        # Update PermitRootLogin to no
+        if grep -q "^PermitRootLogin" "$SSH_CONFIG"; then
+            sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' "$SSH_CONFIG"
+        else
+            echo "PermitRootLogin no" >> "$SSH_CONFIG"
+        fi
+
+        # Update PasswordAuthentication to no
+        if grep -q "^PasswordAuthentication" "$SSH_CONFIG"; then
+            sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$SSH_CONFIG"
+        else
+            echo "PasswordAuthentication no" >> "$SSH_CONFIG"
+        fi
+
+        # Handle the cloud-init SSH config
+        if [ -f "$CLOUD_INIT_CONFIG" ]; then
+            if grep -q "^PasswordAuthentication" "$CLOUD_INIT_CONFIG"; then
+                sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$CLOUD_INIT_CONFIG"
+            else
+                echo "PasswordAuthentication no" >> "$CLOUD_INIT_CONFIG"
+            fi
+        else
+            echo "Cloud-init SSH config file not found."
+        fi
+
+        # Set AllowUsers to only the current user
+        if grep -q "^AllowUsers" "$SSH_CONFIG"; then
+            sed -i "s/^AllowUsers.*/AllowUsers $CURRENT_USER/" "$SSH_CONFIG"
+        else
+            echo "AllowUsers $CURRENT_USER" >> "$SSH_CONFIG"
+        fi
 
         wait_for_input "Press any key when you are ready to add your SSH public key..."
 
@@ -101,7 +134,6 @@ run_init_0() {
         wait_for_input "Press any key to restart the SSH Server..."
 
         sudo service sshd restart
-        sudo service ssh restart
 
         wait_for_input "Press any key when you are ready to proceed to next task..."
     }
