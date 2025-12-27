@@ -306,20 +306,27 @@ run_init_0() {
 
         wait_for_input "Press any key when you are ready to run install additional packages..."
 
-        printf "\n$(center_heading_text "Installing: btop, snapd, backblaze-b2, and screen")\n\n"
+        printf "\n$(center_heading_text "Installing: btop, snapd, and screen")\n\n"
 
-        sudo apt-get install btop snapd screen backblaze-b2 -y
+        sudo apt-get install btop snapd screen -y
 
-        printf "\n$(center_heading_text "prep: backblaze backup script")\n\n"
+        echo "Would you like to install Netdata?"
+        read -p "Possible answers (1/2): " install_netdata
 
-        mkdir -p /opt/j6dlh6-backup-util/{backups,logs,scripts}
+        shopt -u nocasematch
+        case $install_netdata in
+            1)
+                printf "\n$(center_heading_text "Installing: netdata")\n\n"
 
-        sudo curl -o /opt/j6dlh6-backup-util/scripts/backup.sh https://gitlab.griffin-studio.dev/external-projects/b2-backup-script/-/raw/main/auto_backup.sh
-
-        printf "\n$(center_heading_text "Installing: netdata")\n\n"
-
-        sudo curl -o /tmp/netdata-kickstart.sh https://get.netdata.cloud/kickstart.sh
-        sh /tmp/netdata-kickstart.sh
+                sudo curl -o /tmp/netdata-kickstart.sh https://get.netdata.cloud/kickstart.sh
+                sh /tmp/netdata-kickstart.sh
+                ;;
+            2)
+                printf "\nOk no Netdata\n\n"
+                clear
+                ;;
+            *) echo "Invalid answer, assuming no" ;;
+        esac
 
         printf "\n$(center_heading_text "Installing: Clam-AV Antivirus")\n\n"
 
@@ -331,16 +338,29 @@ run_init_0() {
 
         sudo systemctl start clamav-freshclam
 
-        printf "\n$(center_heading_text "Installing: VPN")\n\n"
+        echo "Would you like to install Netdbird?"
+        read -p "Possible answers (1/2): " install_netbird
 
-        curl -fsSL https://pkgs.netbird.io/install.sh | sh
-        
-        read -p "please Specify VPN Management URL (e.g. "https://vpn.your-org.com"): " set_vpn_management_url
-        
-        read -p "please Specify VPN Management Key (e.g. "xxx-xxx-xxx-xxx-xxx"): " set_vpn_management_key
+        shopt -u nocasematch
+        case $install_netbird in
+            1)
+                printf "\n$(center_heading_text "Installing: VPN")\n\n"
 
-        netbird up --management-url "$set_vpn_management_url" --setup-key "$set_vpn_management_key"
-        netbird down
+                curl -fsSL https://pkgs.netbird.io/install.sh | sh
+
+                read -p "please Specify VPN Management URL (e.g. "https://vpn.your-org.com"): " set_vpn_management_url
+        
+                read -p "please Specify VPN Management Key (e.g. "xxx-xxx-xxx-xxx-xxx"): " set_vpn_management_key
+
+                netbird up --management-url "$set_vpn_management_url" --setup-key "$set_vpn_management_key"
+                netbird down
+                ;;
+            2)
+                printf "\nOk no Netbird\n\n"
+                clear
+                ;;
+            *) echo "Invalid answer, assuming no" ;;
+        esac
 
         wait_for_input "Press any key when you added the VPN peer to the appropriet group, and applied the specific policies..."
 
