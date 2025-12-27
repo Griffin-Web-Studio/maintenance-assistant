@@ -100,14 +100,14 @@ run_init_0() {
         if sudo grep -q "^PermitRootLogin" "$SSH_CONFIG"; then
             sudo sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' "$SSH_CONFIG"
         else
-            sudo echo "PermitRootLogin no" >> "$SSH_CONFIG"
+            echo "PermitRootLogin no" | sudo tee -a "$SSH_CONFIG" > /dev/null
         fi
 
         # Update PasswordAuthentication to no
         if sudo grep -q "^PasswordAuthentication" "$SSH_CONFIG"; then
             sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$SSH_CONFIG"
         else
-            sudo echo "PasswordAuthentication no" >> "$SSH_CONFIG"
+            echo "PasswordAuthentication no" | sudo tee -a "$SSH_CONFIG" > /dev/null
         fi
 
         # Handle the cloud-init SSH config
@@ -115,7 +115,7 @@ run_init_0() {
             if sudo grep -q "^PasswordAuthentication" "$CLOUD_INIT_CONFIG"; then
                 sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$CLOUD_INIT_CONFIG"
             else
-                sudo echo "PasswordAuthentication no" >> "$CLOUD_INIT_CONFIG"
+                echo "PasswordAuthentication no" | sudo tee -a "$CLOUD_INIT_CONFIG" > /dev/null
             fi
         else
             echo "Cloud-init SSH config file not found."
@@ -125,7 +125,7 @@ run_init_0() {
         if sudo grep -q "^AllowUsers" "$SSH_CONFIG"; then
             sudo sed -i "s/^AllowUsers.*/AllowUsers $CURRENT_USER/" "$SSH_CONFIG"
         else
-            sudo echo "AllowUsers $CURRENT_USER" >> "$SSH_CONFIG"
+            echo "AllowUsers $CURRENT_USER" | sudo tee -a "$SSH_CONFIG" > /dev/null
         fi
 
         wait_for_input "Press any key when you are ready to add your SSH public key..."
