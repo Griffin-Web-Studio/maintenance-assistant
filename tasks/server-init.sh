@@ -49,6 +49,12 @@ run_init_0() {
             1)
                 sudo passwd
                 sudo usermod -s /usr/sbin/nologin root
+                printf "\n$(center_heading_text "Test Password")\n\n"
+
+                printf "Now open a new terminal window, reconnect and try the new password, if it didn't\n"
+                printf "work, hit \"Ctr + C\" and use \"passwd root\" command to change the password again.\n\n"
+
+                wait_for_input "Press any key when you finished test the password..."
 
                 answer_1=true
                 ;;
@@ -59,13 +65,6 @@ run_init_0() {
                 ;;
             *) echo "Invalid answer, please enter (1/2)" ;;
         esac
-
-        printf "\n$(center_heading_text "Test Password")\n\n"
-
-        printf "Now open a new terminal window, reconnect and try the new password, if it didn't\n"
-        printf "work, hit \"Ctr + C\" and use \"passwd root\" command to change the password again.\n\n"
-
-        wait_for_input "Press any key when you finished test the password..."
     }
 
 
