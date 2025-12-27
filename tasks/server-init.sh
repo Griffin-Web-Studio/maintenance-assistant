@@ -124,7 +124,7 @@ run_init_0() {
         if sudo grep -q "^AllowUsers" "$SSH_CONFIG"; then
             sudo sed -i "s/^AllowUsers.*/AllowUsers $CURRENT_USER/" "$SSH_CONFIG"
         else
-            echo "AllowUsers $CURRENT_USER" >> "$SSH_CONFIG"
+            sudo echo "AllowUsers $CURRENT_USER" >> "$SSH_CONFIG"
         fi
 
         wait_for_input "Press any key when you are ready to add your SSH public key..."
