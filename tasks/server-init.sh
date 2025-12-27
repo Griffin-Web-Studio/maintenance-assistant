@@ -141,7 +141,18 @@ run_init_0() {
 
         wait_for_input "Press any key to restart the SSH Server..."
 
-        sudo service sshd restart
+        # Determine the correct SSH service name
+        if sudo systemctl is-active --quiet sshd; then
+            SSH_SERVICE="sshd"
+        elif sudo systemctl is-active --quiet ssh; then
+            SSH_SERVICE="ssh"
+        else
+            echo "No active SSH service found."
+            exit 1
+        fi
+
+        # Restart the appropriate SSH service
+        sudo systemctl restart "$SSH_SERVICE"
 
         wait_for_input "Press any key when you are ready to proceed to next task..."
     }
