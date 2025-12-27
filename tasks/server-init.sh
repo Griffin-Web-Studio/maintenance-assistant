@@ -391,21 +391,30 @@ run_init_0() {
         "6) Package upgrade\n"
         "7) Install additional nececery backages\n"
         "8) Distro upgrade\n"
-        "9) DO Last Reboot\n"
+        "9) DO Last Reboot\n\n\n"
 
-        "\n\nDid you complete Steps 1-4?\n\n"
+        "Did you complete Steps 1-4?\n\n"
+        "1) yes\n"
+        "2) no\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
 
-
-
-    read -p "Possible answers (Anything other than "n"/"no" is considered as yes): " first_reboot
+    read -p "Possible answers (1/2): " first_reboot_done
 
     shopt -u nocasematch
-    case $first_reboot in
-        n|no|2)
+    case $first_reboot_done in
+        1)
+            set_server_identifier
+            update_server_packages
+            
+
+            while [ "$answer_99" != "true" ]; do
+                complete_step
+            done
+            ;;
+        2)
             while [ "$answer_1" != "true" ]; do
                 change_root_password
             done
@@ -413,13 +422,7 @@ run_init_0() {
             check_sshd_config
             set_locale_and_timezone
             ;;
+        *) echo "Invalid answer, please enter (1/2)" ;;
     esac
 
-    set_server_identifier
-    update_server_packages
-    
-
-    while [ "$answer_99" != "true" ]; do
-        complete_step
-    done
 }
