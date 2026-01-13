@@ -36,5 +36,5 @@ textual-dev==1.7.0
 textual-serve==1.1.2
 typing_extensions==4.14.1
 uc-micro-py==1.0.3
-virtualenv==20.33.1
+virtualenv==20.36.1
 yarl==1.20.1
