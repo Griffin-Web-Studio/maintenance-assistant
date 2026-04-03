@@ -1,6 +1,7 @@
 #!/bin/bash
 run_init_0() {
     local answer_1
+    local answer_2
     local answer_99
     local task_name="Init: Server Initialiser"
     local SSH_CONFIG="/etc/ssh/sshd_config"
@@ -379,6 +380,90 @@ run_init_0() {
 
 
 
+    # function to check/install/configure unattended-upgrades
+    setup_unattended_upgrades() {
+        clear
+
+        local pkg_status
+        pkg_status=$(dpkg-query -W -f='${Status}' unattended-upgrades 2>/dev/null)
+
+        if echo "$pkg_status" | grep -q "ok installed"; then
+            description_text_array=(
+                "$(center_heading_text "Unattended Upgrades")\n\n"
+                "unattended-upgrades is already installed and active.\n"
+                "Skipping installation.\n\n"
+            )
+
+            print_message_array "${main_banner_text_array[@]}"
+            print_message_array "${task_description_text_array[@]}"
+            print_message_array "${description_text_array[@]}"
+
+            wait_for_input "Press any key to continue to the next step..."
+
+            answer_2=true
+            return
+        fi
+
+        description_text_array=(
+            "$(center_heading_text "Unattended Upgrades")\n\n"
+            "unattended-upgrades is NOT currently installed on this system.\n\n"
+            "Installing it will allow the server to automatically apply security\n"
+            "and package updates daily at 6:00 AM without manual intervention.\n\n"
+            "Would you like to install and enable unattended-upgrades\n"
+            "(scheduled to run at 06:00 daily)?\n\n"
+            "1) yes\n"
+            "2) no\n"
+            "3) no (skip step)\n\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+
+        read -p "Possible answers (1/2/3): " setup_unattended_upgrades_check
+        printf "\n"
+        clear_lines 1
+
+        local timer_override_dir="/etc/systemd/system/apt-daily-upgrade.timer.d"
+        local timer_override_file="$timer_override_dir/override.conf"
+
+        shopt -u nocasematch
+        case $setup_unattended_upgrades_check in
+        1)
+            clear
+            printf "\n$(center_heading_text "Installing unattended-upgrades")\n\n"
+
+            sudo apt-get install -y unattended-upgrades
+
+            printf "\n$(center_heading_text "Configuring schedule: 06:00 daily")\n\n"
+
+            sudo mkdir -p "$timer_override_dir"
+            printf '[Timer]\nOnCalendar=\nOnCalendar=*-*-* 06:00:00\nRandomizedDelaySec=0\n' \
+                | sudo tee "$timer_override_file" > /dev/null
+
+            sudo systemctl daemon-reload
+            sudo systemctl enable --now apt-daily-upgrade.timer
+
+            printf "\n$(center_heading_text "Unattended Upgrades configured successfully")\n\n"
+
+            wait_for_input "Press any key when you ready to go to the next step..."
+
+            answer_2=true
+            ;;
+        2)
+            clear_lines 1
+            answer_2=false
+            ;;
+        3)
+            clear_lines 1
+            answer_2=true
+            ;;
+        *) echo "Invalid answer, please enter (1/2/3)" ;;
+        esac
+    }
+
+
+
     # function to ask user if they completed the backup process
     complete_step() {
         clear
@@ -432,7 +517,10 @@ run_init_0() {
         1)
             set_server_identifier
             update_server_packages
-            
+
+            while [ "$answer_2" != "true" ]; do
+                setup_unattended_upgrades
+            done
 
             while [ "$answer_99" != "true" ]; do
                 complete_step
