@@ -48,10 +48,24 @@ change_password_step() {
 
         sudo passwd "${_username}"
 
-        # Always enforce root shell lock — prevents root from regaining
-        # interactive login regardless of which user's password was changed.
-        sudo usermod -s /usr/sbin/nologin root
-        log_answer "Root shell login" "disabled"
+        # Prompt to disable root shell — default yes, but skippable for servers
+        # where root access is required (e.g. Plesk).
+        read -p "Disable root shell login? [Y/n]: " _disable_root_shell
+        _disable_root_shell="${_disable_root_shell,,}"
+        if [ -z "$_disable_root_shell" ] || [ "$_disable_root_shell" = "y" ]; then
+            sudo usermod -s /usr/sbin/nologin root
+            log_answer "Root shell login" "disabled"
+        else
+            # If root was previously locked, restore it to bash
+            local _current_root_shell
+            _current_root_shell=$(getent passwd root | cut -d: -f7)
+            if [ "$_current_root_shell" = "/usr/sbin/nologin" ]; then
+                sudo usermod -s /bin/bash root
+                log_answer "Root shell login" "re-enabled (restored to /bin/bash)"
+            else
+                log_answer "Root shell login" "left enabled (shell: ${_current_root_shell})"
+            fi
+        fi
 
         log_answer "Password changed for '${_username}'" "complete"
 
