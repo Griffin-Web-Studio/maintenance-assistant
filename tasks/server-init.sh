@@ -40,7 +40,7 @@ run_init_0() {
         description_text_array=(
             #********************************************************************************.\n
             "$(center_heading_text "Set The Clock & Locale")\n\n"
-            "Now let's set the clock to the correct region.\n\n"
+            "Now let's set the clock to the correct timezone.\n\n"
 
             "When we begin, first we will set the correct timezone per server location.\n"
             "Then we will set the correct locale which will always be English GB.\n\n"
@@ -61,7 +61,7 @@ run_init_0() {
         printf "\n\n"
         wait_for_input "Press any key when you are ready to set timezone..."
         
-        read -p "please Specify the timezone (default: Europe/London): " set_timezone_string
+        read -p "Please specify the timezone (default: Europe/London): " set_timezone_string
 
         shopt -u nocasematch
         case $set_timezone_string in
@@ -73,7 +73,7 @@ run_init_0() {
                 ;;
         esac
 
-        printf "\n\n$(center_heading_text "Here is the new Timezone values")\n\n"
+        printf "\n\n$(center_heading_text "Here are the new Timezone Values")\n\n"
 
         printf "\nCurrent Time & Timezone:\n"
         sudo timedatectl
@@ -89,16 +89,16 @@ run_init_0() {
 
         sudo locale-gen en_GB.UTF-8
 
-        printf "\n$(center_heading_text "Updating Locale \"en_GB.UTF-8 UTF-8\"")\n\n"
+        printf "\n$(center_heading_text "Updating Locale via update-locale")\n\n"
 
         sudo update-locale en_GB.UTF-8 UTF-8
 
-        printf "\n$(center_heading_text "Updating Locale \"en_GB.UTF-8 UTF-8\"")\n\n"
+        printf "\n$(center_heading_text "Updating Locale via localectl")\n\n"
 
         sudo localectl set-locale LANG=en_GB.UTF-8 LANGUAGE=en_GB:en
 
-        printf "\n\nOk Everything as it should be?\n"
-        wait_for_input "If so press any key when you are ready to reboot..."
+        printf "\n\nIs everything as it should be?\n"
+        wait_for_input "If so, press any key when you are ready to reboot..."
 
         sudo reboot
     }
@@ -111,9 +111,9 @@ run_init_0() {
         description_text_array=(
             #********************************************************************************.\n
             "$(center_heading_text "Set Server Identifier")\n\n"
-            "Now let's make sure that this server is identifieble when SSH into it.\n\n"
+            "Now let's make sure that this server is identifiable when SSH'd into it.\n\n"
 
-            "First we will set the server hostname, then mod.d banner to reflect it's\n"
+            "First we will set the server hostname, then the MOTD banner to reflect its\n"
             "Geographical location and unit encoded in the identifier e.g. gws-uk-1 GWS UK 1.\n\n"
         )
 
@@ -131,17 +131,17 @@ run_init_0() {
         wait_for_input "Press any key when you are ready to set the hostname..."
         clear_lines 1
         
-        read -p "please Specify the server hostname (e.g. "srv-idnt-1"): " set_hostname_string
+        read -p "Please specify the server hostname (e.g. "srv-idnt-1"): " set_hostname_string
 
         sudo hostnamectl set-hostname "$set_hostname_string"
 
-        wait_for_input "Press any key when you are ready to set MOT.d message..."
+        wait_for_input "Press any key when you are ready to set the MOTD message..."
 
-        printf "\n$(center_heading_text "Setting the MOT.d banner")\n\n"
+        printf "\n$(center_heading_text "Setting the MOTD Banner")\n\n"
 
         sudo nano /etc/update-motd.d/00-header
 
-        printf "\n$(center_heading_text "Setting the MOT.d banner")\n\n"
+        printf "\n$(center_heading_text "Disabling Default MOTD Links")\n\n"
 
         motd_10_help_text="/etc/update-motd.d/10-help-text"
 
@@ -179,7 +179,7 @@ run_init_0() {
         sudo apt-get clean
         sudo apt-get autoremove -y
 
-        wait_for_input "Press any key when you are ready to run install additional packages..."
+        wait_for_input "Press any key when you are ready to install additional packages..."
 
         printf "\n$(center_heading_text "Installing: btop, snapd, and screen")\n\n"
 
@@ -215,7 +215,7 @@ run_init_0() {
 
         sudo systemctl start clamav-freshclam
 
-        echo "Would you like to install Netdbird?"
+        echo "Would you like to install Netbird?"
         printf "\n1) yes\n"
         printf "2) no (skip)\n\n"
         read -p "Possible answers (1/2): " install_netbird
@@ -227,9 +227,9 @@ run_init_0() {
 
                 curl -fsSL https://pkgs.netbird.io/install.sh | sh
 
-                read -p "please Specify VPN Management URL (e.g. "https://vpn.your-org.com"): " set_vpn_management_url
-        
-                read -p "please Specify VPN Management Key (e.g. "xxx-xxx-xxx-xxx-xxx"): " set_vpn_management_key
+                read -p "Please specify the VPN Management URL (e.g. "https://vpn.your-org.com"): " set_vpn_management_url
+
+                read -p "Please specify the VPN Management key (e.g. "xxx-xxx-xxx-xxx-xxx"): " set_vpn_management_key
 
                 netbird up --management-url "$set_vpn_management_url" --setup-key "$set_vpn_management_key"
                 netbird down
@@ -241,7 +241,7 @@ run_init_0() {
             *) echo "Invalid answer, assuming no" ;;
         esac
 
-        wait_for_input "Press any key when you added the VPN peer to the appropriet group, and applied the specific policies..."
+        wait_for_input "Press any key once you have added the VPN peer to the appropriate group and applied the specific policies..."
 
         wait_for_input "Press any key when you are ready to run Dist Upgrade..."
 
@@ -261,13 +261,13 @@ run_init_0() {
 
 
 
-    # function to ask user if they completed the backup process
+    # function to show completion screen and reboot
     complete_step() {
         clear
 
         local description_text_array=(
             "$(center_heading_text "Task 0 Completed ✅")\n\n"
-            "Nice Work! The Server is now initialised!\n\n"
+            "Nice Work! The server is now initialised!\n\n"
         )
 
         print_message_array "${main_banner_text_array[@]}"
@@ -295,7 +295,7 @@ run_init_0() {
         "4) DO First reboot\n"
         "5) Set Server Identifier\n"
         "6) Package upgrade\n"
-        "7) Install additional nececery backages\n"
+        "7) Install additional necessary packages\n"
         "8) Distro upgrade\n"
         "9) DO Last Reboot\n\n\n"
 
