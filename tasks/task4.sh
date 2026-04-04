@@ -1,5 +1,6 @@
 #!/bin/bash
 . "$DIR/scripts/helpers/change_password.sh"
+. "$DIR/scripts/helpers/check_sshd_config.sh"
 
 run_task_4() {
     local answer_1
@@ -33,57 +34,9 @@ run_task_4() {
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # Step to enforce SSH config (shared helper — skip allowed, no key setup needed)
     check_sshd_config() {
-        clear
-        
-        description_text_array=(
-            #********************************************************************************.\n
-            "$(center_heading_text "SSH Server")\n\n"
-            "Nice work! Now let make sure the serer security configurations and just security\n"
-            "in general is in good order, first we must must check the ssh configurations.\n\n"
-
-            "When you say YES, a nano editor will open, in there you must make sure that\n"
-            "These two configs are like this, feel free to copy them (PLEASE NOTE that they\n"
-            "may be on different lines from each other, however always in the same file):\n\n"
-            "    PermitRootLogin without-password\n"
-            "    PasswordAuthentication no\n\n"
-            "Do you wish to proceed (we will tempereraly elivate your privilaes to sudo)?\n\n"
-            "1) yes\n"
-            "2) no (skip)\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2): " log_main_start_time
-
-        shopt -u nocasematch
-        case $log_main_start_time in
-        1)
-            clear_lines 1
-            log_answer "Started Checking the SSH Config" "yes"
-
-            sudo nano /etc/ssh/sshd_config
-
-            log_answer "compleated Checking the SSH Config" "yes"
-
-            wait_for_input "Press any key to restart the SSH Server..."
-
-            sudo service sshd restart
-
-            log_answer "SSH Server Restarted" "yes"
-
-            answer_1=true
-            ;;
-        2)
-            clear_lines 1
-            answer_1=true
-            log_answer "Started Checking the SSH Config" "no"
-            ;;
-        *) echo "Invalid answer, please enter (1/2)" ;;
-        esac
+        check_sshd_config_step "answer_1" "$CURRENT_USER" "true" "false"
     }
 
 

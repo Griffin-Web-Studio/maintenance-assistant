@@ -1,10 +1,12 @@
 #!/bin/bash
 . "$DIR/scripts/helpers/unattended_upgrades.sh"
 . "$DIR/scripts/helpers/change_password.sh"
+. "$DIR/scripts/helpers/check_sshd_config.sh"
 
 run_init_0() {
     local answer_1
     local answer_1b
+    local answer_sshd
     local answer_2
     local answer_99
     local task_name="Init: Server Initialiser"
@@ -25,92 +27,9 @@ run_init_0() {
 
 
 
-    # Step to configure SSHD, prevent root password login with root
+    # Step to configure SSHD (shared helper — no skip, authorized_keys setup included)
     check_sshd_config() {
-        clear
-        
-        description_text_array=(
-            #********************************************************************************.\n
-            "$(center_heading_text "SSH Server")\n\n"
-
-            "Nice work! Now let make sure the serer security configurations and just security\n"
-            "in general is in good order, first we must must check the ssh configurations.\n\n"
-
-            "When a nano editor will open, you must make sure that two configs are as below.\n"
-            "Feel free to copy them.\n"
-            "NOTE: that they may be on different lines from each other, however always in the\n"
-            "same file):\n\n"
-
-            "    PermitRootLogin no\n"
-            "    PasswordAuthentication no\n\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        wait_for_input "Press any key when you are ready..."
-
-        # Update PermitRootLogin to no
-        if sudo grep -q "^PermitRootLogin" "$SSH_CONFIG"; then
-            echo "Override \"^PermitRootLogin\" to \"PermitRootLogin no\" in the $SSH_CONFIG"
-            sudo sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' "$SSH_CONFIG"
-        else
-            echo "Add \"PermitRootLogin no\" in the $SSH_CONFIG"
-            echo "PermitRootLogin no" | sudo tee -a "$SSH_CONFIG" > /dev/null
-        fi
-
-        # Update PasswordAuthentication to no
-        if sudo grep -q "^PasswordAuthentication" "$SSH_CONFIG"; then
-            echo "Override \"^PasswordAuthentication\" to \"PasswordAuthentication no\" in the $SSH_CONFIG"
-            sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$SSH_CONFIG"
-        else
-            echo "Add \"PasswordAuthentication no\" in the $SSH_CONFIG"
-            echo "PasswordAuthentication no" | sudo tee -a "$SSH_CONFIG" > /dev/null
-        fi
-
-        # Handle the cloud-init SSH config
-        if [ -f "$CLOUD_INIT_CONFIG" ]; then
-            if sudo grep -q "^PasswordAuthentication" "$CLOUD_INIT_CONFIG"; then
-                echo "Override \"^PasswordAuthentication\" to \"PasswordAuthentication no\" in the $CLOUD_INIT_CONFIG"
-                sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' "$CLOUD_INIT_CONFIG"
-            else
-                echo "Add \"PasswordAuthentication no\" in the $CLOUD_INIT_CONFIG"
-                echo "PasswordAuthentication no" | sudo tee -a "$CLOUD_INIT_CONFIG" > /dev/null
-            fi
-        else
-            echo "Cloud-init SSH config file not found."
-        fi
-
-        # Set AllowUsers to only the current user
-        if sudo grep -q "^AllowUsers" "$SSH_CONFIG"; then
-            echo "Override \"^AllowUsers\" to \"AllowUsers $CURRENT_USER\" in the $SSH_CONFIG"
-            sudo sed -i "s/^AllowUsers.*/AllowUsers $CURRENT_USER/" "$SSH_CONFIG"
-        else
-            echo "Add \"AllowUsers $CURRENT_USER\" in the $SSH_CONFIG"
-            echo "AllowUsers $CURRENT_USER" | sudo tee -a "$SSH_CONFIG" > /dev/null
-        fi
-
-        wait_for_input "Press any key when you are ready to add your SSH public key..."
-
-        nano ~/.ssh/authorized_keys
-
-        wait_for_input "Press any key to restart the SSH Server..."
-
-        # Determine the correct SSH service name
-        if sudo systemctl is-active --quiet sshd; then
-            SSH_SERVICE="sshd"
-        elif sudo systemctl is-active --quiet ssh; then
-            SSH_SERVICE="ssh"
-        else
-            echo "No active SSH service found."
-            exit 1
-        fi
-
-        # Restart the appropriate SSH service
-        sudo systemctl restart "$SSH_SERVICE"
-
-        wait_for_input "Press any key when you are ready to proceed to next task..."
+        check_sshd_config_step "answer_sshd" "$CURRENT_USER" "false" "true"
     }
 
 
@@ -413,7 +332,10 @@ run_init_0() {
                 change_service_user_password
             done
 
-            check_sshd_config
+            while [ "$answer_sshd" != "true" ]; do
+                check_sshd_config
+            done
+
             set_locale_and_timezone
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
