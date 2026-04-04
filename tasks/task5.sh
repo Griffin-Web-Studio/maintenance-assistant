@@ -69,7 +69,7 @@ run_task_5() {
 
         local description_text_array=(
             "$(center_heading_text "Maintenance Completed ✅")\n\n"
-            "Great Work! You have compleated the final task 5 and the maintenance is now\n"
+            "Great Work! You have completed the final task 5 and the maintenance is now\n"
             "complete! You now have a choice of either ending the maintenance script or\n"
             "going back to the main menu.\n\n"
         )
