@@ -52,7 +52,7 @@ run_task_4() {
 
 
 
-    # function to ask user if they completed the backup process
+    # function to update virus definitions and launch a background antivirus scan
     run_antivirus() {
         clear
 
@@ -101,7 +101,7 @@ run_task_4() {
 
 
 
-    # function to ask user if they completed the backup process
+    # function to show completion screen and ask user what to do next
     complete_step() {
         clear
 
