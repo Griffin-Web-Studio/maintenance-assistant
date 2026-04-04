@@ -1,8 +1,10 @@
 #!/bin/bash
 . "$DIR/scripts/helpers/unattended_upgrades.sh"
+. "$DIR/scripts/helpers/change_password.sh"
 
 run_init_0() {
     local answer_1
+    local answer_1b
     local answer_2
     local answer_99
     local task_name="Init: Server Initialiser"
@@ -12,62 +14,13 @@ run_init_0() {
 
 
 
-    # Step to change root password for something more secure
+    # Steps to change passwords for root and the current service user
     change_root_password() {
-        clear
+        change_password_step "answer_1" "root"
+    }
 
-        description_text_array=(
-            "$(center_heading_text "Change Root Password")\n\n"
-
-            "Now we will change the root password for best security.\n"
-            "You will now be provided with 5 random passwords to choose from:\n\n"
-
-            "1) $(generate_password 230)\n\n"
-
-            "2) $(generate_password 230)\n\n"
-
-            "3) $(generate_password 230)\n\n"
-
-            "4) $(generate_password 230)\n\n"
-
-            "5) $(generate_password 230)\n\n"
-
-            "PLEASE COPY ONE OF THE PASSWORDS ABOVE and test it in an editor to make sure you\n"
-            "didn't copy empty sstring\n\n"
-
-            "Ready To Change the Password?\n\n"
-
-            "1) yes\n"
-            "2) no (skip)\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2): " log_main_start_time
-
-        shopt -u nocasematch
-        case $log_main_start_time in
-            1)
-                sudo passwd
-                sudo usermod -s /usr/sbin/nologin root
-                printf "\n$(center_heading_text "Test Password")\n\n"
-
-                printf "Now open a new terminal window, reconnect and try the new password, if it didn't\n"
-                printf "work, hit \"Ctr + C\" and use \"passwd root\" command to change the password again.\n\n"
-
-                wait_for_input "Press any key when you finished test the password..."
-
-                answer_1=true
-                ;;
-            2)
-                clear
-
-                answer_1=true
-                ;;
-            *) echo "Invalid answer, please enter (1/2)" ;;
-        esac
+    change_service_user_password() {
+        change_password_step "answer_1b" "$CURRENT_USER"
     }
 
 
@@ -454,6 +407,10 @@ run_init_0() {
         2)
             while [ "$answer_1" != "true" ]; do
                 change_root_password
+            done
+
+            while [ "$answer_1b" != "true" ]; do
+                change_service_user_password
             done
 
             check_sshd_config
