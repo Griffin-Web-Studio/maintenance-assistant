@@ -1,39 +1,38 @@
 #!/bin/bash
 
-# Clear Lines
+# Clears N terminal lines from the cursor position
 clear_lines() {
-    # -1 because also need remove current line
     for ((i = 0; i < $1; i++)); do
         tput cuu 1 && tput el
     done
 }
 
-#function to print message array from parameters it receives
+# Prints a message array to the terminal
 print_message_array() {
     for i in "${@}"; do
         printf "$i"
     done
 }
 
-#function to print message array from parameters it receives
+# Waits for a single keypress before proceeding
 wait_for_input() {
     read -n 1 -r -s -p "$1" key
     printf "\n"
     clear_lines 1
 }
 
-# Print Message
+# Logs a task step and its answer/result to the log file
 log_answer() {
     printf "[$(date)] \n\tTask: $task_name\n\t\tStep:\t\t$1\n\t\tAnswer:\t\t$2\n\n" >>$logFile
-    # printTable "," "Time, Task, Step, Answare\n $(date), $task_name, $1, $2" >>$logFile
+    # printTable "," "Time, Task, Step, Answer\n $(date), $task_name, $1, $2" >>$logFile
 }
 
-# Print Message
+# Logs a task-level event to the log file
 log_task() {
     printf "[$(date)] $1\n\n" >>$logFile
 }
 
-# Define the function center_heading_text
+# Centres text within an 80-column header line of equal signs
 center_heading_text() {
     # Store the input text in the variable "text"
     local text="$1"
@@ -65,7 +64,7 @@ center_heading_text() {
 }
 
 
-# Generate Password
+# Generates a random password of the specified byte length
 generate_password() {
   password=$(head -c "$1" /dev/random | base64 | tr -dc '[:alnum:][:punct:]')
   echo $password

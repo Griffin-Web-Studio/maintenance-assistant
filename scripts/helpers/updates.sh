@@ -6,7 +6,7 @@
 
 # Function to call the Python script
 check_for_upgrades() {
-    # run upgrades and get the last line of the script
+    # run the upgrade script and restart this script if an upgrade was applied
     python3 src/upgrade.py "$@"
     if [ $? -eq 0 ]; then
         echo "Upgrade successful. Restarting script..."

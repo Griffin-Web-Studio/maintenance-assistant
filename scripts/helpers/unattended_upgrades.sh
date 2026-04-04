@@ -79,7 +79,7 @@ unattended_upgrades_step() {
         description_text_array=(
             "$(center_heading_text "Unattended Upgrades")\n\n"
             "unattended-upgrades is installed on this system.\n\n"
-            "it allows the server to automatically apply all\n"
+            "It allows the server to automatically apply all\n"
             "available package and kernel updates daily at 6:00 AM.\n\n"
         )
 

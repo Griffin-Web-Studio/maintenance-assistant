@@ -17,7 +17,7 @@ else
     echo "No --venv flag provided, skipping virtual environment creation."
 fi
 
-# add an alias for ls -la commands if --docker flag is provided
+# Add aliases for common ls commands if --docker flag is provided
 if [[ "$1" == "--docker" ]]; then
     echo "Adding alias for ls -la commands..."
     echo 'alias ll="ls -la"' >> ~/.bashrc

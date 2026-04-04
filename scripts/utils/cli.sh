@@ -4,7 +4,7 @@
 ## DO NOT EXECUTE THIS SCRIPT DIRECTLY ##
 #########################################
 
-# Clears X Terminal Lines from the cursor position
+# Clears N terminal lines from the cursor position
 function clear_lines() {
     for ((i = 0; i < $1; i++)); do
         tput cuu 1 && tput el
