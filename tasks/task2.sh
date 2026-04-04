@@ -3,6 +3,7 @@
 . "$DIR/tasks/modules/apt.sh"
 . "$DIR/tasks/modules/plesk.sh"
 . "$DIR/tasks/modules/unattended_upgrades.sh"
+. "$DIR/tasks/modules/reboot.sh"
 
 run_task_2() {
     local answer_1
@@ -13,6 +14,7 @@ run_task_2() {
     local answer_6
     local answer_7
     local answer_8
+    local answer_9
     local task_name="Maintenance Updates & Upgrades"
 
     clear
@@ -24,12 +26,11 @@ run_task_2() {
         "2) Updates\n"
         "   2.1) Update to ALL Server packages (optional after reboot),\n"
         "   2.2) Upgrade to ALL server packages (optional after reboot).\n"
-        "   2.3) Remove old and unused packages\n"
-        "        2.3.1) REBOOT\n"
-        "   2.4 opt) Dist-upgrade\n"
-        "        2.4.1) REBOOT\n"
-        "   2.5) Plesk Updates\n"
-        "   2.6) Unattended Upgrades (install & configure if not present)\n\n"
+        "   2.3 opt) Dist-upgrade\n"
+        "   2.4) Plesk Updates\n"
+        "   2.5) Remove old and unused packages\n"
+        "   2.6) Unattended Upgrades (install & configure if not present)\n"
+        "   2.7) Reboot\n\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
@@ -61,7 +62,7 @@ run_task_2() {
 
         case $nav_answer in
         1)
-            answer_8=true
+            answer_9=true
 
             log_task "Task $task_name: completed"
             log_task "User chose to go straight to Next Task: yes"
@@ -69,7 +70,7 @@ run_task_2() {
             run_task_3
             ;;
         2)
-            answer_8=true
+            answer_9=true
 
             log_task "Task $task_name: completed"
             log_task "User chose to go back to Main Menu"
@@ -93,15 +94,15 @@ run_task_2() {
     done
 
     while [ "$answer_4" != "true" ]; do
-        apt_autoremove "answer_4"
+        apt_dist_upgrade "answer_4"
     done
 
     while [ "$answer_5" != "true" ]; do
-        apt_dist_upgrade "answer_5"
+        plesk_update "answer_5"
     done
 
     while [ "$answer_6" != "true" ]; do
-        plesk_update "answer_6"
+        apt_autoremove "answer_6"
     done
 
     while [ "$answer_7" != "true" ]; do
@@ -110,6 +111,10 @@ run_task_2() {
     done
 
     while [ "$answer_8" != "true" ]; do
+        reboot_request "answer_8"
+    done
+
+    while [ "$answer_9" != "true" ]; do
         complete_step
     done
 }

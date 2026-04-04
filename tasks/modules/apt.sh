@@ -4,14 +4,15 @@
 ## DO NOT EXECUTE THIS SCRIPT DIRECTLY ##
 #########################################
 
-# Interactive APT package manager steps: update, upgrade, autoremove, dist-upgrade.
+# Interactive APT package manager steps: update, upgrade, dist-upgrade, autoremove.
 # Each function prompts for confirmation before running, logs output, and sets the
 # caller's result variable to "true" when the step is complete or skipped.
+# apt_upgrade and apt_dist_upgrade offer a skippable reboot prompt after running.
 #
 # Usage: apt_update <return_var>
 #        apt_upgrade <return_var>
-#        apt_autoremove <return_var>
 #        apt_dist_upgrade <return_var>
+#        apt_autoremove <return_var>
 #   return_var  Name of the caller's variable to set to "true" or "false"
 
 apt_update() {
@@ -109,27 +110,22 @@ apt_upgrade() {
         log_answer "user clicked the key to get to next step" "acknowledged prompt"
         log_answer "completed running sudo apt-get upgrade" "yes"
 
-        printf "All Went Well? Do you wish to reboot?\n"
+        printf "All Went Well? Do you wish to reboot now?\n"
         printf "1) yes\n"
-        printf "2) no\n\n"
+        printf "2) no (skip reboot, continue)\n\n"
         read -p "Possible answers (1/2): " reboot_answer
 
         shopt -u nocasematch
         case $reboot_answer in
         1)
-            log_answer "completed package upgrade successfully" "yes"
+            log_answer "completed package upgrade, rebooting" "yes"
             _result="true"
             reboot
             ;;
         2)
-            printf "If there was a problem, DON'T PANIC — you did after all create a VPS snapshot and\n"
-            printf "a backup, so restore the snapshot and skip this step unless this is fixable.\n\n"
-
-            wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to the snapshot!..."
-
-            _result="false"
-            log_answer "completed package upgrade successfully" "no"
-            exit 0
+            clear_lines 1
+            log_answer "completed package upgrade, reboot" "skipped"
+            _result="true"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
@@ -243,28 +239,22 @@ apt_dist_upgrade() {
         printf "\n$(center_heading_text "sudo apt-get dist-upgrade output above")\n\n"
         log_answer "dist-upgrade completed" "automated"
 
-        printf "All Went Well? Do you wish to reboot?\n"
+        printf "All Went Well? Do you wish to reboot now?\n"
         printf "1) yes\n"
-        printf "2) no\n\n"
+        printf "2) no (skip reboot, continue)\n\n"
         read -p "Possible answers (1/2): " reboot_answer
 
         shopt -u nocasematch
         case $reboot_answer in
         1)
-            clear_lines 20 $((line_count + 1))
-            log_answer "completed dist-upgrade successfully" "yes"
+            log_answer "completed dist-upgrade, rebooting" "yes"
             _result="true"
             reboot
             ;;
         2)
-            printf "If there was a problem, DON'T PANIC — you did after all create a VPS snapshot and\n"
-            printf "a backup, so restore the snapshot and skip this step unless this is fixable.\n\n"
-
-            wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to the snapshot!..."
-
-            _result="false"
-            log_answer "completed dist-upgrade successfully" "no"
-            exit 0
+            clear_lines 1
+            log_answer "completed dist-upgrade, reboot" "skipped"
+            _result="true"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
