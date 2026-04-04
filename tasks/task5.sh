@@ -1,11 +1,8 @@
 #!/bin/bash
+. "$DIR/tasks/modules/maintenance_log.sh"
+
 run_task_5() {
     local answer_1
-    local answer_2
-    local answer_3
-    local answer_4
-    local answer_5
-    local answer_6
     local answer_7
     local task_name="Maintenance: Completion"
 
@@ -22,41 +19,7 @@ run_task_5() {
 
     log_task "Started Task: $task_name (Task 5)"
 
-    # function to ask the user to log the maintenance end time
-    ask_to_log_time() {
-        clear
 
-        description_text_array=(
-            "$(center_heading_text "Log Maintenance End Time")\n\n"
-            "Well done! You made it! Here is the current time:\n\n"
-            "Current Date and Time is: $(date +\%H:\%M)\n\n"
-            "Did you log the time?\n\n"
-            "1) yes\n"
-            "2) no\n\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        log_answer "Log the time of maintenance end" "current Date and Time is: $(date +\%H:\%M)"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2): " log_main_start_time
-
-        shopt -u nocasematch
-        case $log_main_start_time in
-        1)
-            clear_lines 1
-            answer_1=true
-            log_answer "Logged the time of maintenance end" "yes"
-            ;;
-        2)
-            clear_lines 1
-            answer_1=false
-            log_answer "Logged the time of maintenance end" "no"
-            ;;
-        *) echo "Invalid answer, please enter (1/2)" ;;
-        esac
-    }
 
     # function to show completion screen and ask user what to do next
     complete_step() {
@@ -76,9 +39,9 @@ run_task_5() {
         printf "Do you want to end the Maintenance script?\n"
         printf "1) yes\n"
         printf "2) no\n\n"
-        read -p "Possible answers (1/2): " backup_process
+        read -p "Possible answers (1/2): " nav_answer
 
-        case $backup_process in
+        case $nav_answer in
         1)
             answer_7=true
 
@@ -97,8 +60,10 @@ run_task_5() {
         esac
     }
 
+
+
     while [ "$answer_1" != "true" ]; do
-        ask_to_log_time
+        maintenance_log_end_time "answer_1"
     done
 
     while [ "$answer_7" != "true" ]; do

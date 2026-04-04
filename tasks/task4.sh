@@ -1,18 +1,16 @@
 #!/bin/bash
-. "$DIR/scripts/helpers/change_password.sh"
-. "$DIR/scripts/helpers/check_sshd_config.sh"
+. "$DIR/tasks/modules/password.sh"
+. "$DIR/tasks/modules/sshd.sh"
+. "$DIR/tasks/modules/antivirus.sh"
 
 run_task_4() {
     local answer_1
     local answer_2
     local answer_2b
     local answer_3
-    local answer_4
-    local answer_5
-    local answer_6
     local answer_7
     local task_name="Maintenance: Server Security"
-    local CURRENT_USER=$(whoami)
+    local current_user=$(whoami)
 
     clear
 
@@ -34,73 +32,6 @@ run_task_4() {
 
 
 
-    # Step to enforce SSH config (shared helper — skip allowed, no key setup needed)
-    check_sshd_config() {
-        check_sshd_config_step "answer_1" "$CURRENT_USER" "true" "false"
-    }
-
-
-
-    # Steps to change passwords for root and the current service user
-    change_root_password() {
-        change_password_step "answer_2" "root"
-    }
-
-    change_service_user_password() {
-        change_password_step "answer_2b" "$CURRENT_USER"
-    }
-
-
-
-    # function to update virus definitions and launch a background antivirus scan
-    run_antivirus() {
-        clear
-
-        description_text_array=(
-            "$(center_heading_text "Run Antivirus")\n\n"
-            "Now we will run an antivirus and keep it running in the background.\n"
-            "Logs will be present here: $logDir/antivirus/log-run-$maintenance_start_time.log\n\n"
-            "use for live updates: \e[5mtail -f -n 30 $logDir/antivirus/log-run-$maintenance_start_time.log\e[0m\n\n"
-            "Ready To Start Antivirus Check?\n\n"
-            "1) yes\n"
-            "2) no (skip)\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2): " log_main_start_time
-
-        shopt -u nocasematch
-        case $log_main_start_time in
-        1)
-            log_answer "Running Antivirus" "yes"
-
-            sudo systemctl stop clamav-freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log"
-
-            sudo freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log"
-
-            sudo systemctl start clamav-freshclam | tee -a "$logDir/antivirus/log-$maintenance_start_time.log"
-
-            sudo screen -dm -S virusscan clamscan -ri -l "$logDir/antivirus/log-run-$maintenance_start_time.log" /
-
-            log_answer "Run Antivirus" "yes"
-
-            answer_3=true
-            ;;
-        2)
-            clear
-            log_answer "Running Antivirus" "no"
-
-            answer_3=true
-            ;;
-        *) echo "Invalid answer, please enter (1/2)" ;;
-        esac
-    }
-
-
-
     # function to show completion screen and ask user what to do next
     complete_step() {
         clear
@@ -119,9 +50,9 @@ run_task_4() {
         printf "Do you want to go straight to next task?\n"
         printf "1) yes\n"
         printf "2) no\n\n"
-        read -p "Possible answers (1/2): " backup_process
+        read -p "Possible answers (1/2): " nav_answer
 
-        case $backup_process in
+        case $nav_answer in
         1)
             answer_7=true
 
@@ -143,28 +74,20 @@ run_task_4() {
 
 
     while [ "$answer_1" != "true" ]; do
-        check_sshd_config
+        sshd_configure "answer_1" "$current_user" "true" "false"
     done
 
     while [ "$answer_2" != "true" ]; do
-        change_root_password
+        password_change "answer_2" "root"
     done
 
     while [ "$answer_2b" != "true" ]; do
-        change_service_user_password
+        password_change "answer_2b" "$current_user"
     done
 
     while [ "$answer_3" != "true" ]; do
-        run_antivirus
+        antivirus_run "answer_3"
     done
-
-    # while [ "$answer_4" != "true" ]; do
-    #     run_autoremove_step
-    # done
-
-    # while [ "$answer_5" != "true" ]; do
-    #     run_dist_upgrade_step
-    # done
 
     while [ "$answer_7" != "true" ]; do
         complete_step

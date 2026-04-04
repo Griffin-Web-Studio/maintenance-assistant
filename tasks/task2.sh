@@ -1,5 +1,8 @@
 #!/bin/bash
-. "$DIR/scripts/helpers/unattended_upgrades.sh"
+. "$DIR/tasks/modules/maintenance_log.sh"
+. "$DIR/tasks/modules/apt.sh"
+. "$DIR/tasks/modules/plesk.sh"
+. "$DIR/tasks/modules/unattended_upgrades.sh"
 
 run_task_2() {
     local answer_1
@@ -36,380 +39,6 @@ run_task_2() {
 
 
 
-    # function to ask the user to log the maintenance start time
-    ask_to_log_time() {
-        clear
-        description_text_array=(
-            "$(center_heading_text "Log the time of maintenance Start")\n\n"
-            "current Date and Time is: $(date +\%H:\%M)\n\n"
-            "Did you log the time?\n\n"
-            "1) yes\n"
-            "2) no\n"
-            "3) no (after reboot)\n\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        log_answer "Log the time of maintenance Start" "current Date and Time is: $(date +\%H:\%M)"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2/3): " log_main_start_time
-
-        shopt -u nocasematch
-        case $log_main_start_time in
-        1)
-            clear_lines 1
-            answer_1=true
-            log_answer "Logged the time of maintenance" "yes"
-            ;;
-        2)
-            clear_lines 1
-            answer_1=false
-            log_answer "Logged the time of maintenance" "no"
-            ;;
-        3)
-            clear_lines 1
-            answer_1=true
-            log_answer "Logged the time of maintenance" "no, after reboot"
-            ;;
-        *) echo "Invalid answer, please enter (1/2/3)" ;;
-        esac
-    }
-
-
-
-    # function to run apt-get update
-    run_update_step() {
-        clear
-
-        description_text_array=(
-            "$(center_heading_text "Updates")\n\n"
-            "We will now run the updates command 'sudo apt-get update -y'. To run this command we will\n"
-            "temporarily elevate the privileges to sudo.\n\n"
-            "Are you Ready to run 'sudo apt-get update -y'?\n\n"
-            "1) yes\n"
-            "2) no\n"
-            "3) no (after reboot)\n\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2/3): " run_update_step_check
-        printf "\n"
-        clear_lines 1
-
-        shopt -u nocasematch
-        case $run_update_step_check in
-        1)
-            clear
-            printf "$(center_heading_text "sudo apt-get update output below")\n\n"
-            log_answer "running sudo apt-get update" "yes"
-
-            sudo apt-get update | tee -a "$logDir/apt-update/log-$maintenance_start_time.log"
-
-            printf "\n$(center_heading_text "sudo apt-get update output above")\n\n"
-            log_answer "completed running sudo apt-get update" "automated"
-
-            wait_for_input "Press any key when you are ready to go to the next step..."
-
-            log_answer "user clicked the key to get to next step" "acknowledged prompt"
-
-            answer_2=true
-            ;;
-        2)
-            clear_lines 1
-            answer_2=false
-            log_answer "running sudo apt-get update" "no"
-            ;;
-        3)
-            clear_lines 1
-            answer_2=true
-            log_answer "running sudo apt-get update" "no after reboot"
-            ;;
-        *) echo "Invalid answer, please enter (1/2/3)" ;;
-        esac
-    }
-
-
-
-    # function to run apt-get upgrade
-    run_upgrade_step() {
-        clear
-
-        description_text_array=(
-            "$(center_heading_text "Upgrades")\n\n"
-            "We will now run the upgrades command 'sudo apt-get upgrade -y'. To run this command we will\n"
-            "temporarily elevate the privileges to sudo.\n\n"
-            "Are you Ready to run 'sudo apt-get upgrade -y'?\n\n"
-            "1) yes\n"
-            "2) no\n"
-            "3) no (after reboot)\n\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2/3): " run_upgrade_step_check
-
-        shopt -u nocasematch
-        case $run_upgrade_step_check in
-        1)
-            clear
-            printf "$(center_heading_text "sudo apt-get upgrade output below")\n\n"
-            log_answer "running sudo apt-get upgrade" "yes"
-
-            sudo apt-get upgrade | tee -a "$logDir/apt-upgrade/log-$maintenance_start_time.log"
-
-            printf "\n$(center_heading_text "sudo apt-get upgrade output above")\n\n"
-            log_answer "upgrade completed" "automated"
-
-            wait_for_input "Press any key when you are ready to go to the next step..."
-
-            log_answer "user clicked the key to get to next step" "acknowledged prompt"
-
-            log_answer "completed running sudo apt-get upgrade" "yes"
-
-            printf "All Went Well? Do you wish to reboot?\n"
-            printf "1) yes\n"
-            printf "2) no\n\n"
-            read -p "Possible answers (1/2): " problems_during_package_upgrade
-
-            shopt -u nocasematch # disable case-insensitive matching
-            case $problems_during_package_upgrade in
-            1)
-                log_answer "completed package upgrade successfully" "yes"
-                answer_3=true
-                reboot
-                ;;
-            2)
-                printf "If there was a problem, DON'T PANIC — you did after all create a VPS snapshot and\n"
-                printf "a backup, so restore the snapshot and skip this step unless this is fixable.\n\n"
-
-                wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to the snapshot!..."
-
-                answer_3=false
-                log_answer "completed package upgrade successfully" "no"
-                exit 0
-                ;;
-            *) echo "Invalid answer, please enter (1/2)" ;;
-            esac
-            ;;
-        2)
-            clear_lines 1
-            answer_3=false
-            log_answer "running sudo apt-get upgrade" "no"
-            ;;
-        3)
-            clear_lines 1
-            answer_3=true
-            log_answer "running sudo apt-get upgrade" "no, after reboot"
-            ;;
-        *) echo "Invalid answer, please enter (1/2/3)" ;;
-        esac
-    }
-
-
-
-    # function to run apt-get autoremove
-    run_autoremove_step() {
-        clear
-
-        description_text_array=(
-            "$(center_heading_text "Autoremove")\n\n"
-            "We will now remove old packages that the OS knows are no longer needed.\n"
-            "We will run 'sudo apt-get autoremove -y'.\n"
-            "To run this command we will temporarily elevate the privileges to sudo.\n\n"
-            "Are you Ready to run 'sudo apt-get autoremove -y'?\n\n"
-            "1) yes\n"
-            "2) no\n"
-            "3) no (after reboot)\n\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2/3): " run_autoremove_step_check
-
-        shopt -u nocasematch
-        case $run_autoremove_step_check in
-        1)
-            clear
-            printf "$(center_heading_text "sudo apt-get autoremove output below")\n\n"
-            log_answer "running sudo apt-get autoremove" "yes"
-
-            sudo apt-get autoremove | tee -a "$logDir/apt-autoremove/log-$maintenance_start_time.log"
-
-            printf "\n$(center_heading_text "sudo apt-get autoremove output above")\n\n"
-            log_answer "autoremove completed" "automated"
-
-            wait_for_input "Press any key when you are ready to go to the next step..."
-
-            log_answer "user clicked the key to get to next step" "acknowledged prompt"
-
-            log_answer "completed running sudo apt-get autoremove" "yes"
-            answer_4=true
-            ;;
-        2)
-            clear_lines 1
-            answer_4=false
-            log_answer "running sudo apt-get autoremove" "no"
-            ;;
-        3)
-            clear_lines 1
-            answer_4=true
-            log_answer "running sudo apt-get autoremove" "no after reboot"
-            ;;
-        *) echo "Invalid answer, please enter (1/2/3)" ;;
-        esac
-    }
-
-
-
-    # function to run apt-get dist-upgrade (optional)
-    run_dist_upgrade_step() {
-        clear
-        
-        description_text_array=(
-            "$(center_heading_text "Dist Upgrade")\n\n"
-            "WARNING! RUNNING THIS COMMAND IS OPTIONAL AND CAN POTENTIALLY BREAK THE SYSTEM OR\n"
-            "ITS DEPENDANCIES AND/OR PACKAGES!\n"
-            "Please ensure that all packages are compatible with the new version of the distro!\n\n"
-            "(OPT) We will now run the dist-upgrade command 'sudo apt-get dist-upgrade -y'. To run this\n"
-            "command we will temporarily elevate the privileges to sudo.\n\n"
-            "Are you Ready to run 'sudo apt-get dist-upgrade'?\n\n"
-            "1) yes\n"
-            "2) no\n"
-            "3) no (after reboot)\n\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2/3): " run_dist_upgrade_step_check
-
-        shopt -u nocasematch
-        case $run_dist_upgrade_step_check in
-        1)
-            clear
-            printf "$(center_heading_text "sudo apt-get dist-upgrade output below")\n\n"
-            log_answer "running sudo apt-get dist-upgrade" "yes"
-
-            sudo apt-get dist-upgrade | tee -a "$logDir/apt-dist-upgrade/log-$maintenance_start_time.log"
-
-            printf "\n$(center_heading_text "sudo apt-get dist-upgrade output above")\n\n"
-            log_answer "dist-upgrade completed" "automated"
-
-            printf "All Went Well? Do you wish to reboot?\n"
-            printf "1) yes\n"
-            printf "2) no\n\n"
-            read -p "Possible answers (1/2): " problems_during_dist_upgrade
-
-            shopt -u nocasematch # disable case-insensitive matching
-            case $problems_during_dist_upgrade in
-            1)
-                clear_lines 20 $((line_count + 1))
-                log_answer "completed dist-upgrade successfully" "yes"
-                answer_5=true
-                reboot
-                ;;
-            2)
-                printf "If there was a problem, DON'T PANIC — you did after all create a VPS snapshot and\n"
-                printf "a backup, so restore the snapshot and skip this step unless this is fixable.\n\n"
-
-                wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to the snapshot!..."
-
-                answer_5=false
-                log_answer "completed dist-upgrade successfully" "no"
-                exit 0
-                ;;
-            *) echo "Invalid answer, please enter (1/2)" ;;
-            esac
-            ;;
-        2)
-            clear_lines 1
-            answer_5=true
-            log_answer "running sudo apt-get dist-upgrade" "no"
-            ;;
-        3)
-            clear_lines 1
-            answer_5=true
-            log_answer "running sudo apt-get dist-upgrade" "no after reboot"
-            ;;
-        *) echo "Invalid answer, please enter (1/2/3)" ;;
-        esac
-    }
-
-
-
-    # function to run Plesk updates
-    run_plesk_update_step() {
-        clear
-
-        description_text_array=(
-            "$(center_heading_text "Plesk Updates")\n\n"
-            "We will now run the Plesk updates command 'plesk installer install-all-updates'. To run\n"
-            "this command we will temporarily elevate the privileges to sudo.\n\n"
-            "Are you Ready to run 'plesk installer install-all-updates'?\n\n"
-            "1) yes\n"
-            "2) no\n"
-            "3) no (skip step)\n\n"
-        )
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2/3): " run_update_step_check
-        printf "\n"
-        clear_lines 1
-
-        shopt -u nocasematch
-        case $run_update_step_check in
-        1)
-            clear
-            printf "$(center_heading_text "Plesk Updates output below")\n\n"
-            log_answer "running Plesk Updates" "yes"
-
-            sudo plesk installer install-all-updates | tee -a "$logDir/apt-plesk-installer/log-$maintenance_start_time.log"
-
-            printf "\n$(center_heading_text "Plesk Updates output above")\n\n"
-            log_answer "completed running Plesk Updates" "automated"
-
-            wait_for_input "Press any key when you are ready to go to the next step..."
-
-            log_answer "user clicked the key to get to next step" "acknowledged prompt"
-
-            answer_6=true
-            ;;
-        2)
-            clear_lines 1
-            answer_6=false
-            log_answer "running Plesk Updates" "no"
-            ;;
-        3)
-            clear_lines 1
-            answer_6=true
-            log_answer "running Plesk Updates" "no, skip step"
-            ;;
-        *) echo "Invalid answer, please enter (1/2/3)" ;;
-        esac
-    }
-
-
-
-    # check/install/configure unattended-upgrades (shared helper)
-    run_unattended_upgrades_step() {
-        unattended_upgrades_step "answer_7" \
-            "$logDir/apt-update/log-$maintenance_start_time.log"
-    }
-
-
-
     # function to show completion screen and ask user what to do next
     complete_step() {
         clear
@@ -428,9 +57,9 @@ run_task_2() {
         printf "Do you want to go straight to next task?\n"
         printf "1) yes\n"
         printf "2) no\n\n"
-        read -p "Possible answers (1/2): " backup_process
+        read -p "Possible answers (1/2): " nav_answer
 
-        case $backup_process in
+        case $nav_answer in
         1)
             answer_8=true
 
@@ -452,31 +81,32 @@ run_task_2() {
 
 
     while [ "$answer_1" != "true" ]; do
-        ask_to_log_time
+        maintenance_log_start_time "answer_1"
     done
 
     while [ "$answer_2" != "true" ]; do
-        run_update_step
+        apt_update "answer_2"
     done
 
     while [ "$answer_3" != "true" ]; do
-        run_upgrade_step
+        apt_upgrade "answer_3"
     done
 
     while [ "$answer_4" != "true" ]; do
-        run_autoremove_step
+        apt_autoremove "answer_4"
     done
 
     while [ "$answer_5" != "true" ]; do
-        run_dist_upgrade_step
+        apt_dist_upgrade "answer_5"
     done
 
     while [ "$answer_6" != "true" ]; do
-        run_plesk_update_step
+        plesk_update "answer_6"
     done
 
     while [ "$answer_7" != "true" ]; do
-        run_unattended_upgrades_step
+        unattended_upgrades_setup "answer_7" \
+            "$logDir/apt-update/log-$maintenance_start_time.log"
     done
 
     while [ "$answer_8" != "true" ]; do
