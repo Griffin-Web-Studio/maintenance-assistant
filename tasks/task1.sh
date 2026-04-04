@@ -135,17 +135,17 @@ run_task_1() {
 
         log_answer "shown message to the user" "automated banner message"
                 
-        wait_for_input "Press any key when you ready to print the MOTD..."
+        wait_for_input "Press any key when you are ready to print the MOTD..."
 
         clear
 
-        log_answer "user clicked the key to get the banner" "aknowledged prompt"
+        log_answer "user clicked the key to get the banner" "acknowledged prompt"
 
         printf "$(center_heading_text "copy the banner below this line")\n\n"
 
         run-parts /etc/update-motd.d/ | tee -a "$logDir/mot.d/log-$maintenance_start_time.log"
 
-        log_answer "compleated printing the banner" "automated banner message"
+        log_answer "completed printing the banner" "automated banner message"
 
         printf "\n$(center_heading_text "copy the banner above this line")\n\n"
 
@@ -164,7 +164,7 @@ run_task_1() {
         2)
             clear_lines 1
             answer_3=false
-            log_answer "Initiated the backup process" "no"
+            log_answer "Copied the MOTD banner" "no"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
@@ -187,11 +187,11 @@ run_task_1() {
 
         log_answer "shown message to the user" "automated banner message"
                 
-        wait_for_input "Press any key when you ready to print the Info..."
+        wait_for_input "Press any key when you are ready to print the Info..."
 
         clear
 
-        log_answer "user clicked the key to get the server info" "aknowledged prompt"
+        log_answer "user clicked the key to get the server info" "acknowledged prompt"
 
         local temp=(
             "$(center_heading_text "copy the server info below this line")\n\n"
@@ -245,7 +245,7 @@ run_task_1() {
 
         print_message_array "${temp[@]}" | tee -a "$logDir/server-info/log-$maintenance_start_time.log"
 
-        log_answer "compleated printing the server info" "automated banner message"
+        log_answer "completed printing the server info" "automated banner message"
 
         printf "\n$(center_heading_text "copy the server info above this line")\n\n"
 
@@ -263,7 +263,7 @@ run_task_1() {
             ;;
         2)
             answer_4=false
-            log_answer "Initiated the backup process" "no"
+            log_answer "Copied the server info" "no"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
@@ -274,8 +274,8 @@ run_task_1() {
         clear
 
         local description_text_array=(
-            "$(center_heading_text "Last Checks: VPS Snapshot rediness")\n\n"
-            "Last Checks before begining server maintenance.\n\n"
+            "$(center_heading_text "Last Checks: VPS Snapshot Readiness")\n\n"
+            "Last checks before beginning server maintenance.\n\n"
             "Is the VPS snapshot ready?\n"
             "1) yes\n"
             "2) no\n\n"
@@ -307,8 +307,8 @@ run_task_1() {
         clear
 
         local description_text_array=(
-            "$(center_heading_text "Last Checks: Server Backup rediness")\n\n"
-            "Last Checks before begining server maintenance.\n\n"
+            "$(center_heading_text "Last Checks: Server Backup Readiness")\n\n"
+            "Last checks before beginning server maintenance.\n\n"
             "Is the Server backup complete?\n"
             "1) yes\n"
             "2) no\n\n"
@@ -335,7 +335,7 @@ run_task_1() {
         esac
     }
 
-    # function to ask user if they completed the backup process
+    # function to show completion screen and ask user what to do next
     complete_step() {
         clear
 
