@@ -7,7 +7,7 @@ run_task_5() {
     local answer_5
     local answer_6
     local answer_7
-    local task_name="Maintenance: Compleation"
+    local task_name="Maintenance: Completion"
 
     clear
 
@@ -20,17 +20,17 @@ run_task_5() {
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
 
-    log_task "Task: $task_name (Task 5)" >>$logFile
+    log_task "Started Task: $task_name (Task 5)"
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # function to ask the user to log the maintenance end time
     ask_to_log_time() {
         clear
 
         description_text_array=(
             #********************************************************************************.\n
-            "$(center_heading_text "SSH Server")\n\n"
+            "$(center_heading_text "Log Maintenance End Time")\n\n"
             "Well Done! You made it! Here is the current Time:\n\n"
             "Current Date and Time is: $(date +\%H:\%M)\n\n"
             "Did you log the time?\n\n"
@@ -50,12 +50,12 @@ run_task_5() {
         1)
             clear_lines 1
             answer_1=true
-            log_answer "Loged the time of maintenance end" "yes"
+            log_answer "Logged the time of maintenance end" "yes"
             ;;
         2)
             clear_lines 1
             answer_1=false
-            log_answer "Loged the time of maintenance end" "no"
+            log_answer "Logged the time of maintenance end" "no"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
@@ -63,7 +63,7 @@ run_task_5() {
 
 
 
-    # function to ask user if they completed the backup process
+    # function to show completion screen and ask user what to do next
     complete_step() {
         clear
 
@@ -78,7 +78,7 @@ run_task_5() {
         print_message_array "${task_description_text_array[@]}"
         print_message_array "${description_text_array[@]}"
 
-        printf "Do you want to end Maitnenance script?\n"
+        printf "Do you want to end the Maintenance script?\n"
         printf "1) yes\n"
         printf "2) no\n\n"
         read -p "Possible answers (1/2): " backup_process
