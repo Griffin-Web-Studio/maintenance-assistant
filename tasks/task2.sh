@@ -36,7 +36,7 @@ run_task_2() {
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # function to ask the user to log the maintenance start time
     ask_to_log_time() {
         clear
         description_text_array=(
@@ -53,24 +53,24 @@ run_task_2() {
         print_message_array "${task_description_text_array[@]}"
         print_message_array "${description_text_array[@]}"
 
-        read -p "Possible answers (1/2): " log_main_start_time
+        read -p "Possible answers (1/2/3): " log_main_start_time
 
         shopt -u nocasematch
         case $log_main_start_time in
         1)
             clear_lines 1
             answer_1=true
-            log_answer "Loged the time of maintenance" "yes"
+            log_answer "Logged the time of maintenance" "yes"
             ;;
         2)
             clear_lines 1
             answer_1=false
-            log_answer "Loged the time of maintenance" "no"
+            log_answer "Logged the time of maintenance" "no"
             ;;
         3)
             clear_lines 1
             answer_1=true
-            log_answer "Loged the time of maintenance" "no after reboot"
+            log_answer "Logged the time of maintenance" "no, after reboot"
             ;;
         *) echo "Invalid answer, please enter (1/2/3)" ;;
         esac
@@ -78,14 +78,14 @@ run_task_2() {
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # function to run apt-get update
     run_update_step() {
         clear
 
         description_text_array=(
             "$(center_heading_text "Updates")\n\n"
-            "We will now run updates command 'sudo apt-get update -y', to run this command we will\n"
-            "tempereraly elivate the privilages to sudo\n\n"
+            "We will now run the updates command 'sudo apt-get update -y'. To run this command we will\n"
+            "temporarily elevate the privileges to sudo.\n\n"
             "Are you Ready to run 'sudo apt-get update -y'?\n\n"
             "1) yes\n"
             "2) no\n"
@@ -110,11 +110,11 @@ run_task_2() {
             sudo apt-get update | tee -a "$logDir/apt-update/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "sudo apt-get update output above")\n\n"
-            log_answer "compleated running sudo apt-get update" "automated"
+            log_answer "completed running sudo apt-get update" "automated"
 
-            wait_for_input "Press any key when you ready to go to the next step..."
+            wait_for_input "Press any key when you are ready to go to the next step..."
 
-            log_answer "user clicked the key to get to next step" "aknowledged prompt"
+            log_answer "user clicked the key to get to next step" "acknowledged prompt"
 
             answer_2=true
             ;;
@@ -134,14 +134,14 @@ run_task_2() {
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # function to run apt-get upgrade
     run_upgrade_step() {
         clear
 
         description_text_array=(
             "$(center_heading_text "Upgrades")\n\n"
-            "We will now run upgrades command 'sudo apt-get upgrade -y', to run this command we will\n"
-            "tempereraly elivate the privilages to sudo\n\n"
+            "We will now run the upgrades command 'sudo apt-get upgrade -y'. To run this command we will\n"
+            "temporarily elevate the privileges to sudo.\n\n"
             "Are you Ready to run 'sudo apt-get upgrade -y'?\n\n"
             "1) yes\n"
             "2) no\n"
@@ -166,11 +166,11 @@ run_task_2() {
             printf "\n$(center_heading_text "sudo apt-get upgrade output above")\n\n"
             log_answer "upgrade completed" "automated"
 
-            wait_for_input "Press any key when you ready to go to the next step..."
+            wait_for_input "Press any key when you are ready to go to the next step..."
 
-            log_answer "user clicked the key to get to next step" "aknowledged prompt"
+            log_answer "user clicked the key to get to next step" "acknowledged prompt"
 
-            log_answer "compleated running sudo apt-get upgrade" "yes"
+            log_answer "completed running sudo apt-get upgrade" "yes"
 
             printf "All Went Well? Do you wish to reboot?\n"
             printf "1) yes\n"
@@ -180,18 +180,18 @@ run_task_2() {
             shopt -u nocasematch # disable case-insensitive matching
             case $problems_during_package_upgrade in
             1)
-                log_answer "completed package upgrade successfuly" "yes"
+                log_answer "completed package upgrade successfully" "yes"
                 answer_3=true
                 reboot
                 ;;
             2)
-                printf "If there was a problem, DONT PANIC, you did afterall create a VPS snapshot and\n"
-                printf "the backup. so restore the snapshot and skip this step unless this is fixable.\n\n"
+                printf "If there was a problem, DON'T PANIC — you did after all create a VPS snapshot and\n"
+                printf "a backup, so restore the snapshot and skip this step unless this is fixable.\n\n"
 
-                wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to snapshot!..."
-                
+                wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to the snapshot!..."
+
                 answer_3=false
-                log_answer "completed package upgrade successfuly" "no"
+                log_answer "completed package upgrade successfully" "no"
                 exit 0
                 ;;
             *) echo "Invalid answer, please enter (1/2)" ;;
@@ -200,12 +200,12 @@ run_task_2() {
         2)
             clear_lines 1
             answer_3=false
-            log_answer "running sudo apt-get update" "no"
+            log_answer "running sudo apt-get upgrade" "no"
             ;;
         3)
             clear_lines 1
             answer_3=true
-            log_answer "running sudo apt-get update" "no after reboot"
+            log_answer "running sudo apt-get upgrade" "no, after reboot"
             ;;
         *) echo "Invalid answer, please enter (1/2/3)" ;;
         esac
@@ -213,15 +213,15 @@ run_task_2() {
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # function to run apt-get autoremove
     run_autoremove_step() {
         clear
 
         description_text_array=(
             "$(center_heading_text "Autoremove")\n\n"
-            "We will now run autoremove for old packages that os knows wont be needed command.\n"
-            "We will now run 'sudo apt-get autoremove -y'.\n"
-            "To run this command we will tempereraly elivate the privilages to sudo\n\n"
+            "We will now remove old packages that the OS knows are no longer needed.\n"
+            "We will run 'sudo apt-get autoremove -y'.\n"
+            "To run this command we will temporarily elevate the privileges to sudo.\n\n"
             "Are you Ready to run 'sudo apt-get autoremove -y'?\n\n"
             "1) yes\n"
             "2) no\n"
@@ -246,11 +246,11 @@ run_task_2() {
             printf "\n$(center_heading_text "sudo apt-get autoremove output above")\n\n"
             log_answer "autoremove completed" "automated"
 
-            wait_for_input "Press any key when you ready to go to the next step..."
-            
-            log_answer "user clicked the key to get to next step" "aknowledged prompt"
+            wait_for_input "Press any key when you are ready to go to the next step..."
 
-            log_answer "compleated running sudo apt-get autoremove" "yes"
+            log_answer "user clicked the key to get to next step" "acknowledged prompt"
+
+            log_answer "completed running sudo apt-get autoremove" "yes"
             answer_4=true
             ;;
         2)
@@ -269,7 +269,7 @@ run_task_2() {
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # function to run apt-get dist-upgrade (optional)
     run_dist_upgrade_step() {
         clear
         
@@ -278,8 +278,8 @@ run_task_2() {
             "WARNING! RUNNING THIS COMMAND IS OPTIONAL AND CAN POTENTIALLY BREAK THE SYSTEM OR\n"
             "ITS DEPENDANCIES AND/OR PACKAGES!\n"
             "Please ensure that all packages are compatible with the new version of the distro!\n\n"
-            "(OPT) We will now run dist upgrade command 'sudo apt-get dist-upgrade -y', to run this\n"
-            "command we will tempereraly elivate the privilages to sudo\n\n"
+            "(OPT) We will now run the dist-upgrade command 'sudo apt-get dist-upgrade -y'. To run this\n"
+            "command we will temporarily elevate the privileges to sudo.\n\n"
             "Are you Ready to run 'sudo apt-get dist-upgrade'?\n\n"
             "1) yes\n"
             "2) no\n"
@@ -313,18 +313,18 @@ run_task_2() {
             case $problems_during_dist_upgrade in
             1)
                 clear_lines 20 $((line_count + 1))
-                log_answer "completed dist-upgrade successfuly" "yes"
+                log_answer "completed dist-upgrade successfully" "yes"
                 answer_5=true
                 reboot
                 ;;
             2)
-                printf "If there was a problem, DONT PANIC, you did afterall create a VPS snapshot and\n"
-                printf "the backup. so restore the snapshot and skip this step unless this is fixable.\n\n"
+                printf "If there was a problem, DON'T PANIC — you did after all create a VPS snapshot and\n"
+                printf "a backup, so restore the snapshot and skip this step unless this is fixable.\n\n"
 
-                wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to snapshot!..."
-                
+                wait_for_input "Make sure to download ALL RELEVANT LOGS before you revert to the snapshot!..."
+
                 answer_5=false
-                log_answer "completed dist-upgrade successfuly" "no"
+                log_answer "completed dist-upgrade successfully" "no"
                 exit 0
                 ;;
             *) echo "Invalid answer, please enter (1/2)" ;;
@@ -346,14 +346,14 @@ run_task_2() {
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # function to run Plesk updates
     run_plesk_update_step() {
         clear
 
         description_text_array=(
             "$(center_heading_text "Plesk Updates")\n\n"
-            "We will now run Plesk updates command 'plesk installer install-all-updates', to run\n"
-            "this command we will tempereraly elivate the privilages to sudo\n\n"
+            "We will now run the Plesk updates command 'plesk installer install-all-updates'. To run\n"
+            "this command we will temporarily elevate the privileges to sudo.\n\n"
             "Are you Ready to run 'plesk installer install-all-updates'?\n\n"
             "1) yes\n"
             "2) no\n"
@@ -378,11 +378,11 @@ run_task_2() {
             sudo plesk installer install-all-updates | tee -a "$logDir/apt-plesk-installer/log-$maintenance_start_time.log"
 
             printf "\n$(center_heading_text "Plesk Updates output above")\n\n"
-            log_answer "compleated running Plesk Updates" "automated"
+            log_answer "completed running Plesk Updates" "automated"
 
-            wait_for_input "Press any key when you ready to go to the next step..."
+            wait_for_input "Press any key when you are ready to go to the next step..."
 
-            log_answer "user clicked the key to get to next step" "aknowledged prompt"
+            log_answer "user clicked the key to get to next step" "acknowledged prompt"
 
             answer_6=true
             ;;
@@ -394,7 +394,7 @@ run_task_2() {
         3)
             clear_lines 1
             answer_6=true
-            log_answer "running Plesk Updates" "no askip step"
+            log_answer "running Plesk Updates" "no, skip step"
             ;;
         *) echo "Invalid answer, please enter (1/2/3)" ;;
         esac
@@ -410,7 +410,7 @@ run_task_2() {
 
 
 
-    # function to ask user if they completed the backup process
+    # function to show completion screen and ask user what to do next
     complete_step() {
         clear
 
