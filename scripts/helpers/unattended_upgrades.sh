@@ -98,22 +98,45 @@ unattended_upgrades_step() {
     [ -n "$_log_file" ] \
         && log_answer "configuring unattended-upgrades" "all packages + kernels at 06:00"
 
-    # Edit 50unattended-upgrades in-place: uncomment and set specific options,
-    # preserving all template comments for future reference.
-    # For each setting: strip leading // (if commented) and replace the value.
-    # The sed pattern matches the assignment line regardless of comment state.
+    # Prompt user for each option. Format: "key|default|description"
+    # Default true  → [Y/n], default false → [y/N]. Enter accepts the default.
     local _uu_opts=(
-        "Unattended-Upgrade::AutoFixInterruptedDpkg|true"
-        "Unattended-Upgrade::MinimalSteps|true"
-        "Unattended-Upgrade::Remove-Unused-Kernel-Packages|true"
-        "Unattended-Upgrade::Remove-New-Unused-Dependencies|true"
-        "Unattended-Upgrade::Automatic-Reboot|false"
+        "Unattended-Upgrade::AutoFixInterruptedDpkg|true|Auto-fix interrupted dpkg installs"
+        "Unattended-Upgrade::MinimalSteps|true|Use minimal steps (allows safe interruption)"
+        "Unattended-Upgrade::Remove-Unused-Kernel-Packages|true|Remove unused kernel packages after upgrade"
+        "Unattended-Upgrade::Remove-New-Unused-Dependencies|true|Remove newly unused dependencies after upgrade"
+        "Unattended-Upgrade::Automatic-Reboot|false|Automatically reboot after kernel updates"
     )
+
+    printf "%s\n\n" "$(center_heading_text "Configure unattended-upgrades options")"
 
     for _uu_opt_val in "${_uu_opts[@]}"; do
         local _uu_opt="${_uu_opt_val%%|*}"
-        local _uu_val="${_uu_opt_val##*|}"
+        local _uu_rest="${_uu_opt_val#*|}"
+        local _uu_default="${_uu_rest%%|*}"
+        local _uu_desc="${_uu_rest##*|}"
 
+        if [ "$_uu_default" = "true" ]; then
+            local _uu_hint="[Y/n]"
+        else
+            local _uu_hint="[y/N]"
+        fi
+
+        read -p "${_uu_desc} ${_uu_hint}: " _uu_input
+        _uu_input="${_uu_input,,}"  # to lowercase
+
+        if [ -z "$_uu_input" ]; then
+            local _uu_val="$_uu_default"
+        elif [ "$_uu_input" = "y" ]; then
+            local _uu_val="true"
+        else
+            local _uu_val="false"
+        fi
+
+        [ -n "$_log_file" ] && log_answer "$_uu_opt" "$_uu_val"
+
+        # Edit 50unattended-upgrades in-place: uncomment and set the option.
+        # The sed pattern matches the assignment line regardless of comment state.
         if sudo grep -qE "(//[[:space:]]*)?${_uu_opt}" "$_unattended_conf"; then
             sudo sed -i -E \
                 "s|^[[:space:]]*(//[[:space:]]*)?${_uu_opt}[[:space:]]*\"[^\"]*\";?|${_uu_opt} \"${_uu_val}\";|" \
