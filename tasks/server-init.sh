@@ -38,7 +38,6 @@ run_init_0() {
         clear
         
         description_text_array=(
-            #********************************************************************************.\n
             "$(center_heading_text "Set The Clock & Locale")\n\n"
             "Now let's set the clock to the correct timezone.\n\n"
 

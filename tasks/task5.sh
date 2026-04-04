@@ -22,16 +22,13 @@ run_task_5() {
 
     log_task "Started Task: $task_name (Task 5)"
 
-
-
     # function to ask the user to log the maintenance end time
     ask_to_log_time() {
         clear
 
         description_text_array=(
-            #********************************************************************************.\n
             "$(center_heading_text "Log Maintenance End Time")\n\n"
-            "Well Done! You made it! Here is the current Time:\n\n"
+            "Well done! You made it! Here is the current time:\n\n"
             "Current Date and Time is: $(date +\%H:\%M)\n\n"
             "Did you log the time?\n\n"
             "1) yes\n"
@@ -60,8 +57,6 @@ run_task_5() {
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
     }
-
-
 
     # function to show completion screen and ask user what to do next
     complete_step() {
@@ -102,27 +97,9 @@ run_task_5() {
         esac
     }
 
-
-
     while [ "$answer_1" != "true" ]; do
         ask_to_log_time
     done
-
-    # while [ "$answer_2" != "true" ]; do
-    #     change_root_password
-    # done
-
-    # while [ "$answer_3" != "true" ]; do
-    #     run_upgrade_step
-    # done
-
-    # while [ "$answer_4" != "true" ]; do
-    #     run_autoremove_step
-    # done
-
-    # while [ "$answer_5" != "true" ]; do
-    #     run_dist_upgrade_step
-    # done
 
     while [ "$answer_7" != "true" ]; do
         complete_step
