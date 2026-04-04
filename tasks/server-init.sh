@@ -1,4 +1,6 @@
 #!/bin/bash
+. "$DIR/scripts/helpers/unattended_upgrades.sh"
+
 run_init_0() {
     local answer_1
     local answer_2
@@ -380,108 +382,9 @@ run_init_0() {
 
 
 
-    # function to check/install/configure unattended-upgrades
+    # check/install/configure unattended-upgrades (shared helper)
     setup_unattended_upgrades() {
-        clear
-
-        local pkg_installed=false
-        local timer_enabled=false
-        local timer_override_dir="/etc/systemd/system/apt-daily-upgrade.timer.d"
-        local timer_override_file="$timer_override_dir/override.conf"
-
-        dpkg-query -W -f='${Status}' unattended-upgrades 2>/dev/null \
-            | grep -q "ok installed" && pkg_installed=true
-
-        systemctl is-enabled apt-daily-upgrade.timer 2>/dev/null \
-            | grep -q "enabled" && timer_enabled=true
-
-        # Already installed and timer is active — nothing to do
-        if $pkg_installed && $timer_enabled; then
-            description_text_array=(
-                "$(center_heading_text "Unattended Upgrades")\n\n"
-                "unattended-upgrades is installed and the upgrade timer is enabled.\n"
-                "Skipping.\n\n"
-            )
-
-            print_message_array "${main_banner_text_array[@]}"
-            print_message_array "${task_description_text_array[@]}"
-            print_message_array "${description_text_array[@]}"
-
-            wait_for_input "Press any key to continue to the next step..."
-
-            answer_2=true
-            return
-        fi
-
-        # Build prompt text based on what is missing
-        if $pkg_installed; then
-            description_text_array=(
-                "$(center_heading_text "Unattended Upgrades")\n\n"
-                "unattended-upgrades is installed but the upgrade timer is NOT enabled.\n"
-                "No automatic updates are currently running.\n\n"
-                "Would you like to enable and schedule unattended-upgrades\n"
-                "to run at 06:00 daily?\n\n"
-                "1) yes\n"
-                "2) no\n"
-                "3) no (skip step)\n\n"
-            )
-        else
-            description_text_array=(
-                "$(center_heading_text "Unattended Upgrades")\n\n"
-                "unattended-upgrades is NOT installed on this system.\n\n"
-                "Installing it will allow the server to automatically apply security\n"
-                "and package updates daily at 6:00 AM without manual intervention.\n\n"
-                "Would you like to install and enable unattended-upgrades\n"
-                "(scheduled to run at 06:00 daily)?\n\n"
-                "1) yes\n"
-                "2) no\n"
-                "3) no (skip step)\n\n"
-            )
-        fi
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2/3): " setup_unattended_upgrades_check
-        printf "\n"
-        clear_lines 1
-
-        shopt -u nocasematch
-        case $setup_unattended_upgrades_check in
-        1)
-            clear
-
-            if ! $pkg_installed; then
-                printf "\n$(center_heading_text "Installing unattended-upgrades")\n\n"
-                sudo apt-get install -y unattended-upgrades
-            fi
-
-            printf "\n$(center_heading_text "Configuring schedule: 06:00 daily")\n\n"
-
-            sudo mkdir -p "$timer_override_dir"
-            printf '[Timer]\nOnCalendar=\nOnCalendar=*-*-* 06:00:00\nRandomizedDelaySec=0\n' \
-                | sudo tee "$timer_override_file" > /dev/null
-
-            sudo systemctl daemon-reload
-            sudo systemctl enable --now apt-daily-upgrade.timer
-
-            printf "\n$(center_heading_text "Unattended Upgrades configured successfully")\n\n"
-
-            wait_for_input "Press any key when you ready to go to the next step..."
-
-            answer_2=true
-            ;;
-        2)
-            clear_lines 1
-            answer_2=false
-            ;;
-        3)
-            clear_lines 1
-            answer_2=true
-            ;;
-        *) echo "Invalid answer, please enter (1/2/3)" ;;
-        esac
+        unattended_upgrades_step "answer_2"
     }
 
 

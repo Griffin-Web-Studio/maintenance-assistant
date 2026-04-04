@@ -1,4 +1,6 @@
 #!/bin/bash
+. "$DIR/scripts/helpers/unattended_upgrades.sh"
+
 run_task_2() {
     local answer_1
     local answer_2
@@ -400,129 +402,10 @@ run_task_2() {
 
 
 
-    # function to check/install/configure unattended-upgrades
+    # check/install/configure unattended-upgrades (shared helper)
     run_unattended_upgrades_step() {
-        clear
-
-        local pkg_installed=false
-        local timer_enabled=false
-        local log_file="$logDir/apt-update/log-$maintenance_start_time.log"
-        local timer_override_dir="/etc/systemd/system/apt-daily-upgrade.timer.d"
-        local timer_override_file="$timer_override_dir/override.conf"
-
-        dpkg-query -W -f='${Status}' unattended-upgrades 2>/dev/null \
-            | grep -q "ok installed" && pkg_installed=true
-
-        systemctl is-enabled apt-daily-upgrade.timer 2>/dev/null \
-            | grep -q "enabled" && timer_enabled=true
-
-        # Already installed and timer is active — nothing to do
-        if $pkg_installed && $timer_enabled; then
-            description_text_array=(
-                "$(center_heading_text "Unattended Upgrades")\n\n"
-                "unattended-upgrades is installed and the upgrade timer is enabled.\n"
-                "Skipping.\n\n"
-            )
-
-            print_message_array "${main_banner_text_array[@]}"
-            print_message_array "${task_description_text_array[@]}"
-            print_message_array "${description_text_array[@]}"
-
-            log_answer "unattended-upgrades check" "installed and timer enabled, skipping"
-
-            wait_for_input "Press any key to continue to the next step..."
-
-            log_answer "user acknowledged prompt" "next step"
-
-            answer_7=true
-            return
-        fi
-
-        # Build prompt text based on what is missing
-        if $pkg_installed; then
-            description_text_array=(
-                "$(center_heading_text "Unattended Upgrades")\n\n"
-                "unattended-upgrades is installed but the upgrade timer is NOT enabled.\n"
-                "No automatic updates are currently running.\n\n"
-                "Would you like to enable and schedule unattended-upgrades\n"
-                "to run at 06:00 daily?\n\n"
-                "1) yes\n"
-                "2) no\n"
-                "3) no (skip step)\n\n"
-            )
-        else
-            description_text_array=(
-                "$(center_heading_text "Unattended Upgrades")\n\n"
-                "unattended-upgrades is NOT installed on this system.\n\n"
-                "Installing it will allow the server to automatically apply security\n"
-                "and package updates daily at 6:00 AM without manual intervention.\n\n"
-                "Would you like to install and enable unattended-upgrades\n"
-                "(scheduled to run at 06:00 daily)?\n\n"
-                "1) yes\n"
-                "2) no\n"
-                "3) no (skip step)\n\n"
-            )
-        fi
-
-        print_message_array "${main_banner_text_array[@]}"
-        print_message_array "${task_description_text_array[@]}"
-        print_message_array "${description_text_array[@]}"
-
-        read -p "Possible answers (1/2/3): " run_unattended_upgrades_check
-        printf "\n"
-        clear_lines 1
-
-        shopt -u nocasematch
-        case $run_unattended_upgrades_check in
-        1)
-            clear
-            log_answer "unattended-upgrades: user chose to enable" "yes"
-
-            if ! $pkg_installed; then
-                local heading_install
-                heading_install=$(center_heading_text "Installing unattended-upgrades")
-                printf "%s\n\n" "$heading_install"
-                log_answer "installing unattended-upgrades" "yes"
-
-                sudo apt-get install -y unattended-upgrades | tee -a "$log_file"
-            fi
-
-            local heading_config
-            heading_config=$(center_heading_text "Configuring schedule: 06:00 daily")
-            printf "\n%s\n\n" "$heading_config"
-            log_answer "configuring unattended-upgrades schedule" "06:00 daily"
-
-            sudo mkdir -p "$timer_override_dir"
-            printf '[Timer]\nOnCalendar=\nOnCalendar=*-*-* 06:00:00\nRandomizedDelaySec=0\n' \
-                | sudo tee "$timer_override_file" > /dev/null
-
-            sudo systemctl daemon-reload
-            sudo systemctl enable --now apt-daily-upgrade.timer \
-                | tee -a "$log_file"
-
-            local heading_done
-            heading_done=$(center_heading_text "Unattended Upgrades configured successfully")
-            printf "\n%s\n\n" "$heading_done"
-            log_answer "unattended-upgrades configured" "automated"
-
-            wait_for_input "Press any key when you ready to go to the next step..."
-
-            log_answer "user clicked the key to get to next step" "acknowledged"
-
-            answer_7=true
-            ;;
-        2)
-            clear_lines 1
-            answer_7=false
-            log_answer "unattended-upgrades setup" "no"
-            ;;
-        3)
-            clear_lines 1
-            answer_7=true
-            log_answer "unattended-upgrades setup" "skipped"
-            ;;
-        *) echo "Invalid answer, please enter (1/2/3)" ;;
-        esac
+        unattended_upgrades_step "answer_7" \
+            "$logDir/apt-update/log-$maintenance_start_time.log"
     }
 
 
