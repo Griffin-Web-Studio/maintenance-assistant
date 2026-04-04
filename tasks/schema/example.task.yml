@@ -1,0 +1,196 @@
+# yaml-language-server: $schema=./task.schema.v1.json
+
+# This file exists to exercise every feature of the v1 task schema.
+# It is not intended to be run in production — use it to verify schema
+# changes and as a copy-paste reference when authoring real task files.
+
+task-version: "1.0.0"
+
+task:
+  id: task_example
+  order: 99
+  name: Schema Example Task
+  description: |
+    This task demonstrates every field and pattern supported by the v1 schema.
+    Each step is annotated with the feature it covers. See TASK_FORMAT.md for
+    the full field reference.
+
+steps:
+
+  # -----------------------------------------------------------------------
+  # type: manual
+  # Simplest case — operator acts externally, confirms when done.
+  # Demonstrates: recommended, outcome:advance, outcome:retry
+  # -----------------------------------------------------------------------
+  - id: acknowledge_start
+    name: Acknowledge Start
+    type: manual
+    title: Ready to Begin
+    description: |
+      This is a manual step. The operator does something externally and
+      confirms when done. The 'retry' outcome redisplays the step until
+      the operator is ready to proceed.
+    confirm: "Are you ready to begin?"
+    choices:
+      - label: "yes"
+        outcome: advance
+        recommended: true       # renders [Y/n], empty input = yes
+      - label: "no, not yet"
+        outcome: retry           # redisplays this step
+
+  # -----------------------------------------------------------------------
+  # type: manual with skip_steps
+  # Choosing 'no need' advances AND marks verify_backup as auto-skipped.
+  # Demonstrates: skip_steps, three-option choice pattern
+  # -----------------------------------------------------------------------
+  - id: initiate_backup
+    name: Initiate Backup
+    type: manual
+    description: |
+      Choosing 'no need' here will cause the verify_backup step below to
+      be skipped automatically. This is the 'no need' pattern for steps
+      whose verification is only relevant if the action was taken.
+    confirm: "Did you initiate the backup?"
+    choices:
+      - label: "yes"
+        outcome: advance
+      - label: "no"
+        outcome: retry
+      - label: "no need (nothing to back up)"
+        outcome: advance
+        skip_steps: [verify_backup]  # auto-skips the verification step
+
+  # -----------------------------------------------------------------------
+  # type: manual with depends_on
+  # This step is auto-skipped if initiate_backup was itself skipped.
+  # Demonstrates: depends_on
+  # -----------------------------------------------------------------------
+  - id: verify_backup
+    name: Verify Backup Complete
+    type: manual
+    depends_on: initiate_backup     # auto-skipped if initiate_backup was skipped
+    description: |
+      This step will not appear if initiate_backup was skipped via 'no need'.
+      depends_on is evaluated at runtime against the step's run/skip state.
+    confirm: "Is the backup complete and verified?"
+    choices:
+      - label: "yes"
+        outcome: advance
+        recommended: true
+      - label: "no, still running"
+        outcome: retry
+
+  # -----------------------------------------------------------------------
+  # type: run — basic
+  # Command only executes when operator picks outcome:run.
+  # Demonstrates: command, log_to, outcome:run, outcome:retry, outcome:advance
+  # -----------------------------------------------------------------------
+  - id: apt_update
+    name: apt-get update
+    type: run
+    title: Package List Update
+    description: |
+      The command runs only when the operator picks 'yes' (outcome:run).
+      Output is streamed to the terminal and appended to the log file.
+      'no (after reboot)' uses outcome:advance to skip execution entirely
+      and move to the next step — the command is not run.
+    command: sudo apt-get update -y
+    log_to: "apt-update/log-{maintenance_start_time}.log"
+    confirm: "Are you ready to run 'sudo apt-get update -y'?"
+    choices:
+      - label: "yes"
+        outcome: run             # executes command, then advances
+        recommended: true
+      - label: "no"
+        outcome: retry
+      - label: "no (after reboot)"
+        outcome: advance         # skips command, advances anyway
+
+  # -----------------------------------------------------------------------
+  # type: run with post_run — navigation outcome
+  # After the command finishes, operator is asked whether to reboot.
+  # Demonstrates: post_run, PostRunChoice.outcome:reboot, outcome:advance default
+  # -----------------------------------------------------------------------
+  - id: apt_upgrade
+    name: apt-get upgrade
+    type: run
+    description: |
+      After the upgrade completes, a follow-up prompt asks whether to reboot.
+      This is a navigation post_run choice: one path issues a reboot, the
+      other advances to the next step. No secondary command is run.
+    command: sudo apt-get upgrade -y
+    log_to: "apt-upgrade/log-{maintenance_start_time}.log"
+    confirm: "Are you ready to run 'sudo apt-get upgrade -y'?"
+    choices:
+      - label: "yes"
+        outcome: run
+      - label: "no"
+        outcome: retry
+      - label: "no (after reboot)"
+        outcome: advance
+    post_run:
+      - confirm: "Upgrade complete. Reboot now to apply changes?"
+        choices:
+          - label: "yes, reboot"
+            outcome: reboot      # issues sudo reboot
+          - label: "no, continue"
+            outcome: advance     # default, could be omitted
+            recommended: true
+
+  # -----------------------------------------------------------------------
+  # type: run with post_run — command outcomes
+  # After the command finishes, each choice runs a secondary command.
+  # Demonstrates: PostRunChoice.command, PostRunChoice.log, recommended
+  # -----------------------------------------------------------------------
+  - id: change_root_password
+    name: Change Root Password
+    type: run
+    description: |
+      After the password is changed, a follow-up prompt asks whether to
+      disable the root shell login. Each choice runs a different command
+      rather than navigating — this is a config post_run rather than a
+      navigation post_run. Both choices implicitly advance afterward.
+    command: sudo passwd root
+    confirm: "Ready to change the root password?"
+    choices:
+      - label: "yes"
+        outcome: run
+      - label: "no (skip)"
+        outcome: advance
+    post_run:
+      - confirm: "Disable root shell login?"
+        choices:
+          - label: "yes"
+            recommended: true
+            command: sudo usermod -s /usr/sbin/nologin root
+            log: "Root shell login: disabled"
+          - label: "no"
+            command: sudo usermod -s /bin/bash root
+            log: "Root shell login: left enabled"
+
+  # -----------------------------------------------------------------------
+  # type: info
+  # Command runs automatically after a keypress. Output is shown for the
+  # operator to read or copy. Choices confirm they are done.
+  # Demonstrates: type:info, folded scalar (>) for multi-part command
+  # -----------------------------------------------------------------------
+  - id: collect_server_info
+    name: Collect Server Info
+    type: info
+    title: Server Information
+    description: |
+      The command runs automatically after the operator presses a key.
+      Output is streamed to the terminal and to the log file. The operator
+      then confirms they have read or copied what they need.
+    command: >
+      echo "Hostname: $(hostname)" &&
+      echo "OS: $(lsb_release -d | cut -f2)" &&
+      echo "Kernel: $(uname -r)" &&
+      echo "Uptime: $(uptime -p)"
+    log_to: "server-info/log-{maintenance_start_time}.log"
+    confirm: "Did you copy the server information shown above?"
+    choices:
+      - label: "yes"
+        outcome: advance
+      - label: "no"
+        outcome: retry

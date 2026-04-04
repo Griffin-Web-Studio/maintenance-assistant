@@ -13,7 +13,7 @@
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	"postCreateCommand": "./scripts/dev_prep.sh --docker",
+	"postCreateCommand": "scripts/dev_prep.sh --docker",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -31,7 +31,8 @@
 				"MASSHUU12.too-long-line-limit",
 				"Gruntfuggly.todo-tree",
 				"qwtel.sqlite-viewer",
-				"tal7aouy.icons"
+				"tal7aouy.icons",
+				"redhat.vscode-yaml"
 			]
 		}
 	}

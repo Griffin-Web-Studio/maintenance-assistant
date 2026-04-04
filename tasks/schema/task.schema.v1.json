@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gws-maintenance/task/1.0.0",
+  "title": "GWS Maintenance Task",
+  "description": "Defines a sequential maintenance task with interactive steps for the GWS server maintenance assistant.",
+  "type": "object",
+  "required": ["task-version", "task", "steps"],
+  "additionalProperties": false,
+
+  "properties": {
+    "task-version": {
+      "description": "Schema version this file was authored against (semver). The runner uses the major component to select the correct schema file. See schema/VERSIONING.md.",
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "examples": ["1.0.0"]
+    },
+    "task": { "$ref": "#/$defs/TaskMeta" },
+    "steps": {
+      "description": "Ordered list of steps. Executed top-to-bottom unless a choice uses skip_steps.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Step" }
+    }
+  },
+
+  "$defs": {
+
+    "StepId": {
+      "description": "snake_case identifier. Must be unique within the task file.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+
+    "TaskMeta": {
+      "description": "Static metadata about this task.",
+      "type": "object",
+      "required": ["id", "order", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/StepId",
+          "description": "Unique task identifier. Referenced in logs and navigation."
+        },
+        "order": {
+          "description": "Position in the task list. Controls run order and menu display. Must be unique across task files.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "description": "Short human-readable label shown in menus and headings.",
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "description": "Longer overview shown on the task start screen.",
+          "type": "string"
+        }
+      }
+    },
+
+    "Step": {
+      "description": "A single interactive step within a task.",
+      "type": "object",
+      "required": ["id", "name", "type", "confirm", "choices"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/StepId",
+          "description": "Unique step id within this task. Referenced by skip_steps and depends_on."
+        },
+        "name": {
+          "description": "Short label for the step. Used in logs and progress indicators.",
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "description": "manual: operator acts externally then confirms via choices. run: script executes command when operator picks outcome:run. info: command runs automatically after a keypress and output is displayed for the operator to read or copy.",
+          "enum": ["manual", "run", "info"]
+        },
+        "title": {
+          "description": "Screen heading override. Defaults to name if omitted.",
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "description": "Instructional body text displayed on the step screen. Use YAML block scalars (|) for multi-line.",
+          "type": "string"
+        },
+        "command": {
+          "description": "Shell command to execute. Required for type:run and type:info. For type:run, fires when the operator picks a choice with outcome:run. For type:info, fires automatically after the operator presses a key.",
+          "type": "string",
+          "minLength": 1
+        },
+        "log_to": {
+          "description": "Relative path under logDir to append command output to. Supports the {maintenance_start_time} placeholder. Only meaningful for type:run.",
+          "type": "string",
+          "examples": ["apt-update/log-{maintenance_start_time}.log"]
+        },
+        "confirm": {
+          "description": "Question displayed directly above the numbered choices.",
+          "type": "string",
+          "minLength": 1
+        },
+        "depends_on": {
+          "$ref": "#/$defs/StepId",
+          "description": "Id of another step in this task. If that step was skipped (not run), this step is auto-skipped without prompting. Referential integrity is validated at runtime."
+        },
+        "choices": {
+          "description": "Numbered options shown to the operator. For type:run steps, exactly one choice must carry outcome:run (runtime-validated). At most one choice per step should carry recommended:true.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/StepChoice" }
+        },
+        "post_run": {
+          "description": "Follow-up prompts shown after the step command completes. Only valid for type:run — a runtime error is raised on other types. Prompts are shown in order; all must be resolved before the step advances.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/PostRunPrompt" }
+        }
+      },
+      "if": {
+        "properties": { "type": { "enum": ["run", "info"] } },
+        "required": ["type"]
+      },
+      "then": {
+        "required": ["command"]
+      }
+    },
+
+    "StepChoice": {
+      "description": "A numbered option presented to the operator on a step screen.",
+      "type": "object",
+      "required": ["label", "outcome"],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "Text shown next to the option number, e.g. 'yes', 'no (skip)', 'no (after reboot)'.",
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "description": "advance: mark step done and proceed to the next. retry: redisplay this step — use when the operator must act first before continuing. run: execute the step command then show post_run prompts if any, then advance. outcome:run is only valid on type:run steps (runtime-validated).",
+          "enum": ["advance", "retry", "run"]
+        },
+        "recommended": {
+          "description": "Marks this as the preferred option. Renders a [Y/n] hint next to the confirm question. Empty input from the operator selects this choice. At most one choice per step should set this to true.",
+          "type": "boolean"
+        },
+        "skip_steps": {
+          "description": "List of step ids in this task to auto-skip when this choice is taken. Used for the 'no need' pattern — e.g. an operator confirming no backup was taken should skip the later backup verification step. Referential integrity is validated at runtime.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/StepId" }
+        }
+      }
+    },
+
+    "PostRunPrompt": {
+      "description": "A follow-up prompt shown after a type:run step command completes. Use this for decisions tightly coupled to the execution just completed — e.g. 'Reboot now?' after apt-get upgrade, or 'Disable root shell?' after changing the root password. For decisions that are not tightly coupled, prefer a separate step with depends_on.",
+      "type": "object",
+      "required": ["confirm", "choices"],
+      "additionalProperties": false,
+      "properties": {
+        "confirm": {
+          "description": "Question shown to the operator.",
+          "type": "string",
+          "minLength": 1
+        },
+        "choices": {
+          "description": "Options for this follow-up prompt. Minimum two: at least one path forward and one alternative.",
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/PostRunChoice" }
+        }
+      }
+    },
+
+    "PostRunChoice": {
+      "description": "An option within a post_run prompt. Unlike step choices, post_run choices run a secondary command and/or navigate, and always advance unless outcome is reboot.",
+      "type": "object",
+      "required": ["label"],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "Text shown next to the option number.",
+          "type": "string",
+          "minLength": 1
+        },
+        "recommended": {
+          "description": "Marks this as the preferred option. See StepChoice.recommended.",
+          "type": "boolean"
+        },
+        "command": {
+          "description": "Shell command to run when this option is selected. Omit for navigation-only choices.",
+          "type": "string",
+          "minLength": 1
+        },
+        "log": {
+          "description": "Log entry written when this option is selected.",
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "description": "Navigation outcome after this choice resolves. Defaults to advance if omitted.",
+          "enum": ["advance", "reboot"],
+          "default": "advance"
+        }
+      }
+    }
+
+  }
+}

@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status
-set -e
-
 # Create a virtual environment if the --venv flag is provided
 if [[ "$1" == "--venv" ]]; then
     if [ ! -d ".venv" ]; then
