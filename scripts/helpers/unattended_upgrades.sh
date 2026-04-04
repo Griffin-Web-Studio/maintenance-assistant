@@ -27,23 +27,23 @@ unattended_upgrades_step() {
     dpkg-query -W -f='${Status}' unattended-upgrades 2>/dev/null \
         | grep -q "ok installed" && _pkg_installed=true
 
-    description_text_array=(
-        "$(center_heading_text "Unattended Upgrades")\n\n"
-        "unattended-upgrades is NOT installed on this system.\n\n"
-        "Installing it will allow the server to automatically apply all\n"
-        "available package and kernel updates daily at 6:00 AM.\n\n"
-        "Would you like to install and enable unattended-upgrades?\n\n"
-        "1) yes\n"
-        "2) no\n"
-        "3) no (skip step)\n\n"
-    )
-
-    print_message_array "${main_banner_text_array[@]}"
-    print_message_array "${task_description_text_array[@]}"
-    print_message_array "${description_text_array[@]}"
-
     # Package not present — ask before installing
     if ! $_pkg_installed; then
+        description_text_array=(
+            "$(center_heading_text "Unattended Upgrades")\n\n"
+            "unattended-upgrades is NOT installed on this system.\n\n"
+            "Installing it will allow the server to automatically apply all\n"
+            "available package and kernel updates daily at 6:00 AM.\n\n"
+            "Would you like to install and enable unattended-upgrades?\n\n"
+            "1) yes\n"
+            "2) no\n"
+            "3) no (skip step)\n\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+
         read -p "Possible answers (1/2/3): " _uu_answer
         printf "\n"
         clear_lines 1
@@ -76,6 +76,17 @@ unattended_upgrades_step() {
         *) echo "Invalid answer, please enter (1/2/3)" ; return ;;
         esac
     else
+        description_text_array=(
+            "$(center_heading_text "Unattended Upgrades")\n\n"
+            "unattended-upgrades is installed on this system.\n\n"
+            "it allows the server to automatically apply all\n"
+            "available package and kernel updates daily at 6:00 AM.\n\n"
+        )
+
+        print_message_array "${main_banner_text_array[@]}"
+        print_message_array "${task_description_text_array[@]}"
+        print_message_array "${description_text_array[@]}"
+        
         echo "unattended-upgrades already installed and enabled."
     fi
 
