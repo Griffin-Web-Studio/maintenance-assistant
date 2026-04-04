@@ -9,10 +9,10 @@
 # guarantee all packages and kernels are covered (not just security updates).
 # Dist-upgrade is intentionally excluded — run manually each month.
 #
-# Usage: unattended_upgrades_step <return_var> [log_file]
+# Usage: unattended_upgrades_setup <return_var> [log_file]
 #   return_var  Name of the caller's variable to set to "true" or "false"
 #   log_file    Optional: path to append apt command output to
-unattended_upgrades_step() {
+unattended_upgrades_setup() {
     local -n _result="${1}"
     local _log_file="${2:-}"
 
@@ -29,7 +29,7 @@ unattended_upgrades_step() {
 
     # Package not present — ask before installing
     if ! $_pkg_installed; then
-        description_text_array=(
+        local description_text_array=(
             "$(center_heading_text "Unattended Upgrades")\n\n"
             "unattended-upgrades is NOT installed on this system.\n\n"
             "Installing it will allow the server to automatically apply all\n"
@@ -76,7 +76,7 @@ unattended_upgrades_step() {
         *) echo "Invalid answer, please enter (1/2/3)" ; return ;;
         esac
     else
-        description_text_array=(
+        local description_text_array=(
             "$(center_heading_text "Unattended Upgrades")\n\n"
             "unattended-upgrades is installed on this system.\n\n"
             "It allows the server to automatically apply all\n"
@@ -86,7 +86,7 @@ unattended_upgrades_step() {
         print_message_array "${main_banner_text_array[@]}"
         print_message_array "${task_description_text_array[@]}"
         print_message_array "${description_text_array[@]}"
-        
+
         echo "unattended-upgrades already installed and enabled."
     fi
 

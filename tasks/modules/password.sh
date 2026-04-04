@@ -8,10 +8,10 @@
 # specified user, locks the root shell login, and guides the operator to verify
 # the new password in a separate terminal before continuing.
 #
-# Usage: change_password_step <return_var> <username>
+# Usage: password_change <return_var> <username>
 #   return_var  Name of the caller's variable to set to "true" or "false"
 #   username    System user whose password will be changed (e.g. root, deploy)
-change_password_step() {
+password_change() {
     local -n _result="${1}"
     local _username="${2}"
 

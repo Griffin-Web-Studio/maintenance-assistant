@@ -9,13 +9,13 @@
 # Also patches the cloud-init SSH drop-in if present. Optionally prompts the
 # operator to add an SSH public key before restarting the service.
 #
-# Usage: check_sshd_config_step <return_var> <username> [allow_skip] [setup_authorized_keys]
+# Usage: sshd_configure <return_var> <username> [allow_skip] [setup_authorized_keys]
 #   return_var              Name of the caller's variable to set to "true" or "false"
 #   username                User to set in AllowUsers (e.g. deploy)
 #   allow_skip              Optional: "true" to offer a skip option (default: "false")
 #   setup_authorized_keys   Optional: "true" to prompt adding a public key before
 #                           restarting SSH — use during initial server setup (default: "false")
-check_sshd_config_step() {
+sshd_configure() {
     local -n _result="${1}"
     local _username="${2}"
     local _allow_skip="${3:-false}"
