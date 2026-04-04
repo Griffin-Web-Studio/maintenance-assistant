@@ -13,27 +13,27 @@ run_task_3() {
 
     local task_description_text_array=(
         "$(center_heading_text "$task_name")\n\n"
-        "PLACEHOLDER\n\n"
+        "During this task we will monitor server load and check the health of all disks\n"
+        "using SMART diagnostics. Report any findings on the wiki.\n\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
 
-    log_task "Task: $task_name (Task 3)" >>$logFile
+    log_task "Started Task: $task_name (Task 3)"
 
 
 
-    # function to ask user if they created a VPS snapshot
+    # function to launch the load monitoring tool
     initiate_monitoring_soft() {
         clear
         description_text_array=(
             "$(center_heading_text "Load Monitoring")\n\n"
-            "We will initiate a Load Monitoring software, please monitor it for about 5 min\n"
-            "and report any findings on the wiki website.\n\n"
-            "Are you Ready to start Load Monitorig soft?\n\n"
+            "We will launch the Load Monitoring software. Please monitor it for about 5 minutes\n"
+            "and report any findings on the wiki.\n\n"
+            "Are you ready to start the Load Monitoring software?\n\n"
             "1) yes\n"
-            "2) no\n"
-            "3) no (after reboot)\n\n"
+            "2) no\n\n"
         )
 
         print_message_array "${main_banner_text_array[@]}"
@@ -46,17 +46,17 @@ run_task_3() {
         case $log_main_start_time in
         1)
             clear_lines 1
-            log_answer "Started Load Monitorig soft" "yes"
+            log_answer "Started Load Monitoring software" "yes"
             answer_1=true
 
             btop
 
-            log_answer "compleated Load Monitorig soft" "yes"
+            log_answer "completed Load Monitoring software" "yes"
             ;;
         2)
             clear_lines 1
             answer_1=false
-            log_answer "Started Load Monitorig soft" "no"
+            log_answer "Started Load Monitoring software" "no"
             ;;
         *) echo "Invalid answer, please enter (1/2)" ;;
         esac
@@ -64,14 +64,14 @@ run_task_3() {
 
 
 
-    # function to ask user if they completed the backup process
+    # function to run SMART disk health checks
     run_disk_check() {
         clear
         description_text_array=(
         #    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             "$(center_heading_text "Start SMART Disk check")\n\n"
-            "We will initiate a SMART Disk software, please monitor it for about 5 min\n"
-            "and report any findings on the wiki website.\n\n"
+            "We will run SMART disk diagnostics. Please review the results\n"
+            "and report any findings on the wiki.\n\n"
             "Are you running a virtualised Server aka VPS?\n\n"
             "1) yes (skip)\n"
             "2) no\n"
@@ -104,7 +104,7 @@ run_task_3() {
             wait_for_input "Press any key when you finished copying the info above..."
             clear
 
-            log_answer "compleated SMART Information collection" "yes"
+            log_answer "completed SMART Information collection" "yes"
 
             # Collect Short Smart Info
             ## initiate short test
@@ -123,7 +123,7 @@ run_task_3() {
             wait_for_input "Press any key when you finished copying the info above..."
             clear
 
-            log_answer "compleated Short SMART Tests" "yes"
+            log_answer "completed Short SMART Tests" "yes"
 
             # Collect Long Smart Info
             ## initiate long test
@@ -139,7 +139,7 @@ run_task_3() {
 
             printf "\n$(center_heading_text "Long SMART Tests output above")\n\n"
 
-            log_answer "compleated Long SMART Tests" "yes"
+            log_answer "completed Long SMART Tests" "yes"
             wait_for_input "Press any key when you finished copying the info above..."
             answer_2=true
             ;;
@@ -149,7 +149,7 @@ run_task_3() {
 
 
 
-    # function to ask user if they completed the backup process
+    # function to show completion screen and ask user what to do next
     complete_step() {
         clear
 
