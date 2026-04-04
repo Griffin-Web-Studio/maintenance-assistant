@@ -30,7 +30,7 @@ run_task_4() {
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
 
-    log_task "Task: $task_name (Task 4)" >>$logFile
+    log_task "Started Task: $task_name (Task 4)"
 
 
 
