@@ -33,7 +33,13 @@
 				"qwtel.sqlite-viewer",
 				"tal7aouy.icons",
 				"redhat.vscode-yaml"
-			]
+			],
+			"settings": {
+				"files.exclude": {
+					"**/__pycache__": true,
+					"**/.venv": true
+				}
+			}
 		}
 	}
 	// Configure tool-specific properties.
