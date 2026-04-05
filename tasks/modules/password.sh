@@ -18,7 +18,7 @@ password_change() {
     clear
 
     local description_text_array=(
-        "$(center_heading_text "Change Password: ${_username}")\n\n"
+        "$(center_heading_text "Change Password: \e[5m${_username}\e[0m")\n\n"
 
         "We will now change the password for the '${_username}' account.\n"
         "Five randomly generated passwords are listed below. Choose one, paste it\n"
