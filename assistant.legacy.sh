@@ -14,6 +14,7 @@ logFile="$logDir/maintenance-$maintenance_start_time.log"
 
 # 'Dot' means 'source', i.e. 'include':
 . "$DIR/scripts/utils/utils.sh"
+. "$DIR/tasks/modules/service_user.sh"
 . "$DIR/tasks/server-init.sh"
 . "$DIR/tasks/task5.sh"
 . "$DIR/tasks/task4.sh"
@@ -56,12 +57,7 @@ display_menu() {
 
     # Check if the script is run as root or with sudo
     if [ "$EUID" -eq 0 ]; then
-        printf "  ===============================================\n"
-        printf "  = \e[5mThis script cannot be run as the root user.\e[0m =\n"
-        printf "  ===============================================\n\n"
-        printf "  INSTEAD! Run it as a user who has root privileges\n"
-        printf "           and elevate as needed.\n\n"
-        exit 1
+        service_user_check
     fi
 
     printf "Server Maintenance Menu:\n\n"
