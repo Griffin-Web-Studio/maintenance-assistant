@@ -11,6 +11,11 @@
 plesk_update() {
     local -n _result="${1}"
 
+    if ! command -v plesk &>/dev/null; then
+        _result="true"
+        return
+    fi
+
     clear
 
     local description_text_array=(
@@ -19,15 +24,14 @@ plesk_update() {
         "this command we will temporarily elevate the privileges to sudo.\n\n"
         "Are you Ready to run 'plesk installer install-all-updates'?\n\n"
         "1) yes\n"
-        "2) no\n"
-        "3) no (skip step)\n\n"
+        "2) no (skip step)\n\n"
     )
 
     print_message_array "${main_banner_text_array[@]}"
     print_message_array "${task_description_text_array[@]}"
     print_message_array "${description_text_array[@]}"
 
-    read -p "Possible answers (1/2/3): " plesk_answer
+    read -p "Possible answers (1/2): " plesk_answer
     printf "\n"
     clear_lines 1
 
@@ -51,14 +55,9 @@ plesk_update() {
         ;;
     2)
         clear_lines 1
-        _result="false"
-        log_answer "running Plesk Updates" "no"
-        ;;
-    3)
-        clear_lines 1
         _result="true"
         log_answer "running Plesk Updates" "no, skip step"
         ;;
-    *) echo "Invalid answer, please enter (1/2/3)" ;;
+    *) echo "Invalid answer, please enter (1/2)" ;;
     esac
 }
