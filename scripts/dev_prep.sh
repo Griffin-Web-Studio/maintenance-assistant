@@ -27,14 +27,31 @@ else
     echo "No --docker flag provided, skipping alias creation."
 fi
 
-# Install required Python packages
-echo "Installing required packages..."
-pip3 install -r requirements.txt
+# ───────────────────────────────────────────────────────| Environment Setup |──
 
-# Install pre-commit hooks
+# Install dependency managers
+pipx install uv
+
+# install all dependencies
+uv sync --all-extras
+
+# Activate virtual python environment
+source .venv/bin/activate
+
+
+# ────────────────────────────────────────────────────────| Pre-commit hooks |──
+
+if ! command -v pre-commit &>/dev/null; then
+  echo "ERROR: pre-commit is not installed." >&2
+  echo "       Install it with: pip install pre-commit or look for errors" >&2
+  echo "       above as UV should have been already installed and" >&2
+  echo "       activated, which means there's another issue." >&2
+  exit 1 # early fail - no pre-commit hook
+fi
+
 echo "Installing pre-commit hooks..."
-pre-commit install
-pre-commit install --hook-type commit-msg -f
-pre-commit autoupdate
+(cd "$SCRIPT_DIR" && pre-commit install)
+(cd "$SCRIPT_DIR" && pre-commit install --hook-type commit-msg)
+
 
 echo "Setup complete!"

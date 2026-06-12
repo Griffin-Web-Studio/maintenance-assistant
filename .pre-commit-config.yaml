@@ -1,12 +1,26 @@
 repos:
-    - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v6.0.0 # Use the latest release version
-      hooks:
-          - id: check-merge-conflict
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
 
-    - repo: https://github.com/AliYmn/conventional-commits-check
-      rev: v2.9.0 # Use the latest release version
-      hooks:
-          - id: conventional-commits-check
-            stages: [commit-msg]
-            args: ["--emoji-disabled"] # Use this argument to disable emojis
+  - repo: https://github.com/psf/black
+    rev: 26.1.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.1.0
+    hooks:
+      - id: mypy
+        files: ^(src/|git-sentinel\.py)
+        args: [--strict]
+        additional_dependencies: ["gitpython>=3.1.50"]
+
+  - repo: https://github.com/opensource-nepal/commitlint
+    rev: v1.13.3
+    hooks:
+      - id: commitlint
