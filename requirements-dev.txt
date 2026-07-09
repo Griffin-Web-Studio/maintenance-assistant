@@ -1,0 +1,7 @@
+# Dev-only tooling on top of the runtime requirements: pre-commit hooks and the
+# textual devtools (`textual console` / `textual run --dev`, see README).
+# Not installed in production - main.sh only installs requirements.txt.
+-r requirements.txt
+
+pre-commit==4.2.0
+textual-dev==1.7.0

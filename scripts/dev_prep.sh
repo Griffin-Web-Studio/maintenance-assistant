@@ -27,9 +27,10 @@ else
     echo "No --docker flag provided, skipping alias creation."
 fi
 
-# Install required Python packages
+# Install required Python packages (runtime + dev tooling, e.g. pre-commit,
+# textual devtools)
 echo "Installing required packages..."
-pip3 install -r requirements.txt
+pip3 install -r requirements-dev.txt
 
 # Install pre-commit hooks
 echo "Installing pre-commit hooks..."
