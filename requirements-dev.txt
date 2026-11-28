@@ -3,5 +3,5 @@
 # Not installed in production - main.sh only installs requirements.txt.
 -r requirements.txt
 
-pre-commit==4.2.0
-textual-dev==1.7.0
+pre-commit==4.7.0
+textual-dev==1.8.0
